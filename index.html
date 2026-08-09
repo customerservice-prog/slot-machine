@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Big Bad Wolf Riches — Free Play</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Trebuchet MS',system-ui,sans-serif;-webkit-user-select:none;user-select:none}
+  html,body{height:100%;overflow:hidden;background:#0a0e1a}
+  #app{height:100vh;width:100vw;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 20%,#1a2a52,#0a0e1a 70%);color:#fff}
+  header{flex:0 0 auto;text-align:center;padding:6px;background:linear-gradient(#1a3a7a,#0d1e42);border-bottom:3px solid #f5c542}
+  h1{font-size:clamp(18px,3.2vw,34px);color:#f5c542;text-shadow:0 2px 0 #7a4a00,0 0 14px #f5c54288;letter-spacing:1px}
+  .sub{font-size:10px;color:#9fb4e0;letter-spacing:2px}
+  main{flex:1 1 auto;display:flex;gap:10px;padding:10px;min-height:0}
+  #machine{flex:1 1 auto;display:flex;flex-direction:column;min-width:0;background:linear-gradient(#12234a,#0a1430);border:4px solid #f5c542;border-radius:14px;box-shadow:0 0 0 3px #7a4a00,inset 0 0 30px #000a;padding:10px;position:relative}
+  #reels{flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;min-height:0}
+  .reel{background:#050a18;border-radius:8px;overflow:hidden;position:relative;box-shadow:inset 0 0 12px #000}
+  .strip{height:100%;display:flex;flex-direction:column}
+  .cell{flex:1;display:flex;align-items:center;justify-content:center;font-size:min(7vh,42px);border-bottom:1px solid #ffffff11}
+  .cell.win{animation:pop .5s ease infinite alternate;background:#f5c54233;border-radius:6px}
+  @keyframes pop{to{transform:scale(1.12)}}
+  #panel{flex:0 0 230px;display:flex;flex-direction:column;gap:8px}
+  .stat{background:#0d1e42;border:2px solid #f5c542;border-radius:10px;padding:8px;text-align:center}
+  .stat .lbl{font-size:10px;color:#9fb4e0;letter-spacing:2px}
+  .stat .val{font-size:24px;color:#f5c542;font-weight:bold}
+  .betrow{display:flex;align-items:center;gap:6px;background:#0d1e42;border:2px solid #f5c542;border-radius:10px;padding:6px}
+  .betrow .val{flex:1;text-align:center;font-size:20px;color:#fff}
+  button{cursor:pointer;border:none;border-radius:8px;font-weight:bold;color:#08111f}
+  .step{width:34px;height:34px;font-size:20px;background:linear-gradient(#ffe08a,#f5c542)}
+  #spin{height:70px;font-size:26px;letter-spacing:2px;color:#08210f;background:linear-gradient(#7be88a,#2fae4e);box-shadow:0 4px 0 #1c7a34,inset 0 2px 0 #ffffff88;border-radius:12px}
+  #spin:active{transform:translateY(3px);box-shadow:0 1px 0 #1c7a34}
+  #spin:disabled{filter:grayscale(.6) brightness(.8)}
+  #free{height:38px;font-size:13px;background:linear-gradient(#ffe08a,#f5c542);letter-spacing:1px}
+  .hardbox{background:#0d1e42;border:2px solid #f5c542;border-radius:10px;padding:8px}
+  .hardbox .lbl{font-size:10px;color:#9fb4e0;letter-spacing:2px;text-align:center;margin-bottom:4px}
+  #hard{width:100%}
+  #hardname{text-align:center;font-size:15px;color:#f5c542;font-weight:bold;margin-top:3px}
+  #msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(20px,4vw,44px);color:#f5c542;text-shadow:0 0 18px #000,0 2px 0 #7a4a00;pointer-events:none;opacity:0;transition:opacity .3s}
+  #msg.show{opacity:1;animation:winpulse .6s ease infinite alternate}
+  @keyframes winpulse{to{transform:translate(-50%,-50%) scale(1.08)}}
+  #overlay{position:absolute;inset:0;background:#0008;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:20;border-radius:14px}
+  #overlay.show{display:flex}
+  #overlay .big{font-size:clamp(30px,7vw,72px);color:#f5c542;text-shadow:0 0 24px #f5c542,0 3px 0 #7a4a00}
+  #overlay .mid{font-size:18px;color:#fff;letter-spacing:3px;margin-top:6px}
+  #overlay button{margin-top:16px;height:46px;padding:0 26px;font-size:18px;background:linear-gradient(#7be88a,#2fae4e);color:#08210f}
+  .mute{position:absolute;top:8px;right:8px;width:32px;height:32px;background:#0d1e42;color:#f5c542;border:2px solid #f5c542;font-size:16px}
+  .footer{flex:0 0 auto;text-align:center;font-size:9px;color:#5f7099;padding:3px}
+  .coin{position:absolute;font-size:26px;pointer-events:none;z-index:30}
+  @media(max-width:700px){main{flex-direction:column}#panel{flex:0 0 auto;flex-direction:row;flex-wrap:wrap}#panel>*{flex:1 1 44%}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>🐺 BIG BAD WOLF RICHES 🐺</h1>
+    <div class="sub">FREE PLAY · NO REAL MONEY · JUST FOR FUN</div>
+  </header>
+  <main>
+    <div id="machine">
+      <button class="mute" id="mute">🔊</button>
+      <div id="reels"></div>
+      <div id="msg"></div>
+      <div id="overlay">
+        <div class="big" id="ovbig">WELCOME BONUS!</div>
+        <div class="mid" id="ovmid">2,500 FREE COINS · PLAY NOW</div>
+        <button id="ovbtn">PLAY</button>
+      </div>
+    </div>
+    <div id="panel">
+      <div class="stat"><div class="lbl">BALANCE 🪙</div><div class="val" id="balance">2,500</div></div>
+      <div class="stat"><div class="lbl">LAST WIN</div><div class="val" id="lastwin">0</div></div>
+      <div class="betrow">
+        <button class="step" id="betdown">−</button>
+        <div class="val">BET <span id="bet">10</span></div>
+        <button class="step" id="betup">+</button>
+      </div>
+      <button id="spin">↻ SPIN</button>
+      <div class="hardbox">
+        <div class="lbl">DIFFICULTY</div>
+        <input type="range" id="hard" min="0" max="4" value="2"/>
+        <div id="hardname">MEDIUM</div>
+      </div>
+      <button id="free">🪙 GET FREE COINS</button>
+    </div>
+  </main>
+  <div class="footer">Big Bad Wolf Riches — an original free-to-play game. Not affiliated with any commercial slot brand. No wagering, no payouts.</div>
+</div>
+<script>
+(function(){
+  "use strict";
+  var SYM=[
+    {e:"🐺",w:2,pay:50},{e:"💰",w:3,pay:25},{e:"💎",w:4,pay:20},
+    {e:"🔔",w:6,pay:12},{e:"🍒",w:8,pay:8},{e:"⭐",w:8,pay:8},
+    {e:"🐷",w:10,pay:5},{e:"🌙",w:12,pay:4}
+  ];
+  var HARD=[
+    {name:"LOOSE",mult:1.35},{name:"EASY",mult:1.15},{name:"MEDIUM",mult:1.00},
+    {name:"HARD",mult:0.80},{name:"BRUTAL",mult:0.60}
+  ];
+  var G={balance:2500,bet:10,hardness:2,spinning:false,muted:false};
+  window.__game=G;
+  var BETS=[5,10,25,50,100];
+  var AC=null;
+  function ac(){ if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}} return AC; }
+  function beep(f,d,t,v){ if(G.muted)return; var c=ac(); if(!c)return; var o=c.createOscillator(),g=c.createGain(); o.type=t||"sine"; o.frequency.value=f; g.gain.value=v||0.08; o.connect(g); g.connect(c.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+(d||0.15)); o.stop(c.currentTime+(d||0.15)); }
+  function tick(){ beep(220+Math.random()*120,0.05,"square",0.04); }
+  function winSound(){ [523,659,784,1046].forEach(function(f,i){setTimeout(function(){beep(f,0.18,"triangle",0.09);},i*90);}); }
+  function fanfare(){ [392,523,659,784,1046].forEach(function(f,i){setTimeout(function(){beep(f,0.25,"sawtooth",0.07);},i*110);}); }
+  function fmt(n){ return Math.floor(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+  function pick(){ var tot=0;SYM.forEach(function(s){tot+=s.w;}); var r=Math.random()*tot; for(var i=0;i<SYM.length;i++){r-=SYM[i].w; if(r<=0)return i;} return SYM.length-1; }
+  function render(){ document.getElementById("balance").textContent=fmt(G.balance); document.getElementById("bet").textContent=G.bet; document.getElementById("hardname").textContent=HARD[G.hardness].name; }
+  var reels=document.getElementById("reels"), strips=[];
+  for(var c=0;c<5;c++){ var r=document.createElement("div"); r.className="reel"; var s=document.createElement("div"); s.className="strip"; for(var row=0;row<3;row++){ var cell=document.createElement("div"); cell.className="cell"; cell.textContent=SYM[pick()].e; s.appendChild(cell); } r.appendChild(s); reels.appendChild(r); strips.push(s); }
+  function cellsOf(strip){ return strip.querySelectorAll(".cell"); }
+  function spinReel(strip,finalIdx,delay,done){ var n=0, iv=setInterval(function(){ var cells=cellsOf(strip); for(var i=0;i<cells.length;i++) cells[i].textContent=SYM[pick()].e; tick(); n++; if(n>10){ clearInterval(iv); var cs=cellsOf(strip); for(var j=0;j<cs.length;j++) cs[j].textContent=SYM[finalIdx[j]].e; done&&done(); } },60); }
+  function evaluate(grid){ var win=0, wins=[]; for(var row=0;row<3;row++){ var first=grid[0][row], run=1; for(var col=1;col<5;col++){ if(grid[col][row]===first) run++; else break; } if(run>=3){ var pay=SYM[first].pay*(run-2); win+=pay*(G.bet/10); for(var k=0;k<run;k++) wins.push(k+"-"+row); } } return {win:Math.round(win),cells:wins}; }
+  function doSpin(){ if(G.spinning) return; if(G.balance<G.bet){ flash("NOT ENOUGH COINS"); return; } G.spinning=true; document.getElementById("spin").disabled=true; G.balance-=G.bet; render(); document.querySelectorAll(".cell.win").forEach(function(c){c.classList.remove("win");}); var mult=HARD[G.hardness].mult; var grid=[]; for(var col=0;col<5;col++){ var colArr=[]; for(var row=0;row<3;row++){ var idx=pick(); if(mult<1 && SYM[idx].pay>=20 && Math.random()>mult) idx=pick(); if(mult>1 && SYM[idx].pay>=12 && Math.random()>1/mult && Math.random()<0.4) idx=Math.min(idx,3); colArr.push(idx); } grid.push(colArr); } var finished=0; for(var c2=0;c2<5;c2++){(function(cc){ setTimeout(function(){ spinReel(strips[cc],grid[cc],0,function(){ finished++; if(finished===5){ var res=evaluate(grid); if(res.win>0){ G.balance+=res.win; document.getElementById("lastwin").textContent=fmt(res.win); res.cells.forEach(function(id){var p=id.split("-"); cellsOf(strips[+p[0]])[+p[1]].classList.add("win");}); flash("WIN "+fmt(res.win)+"!"); winSound(); coinShower(6); } else { document.getElementById("lastwin").textContent="0"; } render(); G.spinning=false; document.getElementById("spin").disabled=false; } }); },cc*180); })(c2);} }
+  window.__doSpin=doSpin;
+  function flash(t){ var m=document.getElementById("msg"); m.textContent=t; m.classList.add("show"); setTimeout(function(){m.classList.remove("show");},1400); }
+  function coinShower(n){ var mach=document.getElementById("machine"); for(var i=0;i<n;i++){(function(){ var el=document.createElement("div"); el.className="coin"; el.textContent="🪙"; el.style.left=(10+Math.random()*80)+"%"; el.style.top="-30px"; mach.appendChild(el); var y=0,x=(Math.random()-0.5)*40, iv=setInterval(function(){ y+=8; el.style.top=(-30+y)+"px"; el.style.transform="translateX("+x+"px) rotate("+y*4+"deg)"; if(y>mach.offsetHeight+40){clearInterval(iv);el.remove();} },16); })();} }
+  function showWelcome(){ var ov=document.getElementById("overlay"); ov.classList.add("show"); fanfare(); coinShower(14); document.getElementById("ovbtn").onclick=function(){ov.classList.remove("show");}; setTimeout(function(){ov.classList.remove("show");},4000); }
+  window.__showWelcome=showWelcome;
+  document.getElementById("spin").onclick=doSpin;
+  document.getElementById("betup").onclick=function(){var i=BETS.indexOf(G.bet);if(i<BETS.length-1){G.bet=BETS[i+1];render();}};
+  document.getElementById("betdown").onclick=function(){var i=BETS.indexOf(G.bet);if(i>0){G.bet=BETS[i-1];render();}};
+  document.getElementById("hard").oninput=function(e){G.hardness=+e.target.value;render();};
+  document.getElementById("free").onclick=function(){G.balance+=2500;render();flash("+2,500 FREE COINS");coinShower(10);beep(660,0.2,"triangle",0.08);};
+  document.getElementById("mute").onclick=function(e){G.muted=!G.muted;e.target.textContent=G.muted?"🔇":"🔊";};
+  document.addEventListener("keydown",function(e){if(e.code==="Space"){e.preventDefault();doSpin();}});
+  render();
+  setTimeout(showWelcome,400);
+})();
+</script>
+</body>
+</html>
