@@ -417,6 +417,16 @@ function startWin(amount, cells){
 }
 
 var shake=0, cameraPush=0;
+var flash=0;
+function triggerBonus(kind, fn){
+  flash=1; shake=16; moonPulse=1; cameraPush=1;
+  sfxBig(); sfxAntic();
+  spawnCoins(W/2, H*0.42, 70);
+  spawnSpark(W/2, H*0.42, 50, kind==="FS"?"#8fb7e0":"#ffcf5c");
+  setWolf("CELEBRATE");
+  banner(kind==="FS"?"FREE SPINS!":"HOLD & WIN!", "FEATURE ACTIVATED");
+  spinTimers.push(setTimeout(function(){ if(fn) fn(); }, G.turbo?700:1500));
+}
 var spinTimers=[];
 function clearTimers(){ for(var i=0;i<spinTimers.length;i++) clearTimeout(spinTimers[i]); spinTimers=[]; }
 
@@ -577,7 +587,7 @@ function buyFreeSpins(){
   if(G.state!=="READY") return false;
   var cost=G.bet*100; if(G.bal<cost) return false;
   G.bal-=cost; save(); closePanel("infoPanel");
-  startFreeSpins(4); // buy grants a 4-scatter (12 spins) tier
+  triggerBonus("FS", function(){ startFreeSpins(4); });
   return true;
 }
 function buyHoldWin(){
@@ -587,7 +597,7 @@ function buyHoldWin(){
   // seed with 6 coins
   var cells=[]; var used={};
   while(cells.length<6){ var r=Math.floor(rng()*5),row=Math.floor(rng()*3),k=r+"_"+row; if(!used[k]){used[k]=1;cells.push([r,row]);} }
-  startHoldWin(cells);
+  triggerBonus("HW", function(){ startHoldWin(cells); });
   return true;
 }
 
@@ -637,6 +647,7 @@ function drawHUD(t){
   smallBtn(W*0.90, dy+g.deckH*0.32, "INFO", false);
   smallBtn(W*0.90, dy+g.deckH*0.68, G.sound?"SOUND":"MUTED", G.sound);
   smallBtn(W*0.06, dy+g.deckH*0.5, "STATS", false);
+  buyDeckBtn(W*0.20, dy+g.deckH*0.5, g);
 }
 function meter(label,val,x,y,g,hot){
   cx.save(); cx.textAlign="center";
@@ -668,6 +679,17 @@ function betBtn(x,y,s,g){ var r=g.deckH*0.16;
   cx.fillStyle="#ffcf5c"; cx.font="bold "+Math.round(r*1.1)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle"; cx.fillText(s,x,y);
   cx.restore();
   if(s==="-") hot.betMinus=[x-r,y-r,x+r,y+r]; else hot.betPlus=[x-r,y-r,x+r,y+r];
+}
+function buyDeckBtn(x,y,g){
+  var w=Math.min(120,W*0.10), hh=Math.min(40,g.deckH*0.5);
+  var grd=cx.createLinearGradient(x-w/2,y-hh/2,x-w/2,y+hh/2);
+  grd.addColorStop(0,"#ffe89a"); grd.addColorStop(1,"#a5761d");
+  cx.save(); cx.shadowColor="rgba(255,180,60,0.6)"; cx.shadowBlur=(G.state==="READY")?14:0;
+  cx.fillStyle=grd; roundRect(x-w/2,y-hh/2,w,hh,9); cx.fill();
+  cx.shadowBlur=0; cx.strokeStyle="#7c560f"; cx.lineWidth=2; cx.stroke();
+  cx.fillStyle="#241500"; cx.font="bold "+Math.round(hh*0.34)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle";
+  cx.fillText("BUY FEATURE",x,y); cx.restore();
+  hot.buyBox=[x-w/2,y-hh/2,x+w/2,y+hh/2];
 }
 function smallBtn(x,y,label,active){
   cx.save(); var w=Math.min(84,W*0.07), h=Math.min(30,W*0.026);
@@ -753,6 +775,7 @@ function loop(t){
     var tn=tierName(winFx.tier); if(tn){ bannerFx.title=tn; bannerFx.sub=fmt(Math.floor(winFx.shown)); bannerFx.t=Math.max(bannerFx.t,0.6); }
   }
   drawBanner(t);
+  if(flash>0){ cx.save(); cx.globalAlpha=flash*0.6; cx.fillStyle="#fff7dc"; cx.fillRect(0,0,W,H); cx.restore(); flash*=0.88; }
   cx.restore();
   requestAnimationFrame(loop);
 }
@@ -768,6 +791,7 @@ function onClick(x,y){
   if(inBox(hot.btn_TURBO,x,y)){ G.turbo=!G.turbo; return; }
   if(inBox(hot.btn_SOUND,x,y)||inBox(hot.btn_MUTED,x,y)){ G.sound=!G.sound; save(); return; }
   if(inBox(hot.btn_INFO,x,y)){ openPanel("infoPanel"); return; }
+  if(inBox(hot.buyBox,x,y)){ openPanel("infoPanel"); return; }
   if(inBox(hot.btn_STATS,x,y)){ showStats(); openPanel("statsPanel"); return; }
 }
 cv.addEventListener("click",function(e){ var rct=cv.getBoundingClientRect(); onClick(e.clientX-rct.left,e.clientY-rct.top); });
