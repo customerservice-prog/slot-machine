@@ -131,6 +131,7 @@ var PROFILES={
   BRUTAL:{w:[1,1,2,4,7,11,19,21,22,24],wild:1,scat:2,coin:2,rtp:"~87%",vol:"Very High"}
 };
 var PROF_ORDER=["LOOSE","EASY","NORMAL","CASINO","HARD","BRUTAL"];
+var rng=Math.random;
 
 /* ================= SAVE ================= */
 var KEY="bbwr_save_v1";
@@ -501,7 +502,7 @@ function openMenu(){
     '<div class="row"><span>3/4/5 Scatters</span><span>8 / 12 / 20 Free Spins</span></div>'+
     '<div class="row"><span>6+ Coins</span><span>Hold &amp; Win</span></div>'+
     '<div class="row"><span>Full Grid</span><span>GRAND '+fmt(CFG.jpMult.GRAND*S.bet)+'</span></div>'+
-    '<div class="sec">LIFETIME STATS</div>'+
+    '<div class="sec">BUY BONUS (uses play credits)</div>'+'<div class="autogrid">'+'<button class="autobtn" id="mBuyFS">FREE SPINS · '+fmt(BUY.fs*S.bet)+'</button>'+'<button class="autobtn" id="mBuyHW">HOLD &amp; WIN · '+fmt(BUY.hw*S.bet)+'</button>'+'</div>'+'<div class="sec">LIFETIME STATS</div>'+
     '<div class="row"><span>Spins</span><span>'+fmt(st.spins)+'</span></div>'+
     '<div class="row"><span>Total Bet</span><span>'+fmt(st.wagered)+'</span></div>'+
     '<div class="row"><span>Total Won</span><span>'+fmt(st.won)+'</span></div>'+
@@ -517,6 +518,7 @@ function openMenu(){
   Array.prototype.forEach.call(ov.querySelectorAll(".diffbtn"),function(b){b.onclick=function(){S.profile=b.dataset.p;save();closeMenu();openMenu();toast("Difficulty: "+S.profile);};});
   ov.querySelector("#mRefill").onclick=function(){S.balance+=CFG.refillAmt;save();syncUI();spawnCoinFx(12);sCoin();closeMenu();toast("+"+fmt(CFG.refillAmt)+" free coins");};
   ov.querySelector("#mReset").onclick=function(){if(confirm("Reset ALL player data (balance, stats, settings)?"))window.__resetPlayer();};
+var _bfs=ov.querySelector("#mBuyFS");if(_bfs)_bfs.onclick=buyFreeSpins;var _bhw=ov.querySelector("#mBuyHW");if(_bhw)_bhw.onclick=buyHoldWin;
 }
 function closeMenu(){$("ovMenu").classList.remove("show");}
 /* ================= CONTROLS ================= */
@@ -532,6 +534,11 @@ document.addEventListener("keydown",function(e){if(e.code==="Space"){e.preventDe
 layout();syncUI();requestAnimationFrame(loop);
 setTimeout(welcome,500);
 window.__spinBtn=$("spin");
+
+var BUY={fs:100,hw:150};
+function buyFreeSpins(){var cost=BUY.fs*S.bet;if(S.balance<cost){toast('Need '+fmt(cost)+' credits - refill in INFO');return;}if(busy||mode!=='base')return;S.balance-=cost;S.stats.spins++;S.stats.wagered+=cost;save();syncUI();closeMenu();sTrigger();var n=CFG.freeSpins[3];S.stats.fs++;save();startFreeSpins(n);}
+function buyHoldWin(){var cost=BUY.hw*S.bet;if(S.balance<cost){toast('Need '+fmt(cost)+' credits - refill in INFO');return;}if(busy||mode!=='base')return;S.balance-=cost;S.stats.spins++;S.stats.wagered+=cost;save();syncUI();closeMenu();var cells=[];for(var c=0;c<CFG.reels;c++)for(var r=0;r<CFG.rows;r++)cells.push({c:c,r:r});for(var i=cells.length-1;i>0;i--){var j=Math.floor(rng()*(i+1));var tt=cells[i];cells[i]=cells[j];cells[j]=tt;}var start=[];for(var i=0;i<CFG.holdWin.trigger;i++)start.push({c:cells[i].c,r:cells[i].r,v:COINVALS[Math.floor(rng()*COINVALS.length)]});S.stats.hw++;save();busy=true;runHoldWin(start);}
+window.__buyFS=buyFreeSpins;window.__buyHW=buyHoldWin;
 })();
 
 </script>
