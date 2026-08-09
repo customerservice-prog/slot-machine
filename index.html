@@ -31,13 +31,15 @@
 <div id="loading"><div class="lg">PINEDA POWER</div><div class="sub">FREE PLAY &mdash; LOADING</div></div>
 <div id="infoPanel" class="panel">
   <span class="closex" data-close="infoPanel">&times;</span>
-  <h2>INFO &amp; FEATURE BUY</h2>
+  <h2>GAME INFO</h2>
   <div class="row"><span>Money Coins (6+)</span><span>Hold &amp; Win</span></div>
   <div class="row"><span>Buzz Saws (3/4/5)</span><span>8 / 12 / 20 Free Spins</span></div>
   <div class="row"><span>Wild</span><span>Substitutes all except Buzz Saw/Coin</span></div>
-  <div style="margin-top:14px; font-size:12px; color:#8aa0c8;">Feature Buy uses virtual credits only. This is a free-play game with no real money.</div>
-  <button class="buybtn" id="buyFSbtn">BUY FREE SPINS</button>
-  <button class="buybtn" id="buyHWbtn">BUY HOLD &amp; WIN</button>
+  <div class="row"><span>Village Build (3+ houses)</span><span>Upgrade a plot: Foundation&rarr;Straw&rarr;Wood&rarr;Brick&rarr;Mansion</span></div>
+  <div style="margin-top:16px; padding-top:10px; border-top:1px solid #b98a2e; font-size:12px; color:#ffcf5c; letter-spacing:1px;">DEV / TEST MODE &mdash; force features (free)</div>
+  <button class="buybtn" id="buyFSbtn">FORCE FREE SPINS</button>
+  <button class="buybtn" id="buyHWbtn">FORCE HOLD &amp; WIN</button>
+  <button class="buybtn" id="devHouseBtn">FORCE HOUSE UPGRADE</button>
 </div>
 <div id="statsPanel" class="panel">
   <span class="closex" data-close="statsPanel">&times;</span>
@@ -73,11 +75,11 @@ function prof(){ return PROFILES[G.diff]||PROFILES.NORMAL; }
 
 // ---------- persistence ----------
 function save(){ try{ localStorage.setItem("bbwr_v3", JSON.stringify({
-  bal:G.bal, bet:G.bet, spins:G.spins, totalWon:G.totalWon, biggest:G.biggest, diff:G.diff, sound:G.sound
+  bal:G.bal, bet:G.bet, spins:G.spins, totalWon:G.totalWon, biggest:G.biggest, diff:G.diff, sound:G.sound, houses:houses
 })); }catch(e){} }
 function load(){ try{ var s=JSON.parse(localStorage.getItem("bbwr_v3")||"null"); if(s){
   G.bal=+s.bal||2500; G.bet=+s.bet||10; G.spins=+s.spins||0; G.totalWon=+s.totalWon||0;
-  G.biggest=+s.biggest||0; G.diff=s.diff||"NORMAL"; G.sound=s.sound!==false;
+  G.biggest=+s.biggest||0; G.diff=s.diff||"NORMAL"; G.sound=s.sound!==false; if(s.houses&&s.houses.length===3){ window.__loadedHouses=[+s.houses[0]||0,+s.houses[1]||0,+s.houses[2]||0]; }
 } }catch(e){} }
 load();
 if(G.bal < 100) G.bal = 2500;   // welcome refill
@@ -250,9 +252,9 @@ function drawWolf(t){
   var wx=g.gx-Math.min(150,g.gx*0.85), wy=g.gy+g.gh*0.5, sc=Math.min(1.3, g.gh/360);
   if(wx<40) wx=40;
   wolf.t+=1;
-  var lean = wolf.state==="ANTIC"? Math.sin(t*0.004)*6+8 : (wolf.state==="HUFF"? 14 : 0);
+  var lean = wolf.state==="ANTIC"? Math.sin(t*0.004)*6+8 : (wolf.state==="HUFF"? 14 : (wolf.state==="WATCHING"? 6 : 0));
   var bob = Math.sin(t*0.0015)*4;
-  var cheer = wolf.state==="CELEBRATE"? Math.abs(Math.sin(t*0.01))*10 : 0;
+  var cheer = wolf.state==="CELEBRATE"? Math.abs(Math.sin(t*0.01))*10 : (wolf.state==="EXCITED"? Math.abs(Math.sin(t*0.012))*6 : (wolf.state==="DISAPPOINT"? -4 : 0));
   var puff = wolf.state==="HUFF"? (0.5+Math.abs(Math.sin(t*0.02))*0.5) : 0;
   cx.save(); cx.translate(wx+lean, wy+bob-cheer); cx.scale(sc,sc);
   var bgc=cx.createRadialGradient(-10,50,6,0,60,80); bgc.addColorStop(0,"#ffbcd0"); bgc.addColorStop(1,"#d76d8b");
@@ -279,6 +281,8 @@ function drawWolf(t){
   cx.strokeStyle="#8a3f57"; cx.lineWidth=3; cx.beginPath();
   if(wolf.state==="CELEBRATE"){ cx.arc(0,24,14,0.15,Math.PI-0.15); }
   else if(wolf.state==="HUFF"){ cx.arc(0,30,10,Math.PI+0.3,-0.3); }
+  else if(wolf.state==="EXCITED"){ cx.arc(0,24,11,0.2,Math.PI-0.2); }
+  else if(wolf.state==="DISAPPOINT"){ cx.arc(0,36,11,Math.PI+0.2,-0.2); }
   else { cx.moveTo(-10,26); cx.quadraticCurveTo(0,30,10,26); }
   cx.stroke();
   if(puff>0){ cx.fillStyle="rgba(255,255,255,"+(0.4*puff)+")"; var px=snoutW+10+puff*20; cx.beginPath(); cx.arc(px,6,10*puff,0,6.2832); cx.arc(px+14,2,7*puff,0,6.2832); cx.fill(); }
@@ -520,6 +524,10 @@ function finishSpin(){
     else { G.state="FS"; scheduleAuto(); }
     save(); return;
   }
+  // ---- HOUSE CONSTRUCTION: count building symbols this spin ----
+  var build=0;
+  for(var r=0;r<5;r++) for(var row=0;row<3;row++){ var id=g[r][row]; if(id==="STRAW"||id==="WOOD"||id==="BRICK"||id==="MANS") build++; }
+  if(build>=3){ var ups = build>=5?2:1; for(var u=0; u<ups; u++){ upgradeHouse(lowestHouse()); } } else if(housesNearMax()){ setWolf("WATCHING"); }
   // base game feature triggers
   if(coins.length>=6){ startHoldWin(coins); save(); return; }
   if(scat>=3){ startFreeSpins(scat); save(); return; }
@@ -723,7 +731,7 @@ function buyDeckBtn(x,y,g){
   cx.fillStyle=grd; roundRect(x-w/2,y-hh/2,w,hh,9); cx.fill();
   cx.shadowBlur=0; cx.strokeStyle="#7c560f"; cx.lineWidth=2; cx.stroke();
   cx.fillStyle="#241500"; cx.font="bold "+Math.round(hh*0.34)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle";
-  cx.fillText("BUY FEATURE",x,y); cx.restore();
+  cx.fillText("DEV / TEST",x,y); cx.restore();
   hot.buyBox=[x-w/2,y-hh/2,x+w/2,y+hh/2];
 }
 function smallBtn(x,y,label,active){
@@ -795,6 +803,60 @@ function drawBanner(t){
 }
 // ---------- main loop ----------
 var frame=0;
+// ===== HOUSE CONSTRUCTION PROGRESSION =====
+var houses=(window.__loadedHouses||[0,0,0]);
+var houseGlow=[0,0,0];
+var HOUSE_TIERS=["FOUNDATION","STRAW","WOOD","BRICK","MANSION"];
+var HOUSE_COL=["#5a5040","#e6c96a","#b07a3c","#c0503a","#ffd76a"];
+function upgradeHouse(n){
+  if(n<0||n>2) return false;
+  if(houses[n]>=4) return false;
+  houses[n]++; houseGlow[n]=1; save();
+  if(houses[n]===4){ setWolf("CELEBRATE"); } else { setWolf("EXCITED"); }
+  return true;
+}
+function lowestHouse(){ var lo=0; for(var i=1;i<3;i++){ if(houses[i]<houses[lo]) lo=i; } return lo; }
+function housesNearMax(){ for(var i=0;i<3;i++){ if(houses[i]===3) return true; } return false; }
+function resetHouses(){ houses=[0,0,0]; houseGlow=[0,0,0]; save(); }
+function drawHousePlot(px,py,pw,ph,tier,glow){
+  cx.save(); cx.translate(px,py);
+  cx.fillStyle="rgba(20,26,44,0.55)"; roundRect(-pw*0.52,-ph*0.05,pw*1.04,ph*0.5,6); cx.fill();
+  var gg=glow>0?glow:0;
+  if(gg>0){ cx.shadowColor="#ffd76a"; cx.shadowBlur=24*gg; }
+  var w=pw*0.72, h=ph*0.62, bx=-w/2, by=-h*0.2;
+  if(tier===0){
+    cx.fillStyle="#3a4050"; for(var i=-1;i<=1;i++){ cx.fillRect(bx+ (i+1)*(w/2)-3, by+h*0.4, 6, h*0.5); }
+    cx.strokeStyle="#4a5568"; cx.lineWidth=2; cx.strokeRect(bx,by+h*0.35,w,h*0.55);
+  } else {
+    var col=HOUSE_COL[tier];
+    var wg=cx.createLinearGradient(bx,by,bx,by+h); wg.addColorStop(0,shade(col,1.15)); wg.addColorStop(1,shade(col,0.7));
+    cx.fillStyle=wg; cx.fillRect(bx,by+h*0.28,w,h*0.72);
+    cx.fillStyle=shade(col,0.85); cx.beginPath(); cx.moveTo(bx-4,by+h*0.30); cx.lineTo(0,by-2); cx.lineTo(bx+w+4,by+h*0.30); cx.closePath(); cx.fill();
+    cx.fillStyle="#2a1e14"; cx.fillRect(-w*0.12,by+h*0.55,w*0.24,h*0.45);
+    if(tier>=3){ cx.strokeStyle="rgba(0,0,0,0.25)"; cx.lineWidth=1; for(var yy=by+h*0.4; yy<by+h; yy+=6){ cx.beginPath(); cx.moveTo(bx,yy); cx.lineTo(bx+w,yy); cx.stroke(); } }
+    if(tier===4){ cx.fillStyle="#fff2b0"; cx.fillRect(bx+w*0.12,by+h*0.4,w*0.18,h*0.2); cx.fillRect(bx+w*0.7,by+h*0.4,w*0.18,h*0.2); }
+  }
+  cx.shadowBlur=0;
+  for(var p=0;p<4;p++){ cx.beginPath(); cx.arc(bx+ p*(w/3), by+h*1.18, 3.2, 0,6.2832); cx.fillStyle=(p<tier)?"#ffd76a":"rgba(255,255,255,0.22)"; cx.fill(); }
+  cx.restore();
+}
+function drawHouses(t){
+  var g=geom();
+  var colX = g.gx+g.gw + Math.min(140, (W-(g.gx+g.gw))*0.55);
+  if(colX > W-70) colX = W-70;
+  var pw = Math.min(150, (W-(g.gx+g.gw))*0.9);
+  var ph = g.gh/3.4;
+  var y0 = g.gy + ph*0.7;
+  cx.save();
+  cx.font="bold 11px Georgia"; cx.textAlign="center"; cx.fillStyle="#ffd76a";
+  cx.fillText("VILLAGE", colX, g.gy-6);
+  for(var i=0;i<3;i++){
+    var py = y0 + i*(ph*1.05);
+    drawHousePlot(colX, py, pw, ph, houses[i], houseGlow[i]);
+    if(houseGlow[i]>0){ houseGlow[i]-=0.03; if(houseGlow[i]<0) houseGlow[i]=0; }
+  }
+  cx.restore();
+}
 function loop(t){
   frame++;
   cx.save();
@@ -802,6 +864,7 @@ function loop(t){
   drawBG(t);
   drawWolf(t);
   drawReels(t);
+  drawHouses(t);
   updateParts(); drawParts();
   drawHUD(t);
   // win count-up
@@ -849,6 +912,8 @@ function showStats(){
 function row(k,v){ return '<div class="row"><span>'+k+'</span><span>'+v+'</span></div>'; }
 // buy buttons
 var bfs=document.getElementById("buyFSbtn"), bhw=document.getElementById("buyHWbtn");
+var dhb=document.getElementById("devHouseBtn");
+if(dhb) dhb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ upgradeHouse(lowestHouse()); closePanel("infoPanel"); } });
 if(bfs) bfs.addEventListener("click",function(){ if(!buyFreeSpins()){ this.textContent="BUY FREE SPINS (FREE)"; } });
 if(bhw) bhw.addEventListener("click",function(){ if(!buyHoldWin()){ this.textContent="BUY HOLD & WIN (FREE)"; } });
 function refreshBuyLabels(){ if(bfs)bfs.textContent="BUY FREE SPINS (FREE)"; if(bhw)bhw.textContent="BUY HOLD & WIN (FREE)"; }
