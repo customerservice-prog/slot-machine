@@ -726,11 +726,11 @@ function drawHUD(t){
   cx.textAlign="center"; cx.textBaseline="top";
   var lg=cx.createLinearGradient(W/2-200,0,W/2+200,0);
   lg.addColorStop(0,"#ffcf5c"); lg.addColorStop(0.5,"#fff3c0"); lg.addColorStop(1,"#e7b64a");
-  cx.font="bold "+Math.round(Math.min(34,W*0.028))+"px Georgia";
+  cx.font="bold "+Math.round(Math.min(24,W*0.02))+"px Georgia";
   cx.fillStyle=lg; cx.shadowColor="rgba(255,180,60,0.5)"; cx.shadowBlur=18;
-  cx.fillText("PINEDA POWER", W/2, 8);
+  /* title moved */
   cx.shadowBlur=0; cx.font=Math.round(Math.min(12,W*0.01))+"px Georgia"; cx.fillStyle="#8aa0c8";
-  cx.fillText("FREE PLAY", W/2, 8+Math.min(38,W*0.032));
+  /* subtitle removed */
   cx.restore();
   // control deck
   var dy=H-g.deckH;
@@ -1014,11 +1014,66 @@ function drawHouses(t){
   cx.restore();
 }
 
+
+function jpPlate(x,y,w,h,label,val,c1,c2,glow,t){
+  cx.save();
+  cx.translate(x,y);
+  // outer frame
+  var fg=cx.createLinearGradient(0,0,0,h);
+  fg.addColorStop(0,"#3a2a12"); fg.addColorStop(0.5,"#8c6a24"); fg.addColorStop(1,"#3a2a12");
+  cx.fillStyle=fg; roundRect(-3,-3,w+6,h+6,10); cx.fill();
+  cx.strokeStyle="#d9b24e"; cx.lineWidth=1.5; roundRect(-3,-3,w+6,h+6,10); cx.stroke();
+  // inner panel
+  var ig=cx.createLinearGradient(0,0,0,h);
+  ig.addColorStop(0,c1); ig.addColorStop(1,c2);
+  cx.fillStyle=ig; roundRect(0,0,w,h,7); cx.fill();
+  // gloss
+  cx.save(); roundRect(0,0,w,h,7); cx.clip();
+  var gl=cx.createLinearGradient(0,0,0,h*0.5); gl.addColorStop(0,"rgba(255,255,255,0.35)"); gl.addColorStop(1,"rgba(255,255,255,0)");
+  cx.fillStyle=gl; cx.fillRect(0,0,w,h*0.5); cx.restore();
+  // pulsing glow when glow true
+  if(glow){ cx.save(); cx.strokeStyle="rgba(255,236,150,"+(0.4+0.4*Math.sin(t*0.02))+")"; cx.lineWidth=3; cx.shadowColor="#ffe08a"; cx.shadowBlur=14; roundRect(0,0,w,h,7); cx.stroke(); cx.restore(); }
+  // label
+  cx.textAlign="center"; cx.textBaseline="middle";
+  cx.fillStyle="rgba(0,0,0,0.35)"; cx.font="800 "+Math.round(h*0.30)+"px 'Segoe UI',sans-serif";
+  cx.fillText(label, w/2, h*0.30+1);
+  cx.fillStyle="#fff3c8"; cx.fillText(label, w/2, h*0.30);
+  // value
+  cx.fillStyle="#0a0a0a"; cx.font="900 "+Math.round(h*0.40)+"px 'Segoe UI',sans-serif";
+  cx.fillText(val, w/2+1, h*0.70+1);
+  cx.fillStyle="#fffbe6"; cx.fillText(val, w/2, h*0.70);
+  cx.restore();
+}
+function drawJackpots(t){
+  cx.save(); cx.setTransform(DPR,0,0,DPR,0,0); cx.globalAlpha=1;
+  var g=geom();
+  var jp = (window.JP = window.JP || {mega:250000,grand:50000,major:5000,minor:500,mini:100});
+  // slow tick to feel alive
+  jp.mega += (0.5+rng())*4; jp.grand += (0.3+rng())*2; jp.major += rng()*0.7;
+  var topH=g.top;
+  // big MEGA plate centered at very top
+  var mw=Math.min(W*0.30, g.gw*0.46), mh=Math.min(topH*0.40, 34);
+  var mx=(W-mw)/2, my=Math.max(4, topH*0.16);
+  jpPlate(mx,my,mw,mh,"MEGA JACKPOT",fmt(Math.floor(jp.mega)),"#ffe27a","#e0a51f",true,t);
+  // side plates: GRAND/MAJOR left, MINOR/MINI right, tucked beside the top band
+  var sw=Math.min(W*0.15, Math.max(90,(g.gx-20)));
+  var sh=Math.min(42, g.top*0.5);
+  var lx=Math.max(8, g.gx-sw-14);
+  var rx=Math.min(W-sw-8, g.gx+g.gw+14);
+  var sy0=Math.max(6, g.top*0.10), gap=sh+7;
+  jpPlate(lx,sy0,sw,sh,"GRAND",fmt(Math.floor(jp.grand)),"#c9a2ff","#7d43d6",false,t);
+  jpPlate(lx,sy0+gap,sw,sh,"MAJOR",fmt(Math.floor(jp.major)),"#8fd0ff","#2f7fd6",false,t);
+  jpPlate(rx,sy0,sw,sh,"MINOR",fmt(jp.minor),"#ffd28f","#d67f2f",false,t);
+  jpPlate(rx,sy0+gap,sw,sh,"MINI",fmt(jp.mini),"#a8f0a0","#3f9a3a",false,t);
+  cx.restore();
+}
+
 function loop(t){
   frame++;
   cx.save();
   if(shake>0){ cx.translate((rng()-0.5)*shake,(rng()-0.5)*shake); shake*=0.9; }
   drawBG(t);
+  drawJackpots(t);
   drawWolf(t);
   drawReels(t);
   drawHouses(t);
