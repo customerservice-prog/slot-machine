@@ -516,6 +516,9 @@ function finishSpin(){
   for(var r=0;r<5;r++) for(var row=0;row<3;row++){ if(g[r][row]==="SCAT")scat++; if(g[r][row]==="COIN")coins.push([r,row]); }
   if(G.fsLeft>0){
     // free spin resolution
+    var fbuild=0;
+    for(var fr=0;fr<5;fr++) for(var frow=0;frow<3;frow++){ var fid=g[fr][frow]; if(fid==="STRAW"||fid==="WOOD"||fid==="BRICK"||fid==="MANS") fbuild++; }
+    if(fbuild>=2){ var fups=fbuild>=4?2:1; for(var fu=0; fu<fups; fu++){ upgradeHouse(lowestHouse()); } checkVillageComplete(); }
     if(res.win>0){ G.fsWin+=res.win; addWin(res.win,res.cells); }
     else { G.state="FS"; }
     G.fsLeft--;
@@ -527,7 +530,7 @@ function finishSpin(){
   // ---- HOUSE CONSTRUCTION: count building symbols this spin ----
   var build=0;
   for(var r=0;r<5;r++) for(var row=0;row<3;row++){ var id=g[r][row]; if(id==="STRAW"||id==="WOOD"||id==="BRICK"||id==="MANS") build++; }
-  if(build>=3){ var ups = build>=5?2:1; for(var u=0; u<ups; u++){ upgradeHouse(lowestHouse()); } } else if(housesNearMax()){ setWolf("WATCHING"); }
+  if(build>=2){ var ups = build>=4?2:1; for(var u=0; u<ups; u++){ upgradeHouse(lowestHouse()); } checkVillageComplete(); } else if(housesNearMax()){ setWolf("WATCHING"); }
   // base game feature triggers
   if(coins.length>=6){ startHoldWin(coins); save(); return; }
   if(scat>=3){ startFreeSpins(scat); save(); return; }
@@ -818,6 +821,18 @@ function upgradeHouse(n){
 function lowestHouse(){ var lo=0; for(var i=1;i<3;i++){ if(houses[i]<houses[lo]) lo=i; } return lo; }
 function housesNearMax(){ for(var i=0;i<3;i++){ if(houses[i]===3) return true; } return false; }
 function resetHouses(){ houses=[0,0,0]; houseGlow=[0,0,0]; save(); }
+function checkVillageComplete(){
+  if(houses[0]===4 && houses[1]===4 && houses[2]===4){
+    var reward = G.bet*50;
+    G.bal += reward; G.win += reward; G.totalWon += reward;
+    setWolf("CELEBRATE"); shake=14;
+    if(typeof banner==="function"){ banner("VILLAGE COMPLETE!", "+"+fmt(reward)); }
+    spawnCoins(W/2, H/2, 60);
+    houses=[0,0,0]; houseGlow=[0,0,0]; save();
+    return true;
+  }
+  return false;
+}
 function drawHousePlot(px,py,pw,ph,tier,glow){
   cx.save(); cx.translate(px,py);
   cx.fillStyle="rgba(20,26,44,0.55)"; roundRect(-pw*0.52,-ph*0.05,pw*1.04,ph*0.5,6); cx.fill();
@@ -842,21 +857,25 @@ function drawHousePlot(px,py,pw,ph,tier,glow){
 }
 function drawHouses(t){
   var g=geom();
-  var colX = g.gx+g.gw + Math.min(140, (W-(g.gx+g.gw))*0.55);
-  if(colX > W-70) colX = W-70;
-  var pw = Math.min(150, (W-(g.gx+g.gw))*0.9);
-  var ph = g.gh/3.4;
-  var y0 = g.gy + ph*0.7;
+  var rightSpace = W - (g.gx+g.gw);
+  var pw = Math.min(120, rightSpace*0.78);
+  var ph = pw*0.82;
+  var colX = (g.gx+g.gw) + rightSpace*0.5;
+  var stackH = ph*3 + ph*0.35*2;
+  var y0 = g.gy + g.gh*0.42;
+  if(y0 + stackH > g.gy+g.gh) y0 = (g.gy+g.gh) - stackH;
+  if(y0 < g.gy+ph*0.6) y0 = g.gy+ph*0.6;
   cx.save();
-  cx.font="bold 11px Georgia"; cx.textAlign="center"; cx.fillStyle="#ffd76a";
-  cx.fillText("VILLAGE", colX, g.gy-6);
+  cx.font="bold 12px Georgia"; cx.textAlign="center"; cx.fillStyle="#ffd76a"; cx.textBaseline="alphabetic";
+  cx.fillText("VILLAGE", colX, y0 - ph*0.55);
   for(var i=0;i<3;i++){
-    var py = y0 + i*(ph*1.05);
+    var py = y0 + i*(ph*1.35);
     drawHousePlot(colX, py, pw, ph, houses[i], houseGlow[i]);
     if(houseGlow[i]>0){ houseGlow[i]-=0.03; if(houseGlow[i]<0) houseGlow[i]=0; }
   }
   cx.restore();
 }
+
 function loop(t){
   frame++;
   cx.save();
