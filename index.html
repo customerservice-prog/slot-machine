@@ -29,14 +29,29 @@
   <canvas id="game"></canvas>
 </div>
 <div id="loading"><div class="lg">PINEDA POWER</div><div class="sub">FREE PLAY &mdash; LOADING</div></div>
+<div id="menuPanel" class="panel">
+  <span class="closex" data-close="menuPanel">&times;</span>
+  <h2>MENU</h2>
+  <button class="buybtn" id="mnuInfo">PAYTABLE &amp; RULES</button>
+  <button class="buybtn" id="mnuStats">STATISTICS</button>
+  <button class="buybtn" id="mnuDev" style="background:linear-gradient(180deg,#4a5568,#2a3040);color:#eaf2ff;">DEVELOPER</button>
+</div>
 <div id="infoPanel" class="panel">
   <span class="closex" data-close="infoPanel">&times;</span>
-  <h2>GAME INFO</h2>
+  <h2>PAYTABLE &amp; RULES</h2>
   <div class="row"><span>Money Coins (6+)</span><span>Hold &amp; Win</span></div>
   <div class="row"><span>Buzz Saws (3/4/5)</span><span>8 / 12 / 20 Free Spins</span></div>
-  <div class="row"><span>Wild</span><span>Substitutes all except Buzz Saw/Coin</span></div>
-  <div class="row"><span>Village Build (3+ houses)</span><span>Upgrade a plot: Foundation&rarr;Straw&rarr;Wood&rarr;Brick&rarr;Mansion</span></div>
-  <div style="margin-top:16px; padding-top:10px; border-top:1px solid #b98a2e; font-size:12px; color:#ffcf5c; letter-spacing:1px;">DEV / TEST MODE &mdash; force features (free)</div>
+  <div class="row"><span>Wild (Pig Boss)</span><span>Subs all except Buzz Saw/Coin</span></div>
+  <div class="row"><span>Mansion</span><span>15 / 60 / 200</span></div>
+  <div class="row"><span>Pig</span><span>10 / 40 / 120</span></div>
+  <div class="row"><span>Brick / Wood / Straw</span><span>High symbols</span></div>
+  <div class="row"><span>Village Build</span><span>Foundation&rarr;Straw&rarr;Wood&rarr;Brick&rarr;Mansion</span></div>
+  <div class="row"><span>Complete Village</span><span>50&times; bet reward</span></div>
+</div>
+<div id="devPanel" class="panel">
+  <span class="closex" data-close="devPanel">&times;</span>
+  <h2>DEVELOPER &mdash; FEATURE TESTING</h2>
+  <div style="font-size:12px;color:#8aa0c8;margin-bottom:8px;">Force features (free). Not part of normal play.</div>
   <button class="buybtn" id="buyFSbtn">FORCE FREE SPINS</button>
   <button class="buybtn" id="buyHWbtn">FORCE HOLD &amp; WIN</button>
   <button class="buybtn" id="devHouseBtn">FORCE HOUSE UPGRADE</button>
@@ -422,13 +437,15 @@ function drawCoin(cxp,cyp,rw,rh){
 }
 
 // ---------- reels model ----------
-var reels=[]; // each: {pos, target, spinning, vel, symbols[], stopAt, blur}
+var reels=[]; // each reel physics object
+var antic={on:false,reel:-1,t:0};
+var spinStart=0, quickStop=false, spinResolved=false;
 function initReels(){
   reels=[];
   for(var i=0;i<5;i++){
     var strip=STRIPS[i]; var start=Math.floor(rng()*strip.length);
     reels.push({ pos:start, offset:0, vel:0, spinning:false, stopReq:false, stripLen:strip.length,
-      settle:0, glow:0 });
+      settle:0, glow:0, blurOff:0, landing:start, phase:"idle", pt:0, land:0, pop:0, popRow:1 });
   }
 }
 function symAt(r,row){ var strip=STRIPS[r]; var idx=((reels[r].pos+row)%strip.length+strip.length)%strip.length; return strip[idx]; }
@@ -480,32 +497,27 @@ function doSpin(){
   }
   G.state="SPINNING"; G.win=0; winFx.active=false; winFx.cells=[];
   G.spins++;
-  setWolf("IDLE");
+  setWolf("WATCH_REEL");
   sfxSpin();
-  // advance each reel to a fresh random landing; stagger stops
-  var baseDelay = G.turbo? 90 : 260;
-  var stepDelay = G.turbo? 70 : 150;
   clearTimers();
-  for(var r=0;r<5;r++){ reels[r].spinning=true; reels[r].vel = 0.9+r*0.05; reels[r].settle=0; reels[r].glow=0; }
   // precompute results BEFORE animation (logic separate from graphics)
   for(var r=0;r<5;r++){ reels[r].landing = Math.floor(rng()*STRIPS[r].length); }
-  // anticipation: if reels 0-2 will show 2+ scatters, slow reel 3/4
-  var self=this;
-  (function stopSeq(){
-    for(var r=0;r<5;r++){
-      (function(rr){
-        var d = baseDelay + rr*stepDelay;
-        // anticipation for last reels
-        spinTimers.push(setTimeout(function(){
-          reels[rr].pos = reels[rr].landing;
-          reels[rr].spinning=false; reels[rr].settle=1.0; reels[rr].glow=0.6;
-          sfxReelStop(rr);
-          spawnSpark(0,0,0);
-          if(rr===4){ spinTimers.push(setTimeout(finishSpin, G.turbo?60:180)); }
-        }, d));
-      })(r);
-    }
-  })();
+  // detect scatter anticipation: how many scatters guaranteed across reels 0..2
+  antic.on=false; antic.reel=-1; antic.t=0;
+  var scPre=0;
+  for(var pr=0;pr<3;pr++){ var strip=STRIPS[pr], lp=reels[pr].landing;
+    for(var row=0;row<3;row++){ if(strip[((lp+row)%strip.length+strip.length)%strip.length]==="SCAT") scPre++; } }
+  if(scPre>=2){ antic.on=true; antic.reel=3; } // slow reel 4 (index 3) onward
+  // stop schedule (ms) — real staggered timing
+  var q = G.turbo?0.42:1.0;
+  var sched=[900,1050,1200,1350,1500].map(function(v){return v*q;});
+  if(antic.on){ sched[3]+= (G.turbo?500:1100); sched[4]+= (G.turbo?600:1400); }
+  spinStart=performance.now();
+  for(var r=0;r<5;r++){
+    reels[r].phase="nudge"; reels[r].pt=0; reels[r].vel=0; reels[r].blurOff=0;
+    reels[r].stopTime=sched[r]; reels[r].pop=0;
+  }
+  quickStop=false;
 }
 
 function finishSpin(){
@@ -632,14 +644,14 @@ function hwEnd(fullGrid){
 function buyFreeSpins(){
   if(G.state!=="READY") return false;
   var cost=0; if(G.bal<cost) return false;
-  G.bal-=cost; save(); closePanel("infoPanel");
+  G.bal-=cost; save(); closePanel("devPanel");
   triggerBonus("FS", function(){ startFreeSpins(4); });
   return true;
 }
 function buyHoldWin(){
   if(G.state!=="READY") return false;
   var cost=0; if(G.bal<cost) return false;
-  G.bal-=cost; save(); closePanel("infoPanel");
+  G.bal-=cost; save(); closePanel("devPanel");
   // seed with 6 coins
   var cells=[]; var used={};
   while(cells.length<6){ var r=Math.floor(rng()*5),row=Math.floor(rng()*3),k=r+"_"+row; if(!used[k]){used[k]=1;cells.push([r,row]);} }
@@ -704,9 +716,11 @@ function meter(label,val,x,y,g,hot){
   cx.fillText(val,x,y+2); cx.restore();
 }
 var hot={spin:false};
+var spinPress=0;
 function drawSpinBtn(x,y,r,t){
   cx.save();
   var pulse = (G.state==="READY")? (1+0.03*Math.sin(t*0.004)) : 1;
+  if(spinPress>0){ pulse*= (1-0.06*spinPress); spinPress-=0.08; if(spinPress<0)spinPress=0; }
   r*=pulse;
   var grd=cx.createRadialGradient(x-r*0.3,y-r*0.3,r*0.2,x,y,r);
   if(G.state==="READY"||G.state==="FS"){ grd.addColorStop(0,"#ffe89a"); grd.addColorStop(0.6,"#ffcf5c"); grd.addColorStop(1,"#a5761d"); }
@@ -727,14 +741,13 @@ function betBtn(x,y,s,g){ var r=g.deckH*0.16;
   if(s==="-") hot.betMinus=[x-r,y-r,x+r,y+r]; else hot.betPlus=[x-r,y-r,x+r,y+r];
 }
 function buyDeckBtn(x,y,g){
-  var w=Math.min(120,W*0.10), hh=Math.min(40,g.deckH*0.5);
-  var grd=cx.createLinearGradient(x-w/2,y-hh/2,x-w/2,y+hh/2);
-  grd.addColorStop(0,"#ffe89a"); grd.addColorStop(1,"#a5761d");
-  cx.save(); cx.shadowColor="rgba(255,180,60,0.6)"; cx.shadowBlur=(G.state==="READY")?14:0;
-  cx.fillStyle=grd; roundRect(x-w/2,y-hh/2,w,hh,9); cx.fill();
-  cx.shadowBlur=0; cx.strokeStyle="#7c560f"; cx.lineWidth=2; cx.stroke();
-  cx.fillStyle="#241500"; cx.font="bold "+Math.round(hh*0.34)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle";
-  cx.fillText("DEV / TEST",x,y); cx.restore();
+  // subtle MENU button (matches other deck controls, not a gold CTA)
+  var w=Math.min(84,W*0.07), hh=Math.min(30,W*0.026);
+  cx.save();
+  cx.fillStyle="rgba(38,48,74,0.9)"; cx.strokeStyle="#b98a2e"; cx.lineWidth=1.5;
+  roundRect(x-w/2,y-hh/2,w,hh,7); cx.fill(); cx.stroke();
+  cx.fillStyle="#eaf2ff"; cx.font="bold "+Math.round(hh*0.42)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle";
+  cx.fillText("MENU",x,y); cx.restore();
   hot.buyBox=[x-w/2,y-hh/2,x+w/2,y+hh/2];
 }
 function smallBtn(x,y,label,active){
@@ -747,50 +760,117 @@ function smallBtn(x,y,label,active){
 }
 
 // ---------- reel rendering ----------
+function updateReels(now){
+  if(G.state!=="SPINNING") return;
+  var g=geom();
+  var allStopped=true;
+  for(var r=0;r<5;r++){
+    var reel=reels[r], el=now-spinStart;
+    if(reel.phase==="idle") continue;
+    if(reel.phase==="nudge"){
+      reel.pt+=16; var f=Math.min(1,reel.pt/90);
+      reel.nudge=-12*Math.sin(f*Math.PI*0.5);
+      if(reel.pt>=90){ reel.phase="spin"; reel.pt=0; reel.vel=1.1+r*0.03; reel.nudge=0; }
+      allStopped=false; continue;
+    }
+    if(reel.phase==="spin"){
+      var qs = quickStop? Math.max(reel.stopTime, el+ r*80) : reel.stopTime;
+      reel.vel=Math.min(2.2, reel.vel+0.06);
+      reel.blurOff += reel.vel*g.ch*0.5;
+      while(reel.blurOff>=g.ch){ reel.blurOff-=g.ch; reel.pos=((reel.pos-1)%STRIPS[r].length+STRIPS[r].length)%STRIPS[r].length; }
+      if(el>=qs){ reel.phase="stopping"; reel.pos=reel.landing; reel.pt=0; reel.blurOff=0; reel.spinning=false;
+        sfxReelStop(r); reel.settle=1; reel.overs=1; }
+      allStopped=false; continue;
+    }
+    if(reel.phase==="stopping"){
+      reel.pt+=16; var d=reel.pt/150;
+      // overshoot + spring: +18 -> -5 -> +2 -> 0
+      reel.spring = 18*Math.exp(-6*d)*Math.cos(d*22);
+      if(reel.pt>=170){ reel.phase="landed"; reel.spring=0; reel.pop=1; reel.pt=0;
+        // landing pop keyed to center symbol type
+        var cs=symAt(r,1); reel.popRow=1;
+        var big=(cs==="COIN"||cs==="SCAT"||cs==="WILD"||cs==="MANS"||cs==="PIG");
+        reel.pop= big?1.35:1.12;
+        if(cs==="COIN"){ sfxCoin(); } else if(cs==="SCAT"){ tone(660,0.12,"triangle",0.1); }
+        if(antic.on && r===4){ /* final antic reel landed */ }
+      } else allStopped=false;
+      continue;
+    }
+    if(reel.phase==="landed"){
+      if(reel.pop>1){ reel.pop-= (reel.pop-1)*0.18+0.01; if(reel.pop<1.01) reel.pop=1; }
+    }
+  }
+  // resolve once every reel landed
+  var everyLanded=true; for(var r2=0;r2<5;r2++){ if(reels[r2].phase!=="landed") everyLanded=false; }
+  if(everyLanded && !spinResolved){ spinResolved=true;
+    spinTimers.push(setTimeout(function(){ spinResolved=false; finishSpin(); }, G.turbo?40:120)); }
+  // anticipation flags
+  if(antic.on){
+    var r3=reels[3], r4=reels[4];
+    antic.active = (r3.phase==="spin"||r3.phase==="stopping"||r4.phase==="spin"||r4.phase==="stopping");
+    if(antic.active){ antic.t+=0.02; if(wolf.state!=="ANTIC"&&wolf.state!=="CELEBRATE") setWolf("ANTIC");
+      if(!antic.duck){ antic.duck=true; sfxAntic(); } }
+    else { antic.duck=false; }
+  } else { antic.active=false; }
+}
 function drawReels(t){
   var g=geom();
-  // cabinet frame
+  updateReels(performance.now());
   cx.save();
   var fx=g.gx-14, fy=g.gy-14, fw=g.gw+28, fh=g.gh+28;
   var cg=cx.createLinearGradient(fx,fy,fx,fy+fh); cg.addColorStop(0,"#2a2033"); cg.addColorStop(1,"#140f1c");
   cx.fillStyle=cg; roundRect(fx,fy,fw,fh,16); cx.fill();
-  cx.strokeStyle="#b98a2e"; cx.lineWidth=4; cx.stroke();
-  // reel window bg
+  // cabinet light state ring
+  var lit = antic.active? "rgba(120,170,255,"+(0.4+0.4*Math.sin(t*0.02))+")"
+          : (G.state==="SPINNING"? "rgba(255,207,92,"+(0.3+0.2*Math.sin(t*0.01-r*0.5))+")"
+          : "rgba(185,138,46,0.9)");
+  cx.strokeStyle= antic.active? lit : "#b98a2e"; cx.lineWidth=4; roundRect(fx,fy,fw,fh,16); cx.stroke();
+  if(antic.active){ cx.save(); cx.strokeStyle="rgba(120,180,255,0.5)"; cx.lineWidth=8; cx.shadowColor="#6fa8ff"; cx.shadowBlur=24; roundRect(fx,fy,fw,fh,16); cx.stroke(); cx.restore(); }
   cx.fillStyle="rgba(6,8,18,0.92)"; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
-  // clip to window
   cx.save(); roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.clip();
   for(var r=0;r<5;r++){
     var rx=g.gx+r*g.cw;
     var reel=reels[r];
-    if(reel.spinning){
-      // blurred moving strip: draw several offset symbols
-      reel.blurOff=(reel.blurOff||0)+reel.vel*40;
-      var strip=STRIPS[r];
+    var nud=reel.nudge||0, spr=reel.spring||0;
+    if(reel.phase==="spin"||reel.phase==="nudge"){
+      var strip=STRIPS[r], blur=reel.phase==="spin"?0.42:0.85;
       for(var k=-1;k<4;k++){
-        var idx=((reel.pos+k+Math.floor(reel.blurOff/g.ch))%strip.length+strip.length)%strip.length;
-        var yy=g.gy + k*g.ch + (reel.blurOff%g.ch);
-        cx.globalAlpha=0.5;
-        drawSymbol(strip[idx], rx, yy, g.cw, g.ch, 0, 0.9);
+        var idx=((reel.pos+k)%strip.length+strip.length)%strip.length;
+        var yy=g.gy + k*g.ch + reel.blurOff + nud;
+        cx.globalAlpha=blur;
+        drawSymbolDepth(strip[idx], rx, yy, g.cw, g.ch, 0, 0.96, g);
       }
       cx.globalAlpha=1;
     } else {
       for(var row=0;row<3;row++){
-        var glow=0;
-        // win cell highlight
+        var glow=0, sc=1;
         if(winFx.active){ for(var w=0;w<winFx.cells.length;w++){ if(winFx.cells[w][0]===r&&winFx.cells[w][1]===row){ glow=0.6+0.4*Math.sin(t*0.008); } } }
-        drawSymbol(symAt(r,row), rx, g.gy+row*g.ch, g.cw, g.ch, glow, 1);
+        if(antic.on && (r===3||r===4) && symAt(r,row)==="SCAT"){ glow=Math.max(glow,0.5+0.5*Math.sin(t*0.02)); }
+        if(reel.pop>1 && row===reel.popRow){ sc=reel.pop; }
+        drawSymbolDepth(symAt(r,row), rx, g.gy+row*g.ch + spr, g.cw, g.ch, glow, sc, g);
       }
     }
-    // reel divider
     if(r>0){ cx.strokeStyle="rgba(185,138,46,0.15)"; cx.lineWidth=1; cx.beginPath(); cx.moveTo(rx,g.gy); cx.lineTo(rx,g.gy+g.gh); cx.stroke(); }
   }
   cx.restore();
-  // glass sweep
+  // top & bottom cylindrical fades
+  var tf=cx.createLinearGradient(0,g.gy,0,g.gy+g.ch*0.7); tf.addColorStop(0,"rgba(4,5,14,0.85)"); tf.addColorStop(1,"rgba(4,5,14,0)");
+  cx.fillStyle=tf; cx.fillRect(g.gx,g.gy,g.gw,g.ch*0.7);
+  var bf=cx.createLinearGradient(0,g.gy+g.gh-g.ch*0.7,0,g.gy+g.gh); bf.addColorStop(0,"rgba(4,5,14,0)"); bf.addColorStop(1,"rgba(4,5,14,0.85)");
+  cx.fillStyle=bf; cx.fillRect(g.gx,g.gy+g.gh-g.ch*0.7,g.gw,g.ch*0.7);
   var sweep=(t*0.06)%(g.gw*2)-g.gw*0.5;
   var sg=cx.createLinearGradient(g.gx+sweep,g.gy,g.gx+sweep+80,g.gy+g.gh);
   sg.addColorStop(0,"rgba(255,255,255,0)"); sg.addColorStop(0.5,"rgba(255,255,255,0.05)"); sg.addColorStop(1,"rgba(255,255,255,0)");
   cx.fillStyle=sg; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
   cx.restore();
+}
+function drawSymbolDepth(id,x,y,w,h,glow,scale,g){
+  // cylindrical darkening based on vertical distance from center row
+  var cyc=g.gy+g.gh/2, sy=y+h/2, d=Math.abs(sy-cyc)/(g.gh/2);
+  var dark=Math.min(0.55, d*d*0.6);
+  var ds=scale*(1-d*0.10);
+  drawSymbol(id,x,y,w,h,glow,ds);
+  if(dark>0){ cx.save(); cx.globalAlpha=dark; cx.fillStyle="#04050e"; cx.fillRect(x,y,w,h); cx.restore(); }
 }
 function drawBanner(t){
   if(bannerFx.t<=0) return;
@@ -809,12 +889,15 @@ var frame=0;
 // ===== HOUSE CONSTRUCTION PROGRESSION =====
 var houses=(window.__loadedHouses||[0,0,0]);
 var houseGlow=[0,0,0];
+var houseAnim=[{p:1,from:0},{p:1,from:0},{p:1,from:0}]; // p=1 settled
 var HOUSE_TIERS=["FOUNDATION","STRAW","WOOD","BRICK","MANSION"];
 var HOUSE_COL=["#5a5040","#e6c96a","#b07a3c","#c0503a","#ffd76a"];
 function upgradeHouse(n){
   if(n<0||n>2) return false;
   if(houses[n]>=4) return false;
+  houseAnim[n]={p:0,from:houses[n]}; // start construction tween
   houses[n]++; houseGlow[n]=1; save();
+  spawnSpark((geom().gx+geom().gw)+ (W-(geom().gx+geom().gw))*0.5, geom().gy+geom().gh*0.5, 14, HOUSE_COL[houses[n]]);
   if(houses[n]===4){ setWolf("CELEBRATE"); } else { setWolf("EXCITED"); }
   return true;
 }
@@ -833,11 +916,14 @@ function checkVillageComplete(){
   }
   return false;
 }
-function drawHousePlot(px,py,pw,ph,tier,glow){
+function drawHousePlot(px,py,pw,ph,tier,glow,anim){
   cx.save(); cx.translate(px,py);
   cx.fillStyle="rgba(20,26,44,0.55)"; roundRect(-pw*0.52,-ph*0.05,pw*1.04,ph*0.5,6); cx.fill();
   var gg=glow>0?glow:0;
   if(gg>0){ cx.shadowColor="#ffd76a"; cx.shadowBlur=24*gg; }
+  var ap = anim? anim.p : 1;
+  var rise = (1-ap); // 0 settled, 1 fully "under construction"
+  cx.translate(0, rise*ph*0.5); cx.scale(1, ap<1? (0.2+0.8*ap):1); cx.globalAlpha= ap<1? (0.4+0.6*ap):1;
   var w=pw*0.72, h=ph*0.62, bx=-w/2, by=-h*0.2;
   if(tier===0){
     cx.fillStyle="#3a4050"; for(var i=-1;i<=1;i++){ cx.fillRect(bx+ (i+1)*(w/2)-3, by+h*0.4, 6, h*0.5); }
@@ -870,7 +956,8 @@ function drawHouses(t){
   cx.fillText("VILLAGE", colX, y0 - ph*0.55);
   for(var i=0;i<3;i++){
     var py = y0 + i*(ph*1.35);
-    drawHousePlot(colX, py, pw, ph, houses[i], houseGlow[i]);
+    if(houseAnim[i].p<1){ houseAnim[i].p+= (houses[i]===4?0.03:0.045); if(houseAnim[i].p>1)houseAnim[i].p=1; }
+    drawHousePlot(colX, py, pw, ph, houses[i], houseGlow[i], houseAnim[i]);
     if(houseGlow[i]>0){ houseGlow[i]-=0.03; if(houseGlow[i]<0) houseGlow[i]=0; }
   }
   cx.restore();
@@ -901,14 +988,14 @@ function loop(t){
 function inBox(b,x,y){ return b && x>=b[0]&&y>=b[1]&&x<=b[2]&&y<=b[3]; }
 function onClick(x,y){
   if(ac() && ac().state==="suspended") ac().resume();
-  if(inBox(hot.spinBox,x,y)){ if(canSpin()) doSpin(); return; }
+  if(inBox(hot.spinBox,x,y)){ spinPress=1; if(G.state==="SPINNING"){ quickStop=true; } else if(canSpin()){ doSpin(); } return; }
   if(inBox(hot.betMinus,x,y)){ var i=BETS.indexOf(G.bet); if(i>0){G.bet=BETS[i-1];save();} return; }
   if(inBox(hot.betPlus,x,y)){ var i=BETS.indexOf(G.bet); if(i<BETS.length-1){G.bet=BETS[i+1];save();} return; }
   if(inBox(hot.btn_AUTO,x,y)){ G.auto = G.auto>0?0:25; if(G.auto>0&&G.state==="READY") doSpin(); return; }
   if(inBox(hot.btn_TURBO,x,y)){ G.turbo=!G.turbo; return; }
   if(inBox(hot.btn_SOUND,x,y)||inBox(hot.btn_MUTED,x,y)){ G.sound=!G.sound; save(); return; }
   if(inBox(hot.btn_INFO,x,y)){ openPanel("infoPanel"); return; }
-  if(inBox(hot.buyBox,x,y)){ openPanel("infoPanel"); return; }
+  if(inBox(hot.buyBox,x,y)){ openPanel("menuPanel"); return; }
   if(inBox(hot.btn_STATS,x,y)){ showStats(); openPanel("statsPanel"); return; }
 }
 cv.addEventListener("click",function(e){ var rct=cv.getBoundingClientRect(); onClick(e.clientX-rct.left,e.clientY-rct.top); });
@@ -919,6 +1006,10 @@ window.addEventListener("keydown",function(e){
 function openPanel(id){ var p=document.getElementById(id); if(!p)return; centerPanel(p); p.style.display="block"; }
 function closePanel(id){ var p=document.getElementById(id); if(p) p.style.display="none"; }
 function centerPanel(p){ p.style.left="50%"; p.style.top="50%"; p.style.transform="translate(-50%,-50%)"; }
+var mnuInfo=document.getElementById("mnuInfo"), mnuStats=document.getElementById("mnuStats"), mnuDev=document.getElementById("mnuDev");
+if(mnuInfo) mnuInfo.addEventListener("click",function(){ closePanel("menuPanel"); openPanel("infoPanel"); });
+if(mnuStats) mnuStats.addEventListener("click",function(){ closePanel("menuPanel"); showStats(); openPanel("statsPanel"); });
+if(mnuDev) mnuDev.addEventListener("click",function(){ closePanel("menuPanel"); openPanel("devPanel"); });
 var closers=document.querySelectorAll(".closex");
 for(var i=0;i<closers.length;i++){ (function(el){ el.addEventListener("click",function(){ closePanel(el.getAttribute("data-close")); }); })(closers[i]); }
 function showStats(){
@@ -932,7 +1023,7 @@ function row(k,v){ return '<div class="row"><span>'+k+'</span><span>'+v+'</span>
 // buy buttons
 var bfs=document.getElementById("buyFSbtn"), bhw=document.getElementById("buyHWbtn");
 var dhb=document.getElementById("devHouseBtn");
-if(dhb) dhb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ upgradeHouse(lowestHouse()); closePanel("infoPanel"); } });
+if(dhb) dhb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ upgradeHouse(lowestHouse()); closePanel("devPanel"); } });
 if(bfs) bfs.addEventListener("click",function(){ if(!buyFreeSpins()){ this.textContent="BUY FREE SPINS (FREE)"; } });
 if(bhw) bhw.addEventListener("click",function(){ if(!buyHoldWin()){ this.textContent="BUY HOLD & WIN (FREE)"; } });
 function refreshBuyLabels(){ if(bfs)bfs.textContent="BUY FREE SPINS (FREE)"; if(bhw)bhw.textContent="BUY HOLD & WIN (FREE)"; }
