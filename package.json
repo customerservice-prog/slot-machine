@@ -1,0 +1,8 @@
+{
+  "name": "big-bad-wolf-riches",
+  "version": "1.0.0",
+  "description": "Free-play virtual slot machine (no real money).",
+  "scripts": {
+    "start": "npx --yes serve -s . -l ${PORT:-3000}"
+  }
+}
