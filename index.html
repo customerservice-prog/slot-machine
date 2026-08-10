@@ -129,6 +129,8 @@ var AC=null;
 function ac(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return AC; }
 function tone(freq, dur, type, vol, when){
   if(!G.sound) return; var c=ac(); if(!c) return;
+    freq=+freq; dur=+dur; vol=+vol; when=+when;
+    if(!isFinite(freq)||freq<=0) return; if(!isFinite(dur)||dur<=0) dur=0.1; if(!isFinite(vol)||vol<=0) vol=0.15; if(!isFinite(when)||when<0) when=0;
   var t=(c.currentTime)+(when||0);
   var o=c.createOscillator(), g=c.createGain();
   o.type=type||"sine"; o.frequency.setValueAtTime(freq,t);
@@ -1261,6 +1263,7 @@ function drawWheel(t){
 }
 
 function loop(t){
+  try{
   frame++;
   if(W!==window.innerWidth||H!==window.innerHeight){ resize(); }
     cx.globalAlpha=1; cx.shadowBlur=0;
@@ -1282,8 +1285,12 @@ function loop(t){
   }
   drawBanner(t);
   if(flash>0){ cx.save(); cx.globalAlpha=flash*0.6; cx.fillStyle="#fff7dc"; cx.fillRect(0,0,W,H); cx.restore(); flash*=0.88; }
-  cx.restore();
-  requestAnimationFrame(loop);
+  }catch(e){ if(window.__lastLoopErr!==String(e)){ window.__lastLoopErr=String(e); try{console.error("LOOP_ERR",e);}catch(_){}} }
+  finally{ try{ cx.globalAlpha=1; cx.shadowBlur=0; }catch(_){}
+    try{ while(cx.__savedGuard){ break; } }catch(_){}
+    try{ cx.restore(); }catch(_){}
+    requestAnimationFrame(loop);
+  }
 }
 
 // ---------- input ----------
