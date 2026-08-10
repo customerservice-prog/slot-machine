@@ -55,6 +55,7 @@
   <button class="buybtn" id="buyFSbtn">FORCE FREE SPINS</button>
   <button class="buybtn" id="buyHWbtn">FORCE HOLD &amp; WIN</button>
   <button class="buybtn" id="devHouseBtn">FORCE HOUSE UPGRADE</button>
+<button class="buybtn" id="devWheelBtn">FORCE BONUS WHEEL</button>
 </div>
 <div id="statsPanel" class="panel">
   <span class="closex" data-close="statsPanel">&times;</span>
@@ -1297,6 +1298,8 @@ function row(k,v){ return '<div class="row"><span>'+k+'</span><span>'+v+'</span>
 var bfs=document.getElementById("buyFSbtn"), bhw=document.getElementById("buyHWbtn");
 var dhb=document.getElementById("devHouseBtn");
 if(dhb) dhb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ upgradeHouse(lowestHouse()); closePanel("devPanel"); } });
+var dwb=document.getElementById("devWheelBtn");
+if(dwb) dwb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ clearTimers(); closePanel("devPanel"); triggerBonus("WHEEL", function(){ startWheel(); }); } });
 if(bfs) bfs.addEventListener("click",function(){ if(!buyFreeSpins()){ this.textContent="BUY FREE SPINS (FREE)"; } });
 if(bhw) bhw.addEventListener("click",function(){ if(!buyHoldWin()){ this.textContent="BUY HOLD & WIN (FREE)"; } });
 function refreshBuyLabels(){ if(bfs)bfs.textContent="BUY FREE SPINS (FREE)"; if(bhw)bhw.textContent="BUY HOLD & WIN (FREE)"; }
