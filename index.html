@@ -1369,6 +1369,8 @@ setInterval(refreshBuyLabels, 500);
 // ---------- boot ----------
 initReels();
 var ld=document.getElementById("loading"); if(ld) setTimeout(function(){ ld.style.display="none"; }, 500);
+ // WATCHDOG: reels advance in the RAF loop, which browsers pause when the tab is hidden. If a spin gets stuck (e.g. player switched tabs mid-spin), force it to resolve on wall-clock time so the game never soft-locks in SPINNING.
+ setInterval(function(){ try{ if(G.state==="SPINNING" && spinStart>0 && (performance.now()-spinStart)>6000){ for(var wr=0;wr<5;wr++){ var rl=reels[wr]; if(rl.phase!=="landed"){ rl.phase="landed"; rl.pos=rl.landing; rl.pt=0; rl.blurOff=0; rl.spring=0; rl.pop=1; rl.spinning=false; } } if(!spinResolved){ spinResolved=true; spinResolved=false; finishSpin(); } } }catch(e){} }, 1000);
 requestAnimationFrame(loop);
 window.__ready=true;
 })();
