@@ -947,7 +947,7 @@ function drawReels(t){
   var wg=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh);
   wg.addColorStop(0,"#2b3566"); wg.addColorStop(0.5,"#3a4680"); wg.addColorStop(1,"#232c55");
   cx.fillStyle=wg; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
-  cx.save(); roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.clip();
+  cx.save(); roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.clip(); var _vg=cx.createRadialGradient(g.gx+g.gw/2,g.gy+g.gh/2,g.gh*0.2,g.gx+g.gw/2,g.gy+g.gh/2,g.gh*0.9); _vg.addColorStop(0,"rgba(0,0,0,0)"); _vg.addColorStop(1,"rgba(0,0,0,0.5)"); cx.fillStyle=_vg; cx.fillRect(g.gx,g.gy,g.gw,g.gh); var _tg=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh*0.28); _tg.addColorStop(0,"rgba(0,0,0,0.55)"); _tg.addColorStop(1,"rgba(0,0,0,0)"); cx.fillStyle=_tg; cx.fillRect(g.gx,g.gy,g.gw,g.gh*0.28); var _bg=cx.createLinearGradient(0,g.gy+g.gh*0.78,0,g.gy+g.gh); _bg.addColorStop(0,"rgba(0,0,0,0)"); _bg.addColorStop(1,"rgba(0,0,0,0.4)"); cx.fillStyle=_bg; cx.fillRect(g.gx,g.gy+g.gh*0.78,g.gw,g.gh*0.22);
   // per-reel strip shading bands (gives 5 distinct reel-strip feel, hides grid look)
   for(var rb=0;rb<5;rb++){
     var bx=g.gx+rb*g.cw;
