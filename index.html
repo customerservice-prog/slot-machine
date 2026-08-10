@@ -22,11 +22,35 @@
   #loading { position:fixed; inset:0; background:#05060f; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50; }
   #loading .lg { color:#ffcf5c; font-size:30px; letter-spacing:3px; text-shadow:0 0 24px rgba(255,180,60,.5); }
   #loading .sub { color:#8aa0c8; margin-top:10px; font-size:13px; letter-spacing:2px; }
+
+    #deck { position:fixed; left:0; right:0; bottom:0; height:104px; z-index:50; display:flex; align-items:center; justify-content:center; gap:14px; padding:0 16px; background:linear-gradient(180deg,#161a2e,#0a0c18); border-top:2px solid rgba(185,138,46,0.55); box-shadow:0 -6px 24px rgba(0,0,0,0.5); font-family:Georgia,serif; -webkit-user-select:none; user-select:none; }
+    #deck .meter { color:#f4e9c8; text-align:center; min-width:88px; }
+    #deck .meter .lab { font-size:11px; letter-spacing:2px; color:#8aa0c8; }
+    #deck .meter .val { font-size:22px; font-weight:bold; color:#ffe9a8; }
+    #deck .dbtn { cursor:pointer; border:none; border-radius:10px; color:#2a2205; font-family:Georgia,serif; font-weight:bold; background:linear-gradient(180deg,#ffe07a,#e0a83a); box-shadow:0 3px 0 #9c6f1e, 0 5px 10px rgba(0,0,0,0.4); }
+    #deck .dstep { width:46px; height:46px; font-size:26px; border-radius:50%; }
+    #deck .dspin { width:104px; height:104px; border-radius:50%; font-size:24px; letter-spacing:1px; margin:0 6px; }
+    #deck .dspin:active, #deck .dbtn:active { transform:translateY(2px); box-shadow:0 1px 0 #9c6f1e; }
+    #deck .dspin.busy { filter:grayscale(0.4) brightness(0.9); }
+    #deck .side { display:flex; flex-direction:column; gap:6px; }
+    #deck .mini { padding:6px 10px; font-size:12px; border-radius:8px; letter-spacing:1px; }
+    #deck .mini.off { background:linear-gradient(180deg,#5a6478,#39435a); color:#c8d2e6; box-shadow:0 3px 0 #232c3e; }
 </style>
 </head>
 <body>
 <div id="wrap">
   <canvas id="game"></canvas>
+<div id="deck">
+  <button class="dbtn mini" id="d_stats">STATS</button>
+  <div class="meter"><div class="lab">BALANCE</div><div class="val" id="d_bal">0</div></div>
+  <button class="dbtn dstep" id="d_minus">&minus;</button>
+  <div class="meter"><div class="lab">BET</div><div class="val" id="d_bet">0</div></div>
+  <button class="dbtn dspin" id="d_spin">SPIN</button>
+  <button class="dbtn dstep" id="d_plus">+</button>
+  <div class="meter"><div class="lab">WIN</div><div class="val" id="d_win">0</div></div>
+  <div class="side"><button class="dbtn mini" id="d_auto">AUTO</button><button class="dbtn mini" id="d_turbo">TURBO</button></div>
+  <div class="side"><button class="dbtn mini" id="d_menu">MENU</button><button class="dbtn mini" id="d_sound">SOUND</button></div>
+</div>
 </div>
 <div id="loading"><div class="lg">PINEDA POWER</div><div class="sub">FREE PLAY &mdash; LOADING</div></div>
 <div id="menuPanel" class="panel">
@@ -166,7 +190,7 @@ var LINES=[
 var cv=document.getElementById("game"), cx=cv.getContext("2d");
 var W=1280,H=720, DPR=1;
 function resize(){
-  var w=window.innerWidth,h=window.innerHeight; DPR=Math.min(2,window.devicePixelRatio||1);
+  var w=window.innerWidth,h=Math.max(200,window.innerHeight-104); DPR=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(w*DPR); cv.height=Math.round(h*DPR); cv.style.width=w+"px"; cv.style.height=h+"px";
   W=w; H=h; cx.setTransform(DPR,0,0,DPR,0,0);
 }
@@ -760,6 +784,7 @@ function drawHUD(t){
   /* subtitle removed */
   cx.restore();
   // control deck
+    return; // deck now rendered as HTML overlay
   var dy=H-g.deckH;
   var dg=cx.createLinearGradient(0,dy,0,H); dg.addColorStop(0,"#161a2e"); dg.addColorStop(1,"#0a0c18");
   cx.fillStyle=dg; cx.fillRect(0,dy,W,g.deckH);
@@ -1239,6 +1264,7 @@ function loop(t){
   frame++;
   if(W!==window.innerWidth||H!==window.innerHeight){ resize(); }
     cx.globalAlpha=1; cx.shadowBlur=0;
+    if(window.__syncDeck) window.__syncDeck();
   cx.save();
   if(shake>0){ cx.translate((rng()-0.5)*shake,(rng()-0.5)*shake); shake*=0.9; }
   drawBG(t);
@@ -1278,6 +1304,33 @@ cv.addEventListener("click",function(e){ var rct=cv.getBoundingClientRect(); onC
 window.addEventListener("keydown",function(e){
   if(e.code==="Space"){ e.preventDefault(); if(canSpin()) doSpin(); }
 });
+
+  // ===== HTML control deck wiring =====
+  (function(){
+    function $(id){ return document.getElementById(id); }
+    function fmtNum(n){ return (Math.round(n)).toLocaleString(); }
+    var dSpin=$("d_spin"), dMinus=$("d_minus"), dPlus=$("d_plus"), dAuto=$("d_auto"), dTurbo=$("d_turbo"), dMenu=$("d_menu"), dSound=$("d_sound"), dStats=$("d_stats");
+    var dBal=$("d_bal"), dBet=$("d_bet"), dWin=$("d_win");
+    function resumeAudio(){ try{ if(ac() && ac().state==="suspended") ac().resume(); }catch(e){} }
+    if(dSpin) dSpin.addEventListener("click",function(){ resumeAudio(); if(G.state==="SPINNING"){ quickStop=true; } else if(canSpin()){ doSpin(); } });
+    if(dMinus) dMinus.addEventListener("click",function(){ var i=BETS.indexOf(G.bet); if(i>0){ G.bet=BETS[i-1]; save(); } });
+    if(dPlus) dPlus.addEventListener("click",function(){ var i=BETS.indexOf(G.bet); if(i<BETS.length-1){ G.bet=BETS[i+1]; save(); } });
+    if(dAuto) dAuto.addEventListener("click",function(){ G.auto=G.auto>0?0:25; if(G.auto>0&&G.state==="READY"){ resumeAudio(); doSpin(); } });
+    if(dTurbo) dTurbo.addEventListener("click",function(){ G.turbo=!G.turbo; });
+    if(dSound) dSound.addEventListener("click",function(){ G.sound=!G.sound; save(); });
+    if(dMenu) dMenu.addEventListener("click",function(){ openPanel("menuPanel"); });
+    if(dStats) dStats.addEventListener("click",function(){ try{ showStats(); }catch(e){} openPanel("statsPanel"); });
+    window.__syncDeck=function(){
+      if(dBal) dBal.textContent=fmtNum(G.bal);
+      if(dBet) dBet.textContent=fmtNum(G.bet);
+      var winShow = (typeof winFx!=="undefined" && winFx.active)? Math.floor(winFx.shown) : (G.lastWin||0);
+      if(dWin) dWin.textContent=fmtNum(winShow);
+      if(dSpin){ if(G.state==="SPINNING"){ dSpin.classList.add("busy"); } else { dSpin.classList.remove("busy"); } dSpin.textContent="SPIN"; }
+      if(dAuto) dAuto.classList.toggle("off", !(G.auto>0));
+      if(dTurbo) dTurbo.classList.toggle("off", !G.turbo);
+      if(dSound) dSound.classList.toggle("off", !G.sound);
+    };
+  })();
 // ---------- panels ----------
 function openPanel(id){ var p=document.getElementById(id); if(!p)return; centerPanel(p); p.style.display="block"; }
 function closePanel(id){ var p=document.getElementById(id); if(p) p.style.display="none"; }
