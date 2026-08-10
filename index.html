@@ -173,8 +173,8 @@ window.addEventListener("resize",resize); resize();
 
 // reel geometry computed each frame from W/H so it always fits (no scroll)
 function geom(){
-  var deckH=Math.max(96, H*0.20);
-  var top=Math.max(56, H*0.10);
+  var deckH=Math.max(96, H*0.18);
+  var top=Math.max(78, H*0.145);
   var availH=H-deckH-top-16;
   var gw=Math.min(W*0.66, availH*1.55);
   var gh=Math.min(availH, gw/1.55);
@@ -349,18 +349,44 @@ function drawSymbol(id, x, y, w, h, glow, scale){
   cx.save();
   if(glow>0){ cx.shadowColor=s.c; cx.shadowBlur=25*glow; }
   if(s.k==="low"){
-    // gem-like backplate + custom letter
-    var tw=rw*0.9, th=rh*0.98, tx=cxp-tw, ty=cyp-th;
-    var bg=cx.createLinearGradient(tx,ty,tx,ty+th*2); bg.addColorStop(0,shade(s.c,1.25)); bg.addColorStop(0.5,s.c); bg.addColorStop(1,shade(s.c,0.6));
-    roundRect(tx,ty,tw*2,th*2,12); cx.fillStyle=bg; cx.fill();
-    roundRect(tx+3,ty+3,tw*2-6,th*2-6,10); cx.strokeStyle="rgba(255,255,255,0.5)"; cx.lineWidth=2; cx.stroke();
-    var gl=cx.createLinearGradient(tx,ty,tx,ty+th); gl.addColorStop(0,"rgba(255,255,255,0.42)"); gl.addColorStop(1,"rgba(255,255,255,0)");
-    roundRect(tx+4,ty+4,tw*2-8,th*0.9,8); cx.fillStyle=gl; cx.fill();
-    cx.font="bold "+Math.round(rh*1.15)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle";
-    cx.lineWidth=Math.max(3,rh*0.09); cx.strokeStyle="rgba(0,0,0,0.55)"; cx.lineJoin="round"; cx.strokeText(s.n, cxp, cyp);
-    var lg=cx.createLinearGradient(cxp,cyp-rh,cxp,cyp+rh); lg.addColorStop(0,"#ffffff"); lg.addColorStop(0.55,"#fdf3d8"); lg.addColorStop(1,"#f3d68a");
-    cx.fillStyle=lg; cx.fillText(s.n, cxp, cyp);
-  } else if(id==="STRAW"||id==="WOOD"||id==="BRICK"){
+// faceted gem badge (distinct silhouette, not a rounded button)
+var gw2=rw*1.02, gh2=rh*1.02, cut=Math.min(gw2,gh2)*0.34;
+function gemPath(ox,oy,gw,gh,ct){
+cx.beginPath();
+cx.moveTo(cxp-gw+ct, cyp-gh);
+cx.lineTo(cxp+gw-ct, cyp-gh);
+cx.lineTo(cxp+gw, cyp-gh+ct);
+cx.lineTo(cxp+gw, cyp+gh-ct);
+cx.lineTo(cxp+gw-ct, cyp+gh);
+cx.lineTo(cxp-gw+ct, cyp+gh);
+cx.lineTo(cxp-gw, cyp+gh-ct);
+cx.lineTo(cxp-gw, cyp-gh+ct);
+cx.closePath();
+}
+// drop shadow
+cx.save(); cx.globalAlpha=0.35; cx.fillStyle="#000"; gemPath(0,0,gw2,gh2,cut); cx.translate(0,rh*0.06); cx.fill(); cx.restore();
+// body gradient
+var bg=cx.createLinearGradient(cxp,cyp-gh2,cxp,cyp+gh2);
+bg.addColorStop(0,shade(s.c,1.35)); bg.addColorStop(0.5,s.c); bg.addColorStop(1,shade(s.c,0.55));
+gemPath(0,0,gw2,gh2,cut); cx.fillStyle=bg; cx.fill();
+// facet highlight (top half brighter)
+cx.save(); gemPath(0,0,gw2,gh2,cut); cx.clip();
+var fh=cx.createLinearGradient(cxp,cyp-gh2,cxp,cyp);
+fh.addColorStop(0,"rgba(255,255,255,0.55)"); fh.addColorStop(1,"rgba(255,255,255,0)");
+cx.fillStyle=fh; cx.fillRect(cxp-gw2,cyp-gh2,gw2*2,gh2);
+// inner facet lines
+cx.strokeStyle="rgba(255,255,255,0.22)"; cx.lineWidth=1.5;
+cx.beginPath(); cx.moveTo(cxp-gw2+cut,cyp-gh2); cx.lineTo(cxp-gw2*0.5,cyp-gh2*0.4); cx.lineTo(cxp+gw2*0.5,cyp-gh2*0.4); cx.lineTo(cxp+gw2-cut,cyp-gh2); cx.stroke();
+cx.restore();
+// bevel rim
+gemPath(0,0,gw2,gh2,cut); cx.strokeStyle=shade(s.c,1.5); cx.lineWidth=Math.max(2,rh*0.05); cx.stroke();
+gemPath(0,0,gw2*0.98,gh2*0.98,cut*0.98); cx.strokeStyle="rgba(0,0,0,0.25)"; cx.lineWidth=1; cx.stroke();
+// dimensional letter
+cx.font="bold "+Math.round(rh*1.25)+"px Georgia"; cx.textAlign="center"; cx.textBaseline="middle";
+cx.lineWidth=Math.max(3,rh*0.11); cx.strokeStyle="rgba(0,0,0,0.6)"; cx.lineJoin="round"; cx.strokeText(s.n, cxp, cyp);
+var lg=cx.createLinearGradient(cxp,cyp-rh,cxp,cyp+rh); lg.addColorStop(0,"#ffffff"); lg.addColorStop(0.5,"#fdf3d8"); lg.addColorStop(1,"#f0c96e");
+cx.fillStyle=lg; cx.fillText(s.n, cxp, cyp);
+} else if(id==="STRAW"||id==="WOOD"||id==="BRICK"){
     warmBack(cxp,cyp,rw,rh,"#ffcf7a",0.28); drawHouse(id,cxp,cyp,rw*1.12,rh*1.12,s.c);
   } else if(id==="PIG"){
     drawPig(cxp,cyp,rw,rh);
@@ -1074,27 +1100,39 @@ function jpPlate(x,y,w,h,label,val,c1,c2,glow,t){
   cx.restore();
 }
 function drawJackpots(t){
-  cx.save(); cx.setTransform(DPR,0,0,DPR,0,0); cx.globalAlpha=1;
-  var g=geom();
-  var jp = (window.JP = window.JP || {mega:250000,grand:50000,major:5000,minor:500,mini:100});
-  // slow tick to feel alive
-  jp.mega += (0.5+rng())*4; jp.grand += (0.3+rng())*2; jp.major += rng()*0.7;
-  var topH=g.top;
-  // big MEGA plate centered at very top
-  var mw=Math.min(W*0.30, g.gw*0.46), mh=Math.min(topH*0.40, 34);
-  var mx=(W-mw)/2, my=Math.max(4, topH*0.16);
-  jpPlate(mx,my,mw,mh,"MEGA JACKPOT",fmt(Math.floor(jp.mega)),"#ffe27a","#e0a51f",true,t);
-  // side plates: GRAND/MAJOR left, MINOR/MINI right, tucked beside the top band
-  var sw=Math.min(W*0.15, Math.max(90,(g.gx-20)));
-  var sh=Math.min(42, g.top*0.5);
-  var lx=Math.max(8, g.gx-sw-14);
-  var rx=Math.min(W-sw-8, g.gx+g.gw+14);
-  var sy0=Math.max(6, g.top*0.10), gap=sh+7;
-  jpPlate(lx,sy0,sw,sh,"GRAND",fmt(Math.floor(jp.grand)),"#c9a2ff","#7d43d6",false,t);
-  jpPlate(lx,sy0+gap,sw,sh,"MAJOR",fmt(Math.floor(jp.major)),"#8fd0ff","#2f7fd6",false,t);
-  jpPlate(rx,sy0,sw,sh,"MINOR",fmt(jp.minor),"#ffd28f","#d67f2f",false,t);
-  jpPlate(rx,sy0+gap,sw,sh,"MINI",fmt(jp.mini),"#a8f0a0","#3f9a3a",false,t);
-  cx.restore();
+cx.save(); cx.setTransform(DPR,0,0,DPR,0,0); cx.globalAlpha=1;
+var g=geom();
+var jp = (window.JP = window.JP || {mega:250000,grand:50000,major:5000,minor:500,mini:100});
+jp.mega += (0.5+rng())*4; jp.grand += (0.3+rng())*2; jp.major += rng()*0.7;
+// ---- ONE unified header assembly spanning the top ----
+var hx = Math.max(10, g.gx - g.gw*0.06);
+var hw = Math.min(W-20, (g.gx+g.gw) - hx + g.gw*0.06);
+var hy = 6;
+var hh = Math.max(60, g.top - 12);
+// header shell (dark wood-tone frame with gold trim)
+cx.save();
+var sh=cx.createLinearGradient(0,hy,0,hy+hh);
+sh.addColorStop(0,"#1c1408"); sh.addColorStop(0.5,"#3a2a12"); sh.addColorStop(1,"#140d05");
+cx.fillStyle=sh; roundRect(hx,hy,hw,hh,14); cx.fill();
+var trg=cx.createLinearGradient(0,hy,0,hy+hh);
+trg.addColorStop(0,"#f0cf6e"); trg.addColorStop(0.5,"#a67c2c"); trg.addColorStop(1,"#6e4f18");
+cx.strokeStyle=trg; cx.lineWidth=3; roundRect(hx,hy,hw,hh,14); cx.stroke();
+cx.restore();
+// layout inside header: [GRAND/MAJOR] [ MEGA ] [MINOR/MINI]
+var pad=10;
+var innerX=hx+pad, innerY=hy+pad, innerW=hw-pad*2, innerH=hh-pad*2;
+var sideW=innerW*0.24, megaW=innerW-sideW*2-16;
+var lX=innerX, mX=innerX+sideW+8, rX=innerX+sideW+8+megaW+8;
+var halfH=(innerH-6)/2;
+// left column
+jpPlate(lX,innerY,sideW,halfH,"GRAND",fmt(Math.floor(jp.grand)),"#c9a2ff","#7d43d6",false,t);
+jpPlate(lX,innerY+halfH+6,sideW,halfH,"MAJOR",fmt(Math.floor(jp.major)),"#8fd0ff","#2f7fd6",false,t);
+// center MEGA (emphasized, full height)
+jpPlate(mX,innerY,megaW,innerH,"MEGA JACKPOT",fmt(Math.floor(jp.mega)),"#ffe27a","#e0a51f",true,t);
+// right column
+jpPlate(rX,innerY,sideW,halfH,"MINOR",fmt(jp.minor),"#ffd28f","#d67f2f",false,t);
+jpPlate(rX,innerY+halfH+6,sideW,halfH,"MINI",fmt(jp.mini),"#a8f0a0","#3f9a3a",false,t);
+cx.restore();
 }
 
 function loop(t){
