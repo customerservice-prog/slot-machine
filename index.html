@@ -557,7 +557,7 @@ function triggerBonus(kind, fn){
   spawnCoins(W/2, H*0.42, 70);
   spawnSpark(W/2, H*0.42, 50, kind==="FS"?"#8fb7e0":"#ffcf5c");
   setWolf("CELEBRATE");
-  banner(kind==="FS"?"FREE SPINS!":"HOLD & WIN!", "FEATURE ACTIVATED");
+  banner(kind==="WHEEL"?"BONUS WHEEL!":(kind==="FS"?"FREE SPINS!":"HOLD & WIN!"), "FEATURE ACTIVATED");
   spinTimers.push(setTimeout(function(){ if(fn) fn(); }, G.turbo?700:1500));
 }
 var spinTimers=[];
@@ -622,7 +622,7 @@ function finishSpin(){
   if(build>=2){ var ups = build>=4?2:1; for(var u=0; u<ups; u++){ upgradeHouse(lowestHouse()); } checkVillageComplete(); } else if(housesNearMax()){ setWolf("WATCHING"); }
   // base game feature triggers
   if(coins.length>=6){ startHoldWin(coins); save(); return; }
-  if(scat>=3){ startFreeSpins(scat); save(); return; }
+  if(scat>=3){ triggerBonus("WHEEL", function(){ startWheel(); }); save(); return; }
   if(res.win>0){ addWin(res.win,res.cells); }
   else { G.state="READY"; setWolf(rng()<0.3?"DISAPPOINT":"IDLE"); }
   save();
@@ -1135,6 +1135,105 @@ jpPlate(rX,innerY+halfH+6,sideW,halfH,"MINI",fmt(jp.mini),"#a8f0a0","#3f9a3a",fa
 cx.restore();
 }
 
+
+// ================= BONUS WHEEL (original) =================
+var WHEEL = {
+  active:false, phase:"", angle:0, vel:0, target:0, t:0, resultIdx:0, awarded:false, intro:0,
+  wedges:[
+    {label:"MINI",   sub:"$100",     c1:"#a8f0a0", c2:"#3f9a3a", type:"cash", val:100,   w:26},
+    {label:"MANSION",sub:"FEATURE",  c1:"#c9a2ff", c2:"#7d43d6", type:"feat", val:"FS",   w:10},
+    {label:"MINOR",  sub:"$500",     c1:"#ffd28f", c2:"#d67f2f", type:"cash", val:500,   w:20},
+    {label:"MEGA HAT",sub:"FEATURE", c1:"#8fd0ff", c2:"#2f7fd6", type:"feat", val:"HW",   w:10},
+    {label:"MINI",   sub:"$100",     c1:"#a8f0a0", c2:"#3f9a3a", type:"cash", val:100,   w:22},
+    {label:"MAJOR",  sub:"$5,000",   c1:"#8fd0ff", c2:"#2f7fd6", type:"jack",val:"major", w:6},
+    {label:"MINOR",  sub:"$500",     c1:"#ffd28f", c2:"#d67f2f", type:"cash", val:500,   w:16},
+    {label:"GRAND",  sub:"$50,000",  c1:"#c9a2ff", c2:"#7d43d6", type:"jack",val:"grand", w:3},
+    {label:"MINI",   sub:"$100",     c1:"#a8f0a0", c2:"#3f9a3a", type:"cash", val:100,   w:22},
+    {label:"MANSION",sub:"FEATURE",  c1:"#c9a2ff", c2:"#7d43d6", type:"feat", val:"FS",   w:10},
+    {label:"MINOR",  sub:"$500",     c1:"#ffd28f", c2:"#d67f2f", type:"cash", val:500,   w:18},
+    {label:"MEGA",   sub:"JACKPOT",  c1:"#ffe27a", c2:"#e0a51f", type:"jack",val:"mega",  w:2}
+  ]
+};
+function startWheel(){
+  var n=WHEEL.wedges.length;
+  var tot=0; for(var i=0;i<n;i++) tot+=WHEEL.wedges[i].w;
+  var pick=rng()*tot, acc=0, idx=0;
+  for(var i2=0;i2<n;i2++){ acc+=WHEEL.wedges[i2].w; if(pick<=acc){ idx=i2; break; } }
+  WHEEL.resultIdx=idx; WHEEL.awarded=false; WHEEL.active=true; WHEEL.phase="intro"; WHEEL.intro=0; WHEEL.t=0;
+  G.state="WHEEL"; setWolf("WATCHING"); sfxAntic();
+  var seg=(Math.PI*2)/n; var wedgeCenter=idx*seg+seg/2;
+  var base=(-Math.PI/2)-wedgeCenter; var spins=5+Math.floor(rng()*3);
+  WHEEL.target=base-spins*Math.PI*2; WHEEL.angle=0; WHEEL.vel=0;
+  spinTimers.push(setTimeout(function(){ WHEEL.phase="spin"; if(sfxSpin)sfxSpin(); }, G.turbo?400:900));
+}
+function updateWheel(){
+  if(!WHEEL.active) return;
+  if(WHEEL.phase==="intro"){ WHEEL.intro=Math.min(1,WHEEL.intro+0.06); return; }
+  if(WHEEL.phase==="spin"){
+    var diff=WHEEL.target-WHEEL.angle; WHEEL.angle+=diff*0.045;
+    if(Math.abs(diff)<0.0025){ WHEEL.angle=WHEEL.target; WHEEL.phase="settle"; WHEEL.t=0; if(sfxReelStop)sfxReelStop(); flash=0.6; }
+    else { if(frame%6===0 && sfxReelStop) sfxReelStop(); }
+    return;
+  }
+  if(WHEEL.phase==="settle"){
+    WHEEL.t++;
+    if(WHEEL.t===2 && !WHEEL.awarded){ awardWheel(); WHEEL.awarded=true; }
+    if(WHEEL.t>(G.turbo?70:150)){ WHEEL.phase="done"; }
+    return;
+  }
+  if(WHEEL.phase==="done"){
+    WHEEL.active=false; WHEEL.intro=0;
+    if(G.fsLeft>0){ G.state="FS"; scheduleAuto(); }
+    else if(G.state==="WHEEL"){ G.state="READY"; setWolf("IDLE"); scheduleAuto(); }
+    save();
+  }
+}
+function awardWheel(){
+  var wd=WHEEL.wedges[WHEEL.resultIdx];
+  moonPulse=1; shake=14; spawnCoins(W/2,H*0.42,60); spawnSpark(W/2,H*0.42,40,wd.c1); if(sfxBig)sfxBig(); setWolf("CELEBRATE");
+  if(wd.type==="cash"){ var amt=wd.val*(G.bet/10); addWin(Math.round(amt),[]); banner(wd.label+" WIN!", fmt(Math.round(amt))); }
+  else if(wd.type==="jack"){ var jp=(window.JP=window.JP||{mega:250000,grand:50000,major:5000,minor:500,mini:100});
+    var amt2=Math.floor(jp[wd.val]||0); addWin(amt2,[]); banner((wd.val==="mega"?"MEGA ":wd.val.toUpperCase()+" ")+"JACKPOT!", fmt(amt2)); }
+  else if(wd.type==="feat"){
+    if(wd.val==="FS"){ banner("MANSION FEATURE","FREE SPINS!"); startFreeSpins(3); }
+    else { banner("MEGA HAT FEATURE","HOLD & WIN!"); startHoldWin([[0,0],[1,0],[2,0],[3,0],[4,0],[2,1]]); }
+  }
+}
+function drawWheel(t){
+  if(!WHEEL.active) return;
+  cx.save(); cx.setTransform(DPR,0,0,DPR,0,0);
+  var a=0.62*WHEEL.intro;
+  var vg=cx.createRadialGradient(W/2,H*0.46,60,W/2,H*0.46,Math.max(W,H)*0.6);
+  vg.addColorStop(0,"rgba(6,10,26,"+(0.15*WHEEL.intro)+")"); vg.addColorStop(1,"rgba(4,6,16,"+a+")");
+  cx.fillStyle=vg; cx.fillRect(0,0,W,H);
+  var cxp=W/2, cyp=H*0.46, R=Math.min(W*0.30,H*0.42)*(0.6+0.4*WHEEL.intro);
+  var n=WHEEL.wedges.length, seg=(Math.PI*2)/n;
+  cx.save(); cx.translate(cxp,cyp); cx.rotate(WHEEL.angle);
+  for(var i=0;i<n;i++){
+    var wd=WHEEL.wedges[i]; var a0=i*seg, a1=a0+seg;
+    var gr=cx.createRadialGradient(0,0,R*0.2,0,0,R); gr.addColorStop(0,wd.c1); gr.addColorStop(1,wd.c2);
+    cx.beginPath(); cx.moveTo(0,0); cx.arc(0,0,R,a0,a1); cx.closePath(); cx.fillStyle=gr; cx.fill();
+    cx.strokeStyle="rgba(255,255,255,0.35)"; cx.lineWidth=2; cx.stroke();
+    cx.save(); cx.rotate(a0+seg/2); cx.textAlign="right"; cx.textBaseline="middle";
+    cx.fillStyle="rgba(0,0,0,0.55)"; cx.font="800 "+Math.round(R*0.085)+"px 'Segoe UI',sans-serif";
+    cx.fillText(wd.label, R*0.90+1, -R*0.06+1);
+    cx.fillStyle="#fff7dc"; cx.fillText(wd.label, R*0.90, -R*0.06);
+    cx.fillStyle="#ffe9b0"; cx.font="700 "+Math.round(R*0.06)+"px 'Segoe UI',sans-serif";
+    cx.fillText(wd.sub, R*0.90, R*0.06);
+    cx.restore();
+  }
+  cx.beginPath(); cx.arc(0,0,R*0.16,0,6.2832);
+  var hg=cx.createRadialGradient(-R*0.05,-R*0.05,R*0.02,0,0,R*0.16); hg.addColorStop(0,"#fff3c0"); hg.addColorStop(1,"#b8860b"); cx.fillStyle=hg; cx.fill();
+  cx.strokeStyle="#6e4f18"; cx.lineWidth=3; cx.stroke(); cx.restore();
+  cx.beginPath(); cx.arc(cxp,cyp,R+6,0,6.2832); cx.strokeStyle="#3a2a12"; cx.lineWidth=10; cx.stroke();
+  cx.beginPath(); cx.arc(cxp,cyp,R+6,0,6.2832); cx.strokeStyle="#e0b84a"; cx.lineWidth=4; cx.stroke();
+  cx.beginPath(); cx.moveTo(cxp-14,cyp-R-14); cx.lineTo(cxp+14,cyp-R-14); cx.lineTo(cxp,cyp-R+10); cx.closePath();
+  cx.fillStyle="#ffe27a"; cx.strokeStyle="#6e4f18"; cx.lineWidth=3; cx.fill(); cx.stroke();
+  cx.textAlign="center"; cx.textBaseline="middle"; cx.fillStyle="#fff3c0";
+  cx.font="900 "+Math.round(R*0.14)+"px Georgia"; cx.shadowColor="rgba(0,0,0,0.6)"; cx.shadowBlur=10;
+  cx.fillText("BONUS WHEEL", cxp, cyp-R-40); cx.restore();
+}
+
 function loop(t){
   frame++;
   cx.save();
@@ -1146,6 +1245,7 @@ function loop(t){
   drawHouses(t);
   updateParts(); drawParts();
   drawHUD(t);
+  updateWheel(); drawWheel(t);
   // win count-up
   if(winFx.active){ winFx.shown += (winFx.target-winFx.shown)*0.08 + 0.5;
     if(winFx.shown>=winFx.target-0.5){ winFx.shown=winFx.target; if(winFx.t>30){ winFx.active=false; } winFx.t++; }
