@@ -974,7 +974,7 @@ function warmBack(cx0,cy0,rw,rh,col,a){
 function drawSymbolDepth(id,x,y,w,h,glow,scale,g){
   // cylindrical darkening based on vertical distance from center row
   var cyc=g.gy+g.gh/2, sy=y+h/2, d=Math.abs(sy-cyc)/(g.gh/2);
-  var dark=Math.min(0.32, d*d*0.38);
+  var dark=Math.min(0.14, d*d*0.16);
   var ds=scale*(1-d*0.10);
   drawSymbol(id,x,y,w,h,glow,ds);
   if(dark>0){ cx.save(); cx.globalAlpha=dark; cx.fillStyle="#04050e"; cx.fillRect(x,y,w,h); cx.restore(); }
