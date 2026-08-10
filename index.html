@@ -285,8 +285,8 @@ var wolf={ state:"IDLE", t:0, lean:0, blink:0, mouth:0 };
 function setWolf(s){ wolf.state=s; wolf.t=0; }
 function drawWolf(t){
   var g=geom();
-  var wx=g.gx-Math.min(150,g.gx*0.85), wy=g.gy+g.gh*0.42, sc=Math.min(1.15, g.gh/380);
-  if(wx<40) wx=40;
+  var sc=Math.min(0.72, g.gh/560); var wx=g.gx-Math.min(120,g.gx*0.62), wy=g.gy+g.gh*0.62;
+  if(wx<24) wx=24;
   wolf.t+=1;
   var lean = wolf.state==="ANTIC"? Math.sin(t*0.004)*5+6 : (wolf.state==="HUFF"? 10 : (wolf.state==="WATCH_REEL"||wolf.state==="WATCHING"? 4 : 0));
   var bob = Math.sin(t*0.0015)*3;
@@ -361,17 +361,17 @@ function drawSymbol(id, x, y, w, h, glow, scale){
     var lg=cx.createLinearGradient(cxp,cyp-rh,cxp,cyp+rh); lg.addColorStop(0,"#ffffff"); lg.addColorStop(0.55,"#fdf3d8"); lg.addColorStop(1,"#f3d68a");
     cx.fillStyle=lg; cx.fillText(s.n, cxp, cyp);
   } else if(id==="STRAW"||id==="WOOD"||id==="BRICK"){
-    drawHouse(id,cxp,cyp,rw,rh,s.c);
+    warmBack(cxp,cyp,rw,rh,"#ffcf7a",0.28); drawHouse(id,cxp,cyp,rw*1.12,rh*1.12,s.c);
   } else if(id==="PIG"){
     drawPig(cxp,cyp,rw,rh);
   } else if(id==="MANS"){
-    drawHouse("MANS",cxp,cyp,rw,rh,s.c);
+    warmBack(cxp,cyp,rw,rh,"#ffe08a",0.42); drawHouse("MANS",cxp,cyp,rw*1.15,rh*1.15,s.c);
   } else if(id==="WILD"){
     drawWildWolf(cxp,cyp,rw,rh);
   } else if(id==="SCAT"){
     drawSawSym(cxp,cyp,rw,rh);
   } else if(id==="COIN"){
-    drawCoin(cxp,cyp,rw,rh);
+    warmBack(cxp,cyp,rw,rh,"#ffd23a",0.5); drawCoin(cxp,cyp,rw*1.12,rh*1.12);
   }
   cx.restore();
 }
@@ -868,28 +868,50 @@ function drawReels(t){
   var g=geom();
   updateReels(performance.now());
   cx.save();
-  var fx=g.gx-14, fy=g.gy-14, fw=g.gw+28, fh=g.gh+28;
-  var cg=cx.createLinearGradient(fx,fy,fx,fy+fh); cg.addColorStop(0,"#2a2033"); cg.addColorStop(1,"#140f1c");
-  cx.fillStyle=cg; roundRect(fx,fy,fw,fh,16); cx.fill();
-  // cabinet light state ring
-  var lit = antic.active? "rgba(120,170,255,"+(0.4+0.4*Math.sin(t*0.02))+")"
-          : (G.state==="SPINNING"? "rgba(255,207,92,"+(0.3+0.2*Math.sin(t*0.01-r*0.5))+")"
-          : "rgba(185,138,46,0.9)");
-  cx.strokeStyle= antic.active? lit : "#b98a2e"; cx.lineWidth=4; roundRect(fx,fy,fw,fh,16); cx.stroke();
-  if(antic.active){ cx.save(); cx.strokeStyle="rgba(120,180,255,0.5)"; cx.lineWidth=8; cx.shadowColor="#6fa8ff"; cx.shadowBlur=24; roundRect(fx,fy,fw,fh,16); cx.stroke(); cx.restore(); }
-  cx.fillStyle="rgba(6,8,18,0.92)"; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
+  // ---- CABINET: sculpted multi-layer frame ----
+  var bez=Math.max(16,g.cw*0.12);
+  var fx=g.gx-bez, fy=g.gy-bez, fw=g.gw+bez*2, fh=g.gh+bez*2;
+  // contact shadow into the world
+  cx.save(); cx.shadowColor="rgba(0,0,0,0.45)"; cx.shadowBlur=40; cx.shadowOffsetY=18;
+  cx.fillStyle="#241a10"; roundRect(fx,fy,fw,fh,22); cx.fill(); cx.restore();
+  // outer wood/gold bevel
+  var og=cx.createLinearGradient(fx,fy,fx,fy+fh);
+  og.addColorStop(0,"#e8c15a"); og.addColorStop(0.06,"#b8862e"); og.addColorStop(0.5,"#7d5a1e"); og.addColorStop(0.94,"#5c4015"); og.addColorStop(1,"#8a6626");
+  cx.fillStyle=og; roundRect(fx,fy,fw,fh,22); cx.fill();
+  // top highlight sheen on frame
+  var sh=cx.createLinearGradient(fx,fy,fx,fy+bez); sh.addColorStop(0,"rgba(255,245,210,0.6)"); sh.addColorStop(1,"rgba(255,245,210,0)");
+  cx.fillStyle=sh; roundRect(fx+3,fy+3,fw-6,bez,18); cx.fill();
+  // inner dark trim groove
+  var tg=g.gx-6, tgy=g.gy-6;
+  cx.fillStyle="#120d1c"; roundRect(tg,tgy,g.gw+12,g.gh+12,12); cx.fill();
+  // light state ring on inner trim
+  var lit = antic.active? "rgba(120,170,255,"+(0.5+0.4*Math.sin(t*0.02))+")"
+          : (G.state==="SPINNING"? "rgba(255,207,92,"+(0.35+0.25*Math.sin(t*0.01))+")" : "rgba(230,190,90,0.7)");
+  cx.strokeStyle=lit; cx.lineWidth=3; roundRect(tg,tgy,g.gw+12,g.gh+12,12); cx.stroke();
+  if(antic.active){ cx.save(); cx.strokeStyle="rgba(120,180,255,0.5)"; cx.lineWidth=8; cx.shadowColor="#6fa8ff"; cx.shadowBlur=24; roundRect(tg,tgy,g.gw+12,g.gh+12,12); cx.stroke(); cx.restore(); }
+  // ---- REEL WINDOW: purposeful lit navy backdrop (NOT a black overlay) ----
+  var wg=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh);
+  wg.addColorStop(0,"#2b3566"); wg.addColorStop(0.5,"#3a4680"); wg.addColorStop(1,"#232c55");
+  cx.fillStyle=wg; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
   cx.save(); roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.clip();
+  // per-reel strip shading bands (gives 5 distinct reel-strip feel, hides grid look)
+  for(var rb=0;rb<5;rb++){
+    var bx=g.gx+rb*g.cw;
+    var band=cx.createLinearGradient(bx,0,bx+g.cw,0);
+    band.addColorStop(0,"rgba(255,255,255,0.05)"); band.addColorStop(0.5,"rgba(255,255,255,0)"); band.addColorStop(1,"rgba(0,0,0,0.10)");
+    cx.fillStyle=band; cx.fillRect(bx,g.gy,g.cw,g.gh);
+  }
   for(var r=0;r<5;r++){
     var rx=g.gx+r*g.cw;
     var reel=reels[r];
     var nud=reel.nudge||0, spr=reel.spring||0;
     if(reel.phase==="spin"||reel.phase==="nudge"){
-      var strip=STRIPS[r], blur=reel.phase==="spin"?0.42:0.85;
+      var strip=STRIPS[r], blur=reel.phase==="spin"?0.55:0.9;
       for(var k=-1;k<4;k++){
         var idx=((reel.pos+k)%strip.length+strip.length)%strip.length;
         var yy=g.gy + k*g.ch + reel.blurOff + nud;
         cx.globalAlpha=blur;
-        drawSymbolDepth(strip[idx], rx, yy, g.cw, g.ch, 0, 0.96, g);
+        drawSymbolDepth(strip[idx], rx, yy, g.cw, g.ch, 0, 0.98, g);
       }
       cx.globalAlpha=1;
     } else {
@@ -901,24 +923,31 @@ function drawReels(t){
         drawSymbolDepth(symAt(r,row), rx, g.gy+row*g.ch + spr, g.cw, g.ch, glow, sc, g);
       }
     }
-    if(r>0){ cx.strokeStyle="rgba(185,138,46,0.15)"; cx.lineWidth=1; cx.beginPath(); cx.moveTo(rx,g.gy); cx.lineTo(rx,g.gy+g.gh); cx.stroke(); }
   }
   cx.restore();
-  // top & bottom cylindrical fades
-  var tf=cx.createLinearGradient(0,g.gy,0,g.gy+g.ch*0.7); tf.addColorStop(0,"rgba(4,5,14,0.85)"); tf.addColorStop(1,"rgba(4,5,14,0)");
-  cx.fillStyle=tf; cx.fillRect(g.gx,g.gy,g.gw,g.ch*0.7);
-  var bf=cx.createLinearGradient(0,g.gy+g.gh-g.ch*0.7,0,g.gy+g.gh); bf.addColorStop(0,"rgba(4,5,14,0)"); bf.addColorStop(1,"rgba(4,5,14,0.85)");
-  cx.fillStyle=bf; cx.fillRect(g.gx,g.gy+g.gh-g.ch*0.7,g.gw,g.ch*0.7);
-  var sweep=(t*0.06)%(g.gw*2)-g.gw*0.5;
-  var sg=cx.createLinearGradient(g.gx+sweep,g.gy,g.gx+sweep+80,g.gy+g.gh);
-  sg.addColorStop(0,"rgba(255,255,255,0)"); sg.addColorStop(0.5,"rgba(255,255,255,0.05)"); sg.addColorStop(1,"rgba(255,255,255,0)");
-  cx.fillStyle=sg; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
+  // soft top & bottom cylindrical depth (lighter than before)
+  var tf=cx.createLinearGradient(0,g.gy,0,g.gy+g.ch*0.6); tf.addColorStop(0,"rgba(10,14,34,0.55)"); tf.addColorStop(1,"rgba(10,14,34,0)");
+  cx.fillStyle=tf; cx.fillRect(g.gx,g.gy,g.gw,g.ch*0.6);
+  var bf=cx.createLinearGradient(0,g.gy+g.gh-g.ch*0.6,0,g.gy+g.gh); bf.addColorStop(0,"rgba(10,14,34,0)"); bf.addColorStop(1,"rgba(10,14,34,0.55)");
+  cx.fillStyle=bf; cx.fillRect(g.gx,g.gy+g.gh-g.ch*0.6,g.gw,g.ch*0.6);
+  // inner top gloss (glass)
+  var gl=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh*0.28); gl.addColorStop(0,"rgba(255,255,255,0.10)"); gl.addColorStop(1,"rgba(255,255,255,0)");
+  cx.fillStyle=gl; roundRect(g.gx,g.gy,g.gw,g.gh*0.28,8); cx.fill();
+  cx.restore();
+}
+function warmBack(cx0,cy0,rw,rh,col,a){
+  cx.save();
+  var rr=Math.max(rw,rh)*1.25;
+  var rg=cx.createRadialGradient(cx0,cy0,rr*0.15,cx0,cy0,rr);
+  rg.addColorStop(0,col); rg.addColorStop(1,"rgba(0,0,0,0)");
+  cx.globalAlpha=a; cx.fillStyle=rg;
+  cx.beginPath(); cx.arc(cx0,cy0,rr,0,6.2832); cx.fill();
   cx.restore();
 }
 function drawSymbolDepth(id,x,y,w,h,glow,scale,g){
   // cylindrical darkening based on vertical distance from center row
   var cyc=g.gy+g.gh/2, sy=y+h/2, d=Math.abs(sy-cyc)/(g.gh/2);
-  var dark=Math.min(0.55, d*d*0.6);
+  var dark=Math.min(0.32, d*d*0.38);
   var ds=scale*(1-d*0.10);
   drawSymbol(id,x,y,w,h,glow,ds);
   if(dark>0){ cx.save(); cx.globalAlpha=dark; cx.fillStyle="#04050e"; cx.fillRect(x,y,w,h); cx.restore(); }
