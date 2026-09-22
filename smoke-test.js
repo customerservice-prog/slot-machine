@@ -22,10 +22,10 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["runtime error",'id="runtimeError"']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(html.includes('/pineda-huff-v7.css'),"v3 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v7.js'),"v3 engine not pinned");
+assert(html.includes('/pineda-huff-v7.css'),"v7 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v7.js'),"v7 engine not pinned");
 assert(css.includes(".game-cabinet"),"cabinet CSS missing");
-assert(css.includes("V7 DETAILED ART PASS"),"v5 reference-proportion CSS missing");
+assert(css.includes("V7 DETAILED ART PASS"),"v7 detailed art CSS missing");
 assert(css.includes("aspect-ratio:433/461"),"exact 433:461 reference cabinet ratio missing");
 assert(css.includes('background:url("/assets/wheel-v7.svg")'),"detailed wheel art missing");
 assert(css.includes("930px 493px"),"v7 wheel display sizing missing");
@@ -79,7 +79,8 @@ assert(css.includes("@media(max-width:760px)"),"mobile layout missing");
 
 assert(core.classifyTriggers(triggerGrid).hats.length===6&&core.classifyTriggers(triggerGrid).free,"6+ Hard Hat trigger missing");
 assert(core.classifyTriggers(triggerGrid).saws.length===3&&core.classifyTriggers(triggerGrid).wheel,"3+ Buzz Saw trigger missing");
-assert(app.includes('spinsLeft:6'),"6-spin feature missing");
+assert(app.includes('function startFeature(type,seedPositions=[],spinCount=6)'),"default 6-spin feature missing");
+assert(app.includes('spins:20'),"20-free-spin wheel award missing");
 assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"wild reel rule missing");
 new Function(app);
 
@@ -94,7 +95,7 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/pineda-huff-v7.css","/pineda-huff-v7.js"]){
+  for(const p of ["/","/game-core-v7.js","/pineda-huff-v7.css","/pineda-huff-v7.js","/assets/wheel-v7.svg","/assets/forest-v7.svg"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
     assert((r.headers.get("cache-control")||"").includes("no-store"),p+" must be no-store");
