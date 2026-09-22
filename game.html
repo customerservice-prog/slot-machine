@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10220d">
+  <meta name="description" content="Pineda Power — a free-play cartoon construction slot-style game with hard hats, buzz saws, free spins and a power wheel.">
+  <title>Pineda Power — Free Play</title>
+  <link rel="stylesheet" href="/pineda-huff-v10.css">\n<link rel="stylesheet" href="/casino.css">\n<link rel="stylesheet" href="/game-shell.css">
+</head>
+<body class="game-page">
+<header class="casino-header">
+  <a class="platform-brand" href="/">
+    <span class="platform-mark">PP</span>
+    <span class="platform-copy"><b>Pineda Casino</b><small>FREE-PLAY SOCIAL CASINO</small></span>
+  </a>
+  <nav class="header-tabs">
+    <a class="header-tab active" href="/">Casino</a>
+    <a class="header-tab" href="/#originals">Originals</a>
+    <a class="header-tab" href="/#coming">Coming Soon</a>
+  </nav>
+  <div class="search-wrap" style="margin-left:auto">Pineda Power</div>
+  <div class="header-balance"><i>C</i><span><small>PLAY CREDITS</small><b id="shellBalance">2,500</b></span></div>
+</header>
+
+<aside class="casino-sidebar">
+  <a class="side-link" href="/"><span class="ico">◆</span><span>LOBBY</span></a>
+  <a class="side-link active" href="/game/pineda-power"><span class="ico">▶</span><span>PLAYING</span></a>
+  <a class="side-link" href="/#originals"><span class="ico">✦</span><span>ORIGINALS</span></a>
+  <a class="side-link" href="/#coming"><span class="ico">★</span><span>NEW</span></a>
+  <div class="side-spacer"></div>
+  <div class="side-badge">FREE PLAY<br>NO CASH VALUE</div>
+</aside>
+
+<main class="game-page-main">
+  <div class="game-toolbar">
+    <button class="back-btn" type="button" onclick="location.href='/'">←</button>
+    <div class="game-title-copy"><b>Pineda Power</b><small>PINEDA ORIGINAL • FREE PLAY</small></div>
+    <div class="game-toolbar-spacer"></div>
+    <button class="game-tool" type="button" onclick="document.getElementById('rulesBtn').click()">RULES</button>
+    <button class="game-tool" type="button" onclick="document.getElementById('fullBtn').click()">FULLSCREEN</button>
+  </div>
+  <section class="game-viewport">
+<div class="casino-stage">
+  <section class="game-cabinet" aria-label="Pineda Power free-play slot game">
+    <div class="forest-scene" aria-hidden="true">
+      <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+      <div class="tree-layer back"></div><div class="tree-layer front"></div>
+    </div>
+
+    <div class="cabinet-top">
+      <button class="game-logo" id="brandHome" type="button" aria-label="Pineda Power">
+        <img src="/assets/pineda-v4-logo.svg" alt="Pineda Power Free Play" draggable="false">
+      </button>
+
+      <div class="jackpots" aria-label="Jackpot meters">
+        <div class="jackpot minor">
+          <small>MINOR</small><strong id="jpMinor">500</strong>
+        </div>
+        <div class="jackpot grand">
+          <small>GRAND</small><strong id="jpGrand">50,000</strong>
+        </div>
+        <div class="jackpot major">
+          <small>MAJOR</small><strong id="jpMajor">10,000</strong>
+        </div>
+        <div class="jackpot mini">
+          <small>MINI</small><strong id="jpMini">100</strong>
+        </div>
+      </div>
+
+      <span id="walletBalance" hidden>2,500</span>
+    </div>
+
+    <div class="wheel-zone" aria-label="Feature wheel">
+      <img class="wheel-art-v9" src="/assets/wheel-v10.svg" alt="" draggable="false">
+    </div>
+
+    <div class="machine-core">
+      <aside class="left-feature-panel">
+        <div class="ways-card">
+          <strong>243</strong><span>WAYS</span>
+        </div>
+        <div class="feature-card">
+          <img class="mini-symbol" src="/assets/hardhat-v4.svg" alt="">
+          <div><strong>6+</strong><span>FREE SPINS</span></div>
+        </div>
+        <div class="feature-card">
+          <img class="mini-symbol saw" src="/assets/saw-v4.svg" alt="">
+          <div><strong>3+</strong><span>POWER WHEEL</span></div>
+        </div>
+        <button class="howto" id="featureInfo" type="button"><b>?</b><span>HOW TO PLAY</span></button>
+      </aside>
+
+      <section class="reel-cabinet" aria-label="Five reels by three rows">
+        <div class="reel-top-glow"></div>
+        <div id="reels" class="reels"></div>
+        <div class="reel-grass"></div>
+        <div id="anticipationGlow" class="anticipation-glow"></div>
+        <div id="featureLabel" class="feature-label" hidden></div>
+      </section>
+
+      <aside class="spin-console">
+        <button class="step-control" id="betPlus" type="button" aria-label="Increase bet">+</button>
+        <button class="spin-control" id="spinBtn" type="button" aria-label="Spin">
+          <span class="spin-arrow">↻</span><b id="spinLabel">SPIN</b>
+        </button>
+        <button class="step-control" id="betMinus" type="button" aria-label="Decrease bet">−</button>
+        <button class="mode-control" id="autoBtn" type="button">AUTO</button>
+        <button class="mode-control" id="turboBtn" type="button">TURBO</button>
+      </aside>
+    </div>
+
+    <footer class="cabinet-meter">
+      <div class="utility-strip">
+        <button id="rulesBtn" type="button" title="Rules">i</button>
+        <button id="statsBtn" type="button" title="Stats">▥</button>
+        <button id="soundBtn" type="button" title="Sound">◖</button>
+        <button id="fullBtn" type="button" title="Fullscreen">⛶</button>
+      </div>
+      <div class="meter-group">
+        <small>BALANCE</small><strong id="balance">2,500</strong>
+      </div>
+      <div class="meter-group center">
+        <small>WIN</small><strong id="winValue">0</strong>
+      </div>
+      <div class="status-copy" id="statusCopy">6+ HARD HATS = FREE SPINS • 3+ BUZZ SAWS = POWER WHEEL</div>
+      <div class="meter-group right">
+        <small>BET</small><strong id="betValue">10</strong>
+      </div>
+    </footer>
+  </section>
+</div>
+
+  </section>
+  <section class="related-wrap">
+    <div class="related-title">More from Pineda Casino</div>
+    <div class="related-grid">
+      <a class="related-card" href="/#coming"><div class="related-art"><img src="/assets/hardhat-v4.svg" alt=""></div><div class="related-copy">Golden Builder<small>Coming Soon</small></div></a>
+      <a class="related-card" href="/#coming"><div class="related-art"><img src="/assets/wolf-v10.svg" alt=""></div><div class="related-copy">Midnight Wolf<small>Coming Soon</small></div></a>
+      <a class="related-card" href="/#coming"><div class="related-art"><img src="/assets/saw-v4.svg" alt=""></div><div class="related-copy">Saw Strike<small>Coming Soon</small></div></a>
+      <a class="related-card" href="/#coming"><div class="related-art"><img src="/assets/toolbox-v10.svg" alt=""></div><div class="related-copy">Power Tools<small>Coming Soon</small></div></a>
+      <a class="related-card" href="/#coming"><div class="related-art"><img src="/assets/pig-green-v10.svg" alt=""></div><div class="related-copy">Piggy Project<small>Coming Soon</small></div></a>
+    </div>
+  </section>
+</main>
+
+<div id="modalBackdrop" class="backdrop" hidden></div>
+
+<section id="rulesModal" class="modal" hidden aria-modal="true" role="dialog">
+  <button class="modal-close" data-close type="button">×</button>
+  <div class="modal-kicker">HOW TO PLAY</div>
+  <h2>Build the Houses. Beat the Wolf.</h2>
+  <div class="rules-list">
+    <article><div class="rule-icon hat"></div><b>6+ Hard Hats</b><p>Start 6 free spins. Triggering Hat positions begin as Straw Frames and can upgrade.</p></article>
+    <article><div class="rule-icon saw">✹</div><b>3+ Buzz Saws</b><p>Start the Power Wheel for jackpots, 20 Free Spins, Buzz Saw, Mega Hat, or Mansion features.</p></article>
+    <article><div class="rule-icon frame"></div><b>Frame Upgrades</b><p>Hard Hats upgrade reel positions from Straw → Wood → Brick. Three or more Hats in a feature add a spin.</p></article>
+    <article><div class="rule-icon house"></div><b>House Reveal</b><p>At feature end, framed positions reveal multipliers and Mini, Minor, Major or Grand awards.</p></article>
+  </div>
+  <div class="paytable" id="paytable"></div>
+  <p class="legal-note">Free-play entertainment only. Credits have no cash value and cannot be purchased, deposited, withdrawn, or redeemed for prizes.</p>
+</section>
+
+<section id="statsModal" class="modal small" hidden aria-modal="true" role="dialog">
+  <button class="modal-close" data-close type="button">×</button>
+  <div class="modal-kicker">SESSION</div>
+  <h2>Statistics</h2>
+  <div class="stats-grid" id="statsGrid"></div>
+  <p class="legal-note">Session statistics describe only this device's current free-play history.</p>
+</section>
+
+<section id="wheelOverlay" class="feature-overlay" hidden>
+  <div class="feature-stage wheel-stage">
+    <div class="feature-kicker">POWER WHEEL</div>
+    <h2>SPIN FOR A FEATURE</h2>
+    <div class="big-wheel-wrap">
+      <div class="big-wheel-pointer"></div>
+      <div id="bigWheel" class="big-wheel"></div>
+      <div id="wheelLabels" class="wheel-labels"></div>
+      <div class="big-wheel-hub">PP</div>
+    </div>
+  </div>
+</section>
+
+<section id="freeOverlay" class="feature-overlay" hidden>
+  <div class="feature-stage intro-stage">
+    <div class="feature-kicker" id="featureKicker">FREE SPINS</div>
+    <div class="feature-wolf">
+      <img src="/assets/wolf-v4.svg" alt="" draggable="false">
+    </div>
+    <h2 id="featureTitle">BUILD IT BIGGER</h2>
+    <p id="featureSub">6 Free Spins</p>
+  </div>
+</section>
+
+<section id="revealOverlay" class="feature-overlay" hidden>
+  <div class="feature-stage reveal-stage">
+    <div class="feature-kicker">HOUSE REVEAL</div>
+    <h2>HUFF… PUFF… REVEAL!</h2>
+    <div id="revealGrid" class="reveal-grid"></div>
+    <div class="reveal-total">FEATURE WIN <strong id="revealTotal">0</strong></div>
+  </div>
+</section>
+
+<div id="toast" class="toast" aria-live="polite"></div>
+<div id="runtimeError" class="runtime-error" hidden>
+  <strong>Game error</strong>
+  <span id="runtimeErrorText">The game could not start.</span>
+  <button type="button" id="reloadBtn">Reload</button>
+</div>
+
+<script src="/game-core-v7.js"></script>
+<script src="/pineda-huff-v10.js" defer></script>
+<script>
+    setInterval(function(){
+      var a=document.getElementById("balance"),b=document.getElementById("shellBalance");
+      if(a&&b)b.textContent=a.textContent;
+    },250);
+    try{localStorage.setItem("pineda_recent_game","pineda-power")}catch(e){}
+  </script>
+</body>
+</html>
