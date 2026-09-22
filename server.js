@@ -42,7 +42,7 @@ function sendFile(req, res, filePath) {
 
     const ext = path.extname(filePath).toLowerCase();
     const type = MIME[ext] || "application/octet-stream";
-    const cache = ext === ".html" ? "no-store" : "public, max-age=3600";
+    const cache = [".html", ".css", ".js", ".json"].includes(ext) ? "no-store, max-age=0" : "public, max-age=86400, immutable";
     res.writeHead(200, baseHeaders(type, cache));
 
     if (req.method === "HEAD") {
