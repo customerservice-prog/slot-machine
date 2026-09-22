@@ -3,8 +3,8 @@ const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:chil
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"styles.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"pineda-huff-v2.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"pineda-huff-v2.js"),"utf8");
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
 
@@ -52,7 +52,7 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/styles.css","/app.js"]){const r=await fetch("http://127.0.0.1:"+port+p);assert(r.ok,p+" failed");const text=await r.text();assert(text.length>100,p+" unexpectedly empty")}
+  for(const p of ["/","/pineda-huff-v2.css","/pineda-huff-v2.js"]){const r=await fetch("http://127.0.0.1:"+port+p);assert(r.ok,p+" failed");const text=await r.text();assert(text.length>100,p+" unexpectedly empty")}
  }finally{child.kill("SIGTERM")}
 }
 verifyServer().then(()=>console.log("Smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
