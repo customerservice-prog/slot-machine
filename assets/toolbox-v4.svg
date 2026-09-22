@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220">
+<defs><linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f0d089"/><stop offset="1" stop-color="#9f743b"/></linearGradient><filter id="d"><feDropShadow dx="0" dy="8" stdDeviation="5" flood-opacity=".5"/></filter></defs>
+<g filter="url(#d)" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M39 94h142v92H39Z" fill="url(#wood)" stroke="#674923" stroke-width="9"/>
+ <path d="M56 94q8-55 54-55 46 0 54 55" fill="none" stroke="#694a26" stroke-width="13"/>
+ <path d="M40 125h140" stroke="#74532a" stroke-width="9"/>
+ <path d="m67 54 24 73" stroke="#f2f6f7" stroke-width="13"/>
+ <path d="m145 37-41 87" stroke="#d84b40" stroke-width="13"/>
+ <path d="M137 43 171 27" stroke="#bcc8cc" stroke-width="19"/>
+ <path d="m106 72 39 49" stroke="#5b8fbd" stroke-width="13"/>
+ <path d="M58 151h104" stroke="#d1ad6d" stroke-width="7" opacity=".85"/>
+ <rect x="101" y="133" width="20" height="24" rx="4" fill="#715128"/>
+</g></svg>
