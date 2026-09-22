@@ -6,7 +6,7 @@ const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"styles.css"),"utf8");
 const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
-const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8");
+const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
 
 [
  ['reel grid','id="reels"'],
