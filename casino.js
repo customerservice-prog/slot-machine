@@ -11,6 +11,21 @@
    }else{e.preventDefault();showToast("Coming soon — Pineda Power is playable now.")}
   });
  });
+ try{
+   const saved=JSON.parse(localStorage.getItem("pineda_power_huff_v1")||"null");
+   const bal=document.getElementById("lobbyBalance");
+   if(saved&&bal&&Number.isFinite(saved.balance))bal.textContent=Number(saved.balance).toLocaleString(undefined,{maximumFractionDigits:2});
+  }catch{}
+ document.getElementById("guestProfile")?.addEventListener("click",()=>showToast("Guest profile • Free-play mode • No cash value"));
+ document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
+   document.querySelectorAll("[data-filter]").forEach(b=>b.classList.remove("active"));
+   btn.classList.add("active");
+   const f=btn.dataset.filter;
+   document.querySelectorAll("[data-game-card]").forEach(card=>{
+     const tags=(card.dataset.tags||"").toLowerCase();
+     card.hidden=f!=="all"&&!tags.includes(f);
+   });
+ }));
  const search=document.getElementById("gameSearch");
  if(search)search.addEventListener("input",()=>{
    const q=search.value.trim().toLowerCase();
