@@ -8,6 +8,7 @@ const casinoCss=fs.readFileSync(path.join(root,"casino.css"),"utf8");
 const casinoJs=fs.readFileSync(path.join(root,"casino.js"),"utf8");
 const gameShell=fs.readFileSync(path.join(root,"game-shell.css"),"utf8");
 const fitCss=fs.readFileSync(path.join(root,"game-fit-v13.css"),"utf8");
+const fit14=fs.readFileSync(path.join(root,"game-fit-v14.css"),"utf8");
 const gameCss=fs.readFileSync(path.join(root,"pineda-huff-v12.css"),"utf8");
 const gameJs=fs.readFileSync(path.join(root,"pineda-huff-v12.js"),"utf8");
 const core=require(path.join(root,"game-core-v7.js"));
@@ -43,7 +44,8 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["v11 js",'/pineda-huff-v12.js'],
  ["casino css",'/casino.css'],
  ["game shell css",'/game-shell.css'],
- ["v13 fit css",'/game-fit-v13.css']
+ ["v13 fit css",'/game-fit-v13.css'],
+ ["v14 art css",'/game-fit-v14.css']
 ].forEach(([name,needle])=>assert(game.includes(needle),name+" missing"));
 
 [
@@ -58,6 +60,9 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
 [
  "V13 FINAL FIT","overflow:hidden!important","top:49.2%","width:68%","scene-builder","feature-mode-banner"
 ].forEach(needle=>assert(fitCss.includes(needle),"v13 fit CSS missing "+needle));
+[
+ "V14 TARGET ART + PROPORTION PASS","forest-v14.svg","wheel-v14.svg","left:15.4%","width:69.2%"
+].forEach(needle=>assert(fit14.includes(needle),"v14 fit CSS missing "+needle));
 
 [
  "V11 CINEMATIC FEATURE ROUND","V12 TARGET SIDE-BY-SIDE COMPOSITION",".wheel-result",".wheel-label img",".feature-wolf img",".reveal-cell.revealed",".feature-mode-banner",".bonus-win-panel",
@@ -109,6 +114,9 @@ async function verifyServer(){
    ["/casino.js","pineda_recent_game"],
    ["/game-shell.css",".game-page-main"],
    ["/game-fit-v13.css","V13 FINAL FIT"],
+   ["/game-fit-v14.css","V14 TARGET ART + PROPORTION PASS"],
+   ["/assets/forest-v14.svg","svg"],
+   ["/assets/wheel-v14.svg","svg"],
    ["/game-core-v7.js","classifyTriggers"],
    ["/pineda-huff-v12.css","V11 CINEMATIC FEATURE ROUND"],
    ["/pineda-huff-v12.js","showWheelResult"],
