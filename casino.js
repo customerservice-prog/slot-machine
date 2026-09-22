@@ -51,6 +51,16 @@
    if(saved&&bal&&Number.isFinite(saved.balance))bal.textContent=Number(saved.balance).toLocaleString(undefined,{maximumFractionDigits:2});
  }catch{}
  document.getElementById("guestProfile")?.addEventListener("click",()=>showToast("Guest profile • Free-play mode • No cash value"));
+ document.getElementById("creditPlus")?.addEventListener("click",()=>{
+   try{
+     const key="pineda_power_huff_v1";
+     const saved=JSON.parse(localStorage.getItem(key)||"{}");
+     saved.balance=(Number(saved.balance)||2500)+2500;
+     localStorage.setItem(key,JSON.stringify(saved));
+     const bal=document.getElementById("lobbyBalance");if(bal)bal.textContent=Number(saved.balance).toLocaleString(undefined,{maximumFractionDigits:2});
+     showToast("+2,500 free-play credits");
+   }catch{showToast("Free-play refill unavailable")}
+ });
  document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
    document.querySelectorAll("[data-filter]").forEach(b=>b.classList.remove("active"));
    btn.classList.add("active");filterCards(btn.dataset.filter);
