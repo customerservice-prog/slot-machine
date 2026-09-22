@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#51baf0"/><stop offset=".58" stop-color="#a5dcf3"/><stop offset="1" stop-color="#eaf4de"/></linearGradient>
+  <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#91d64f"/><stop offset=".52" stop-color="#4fa63a"/><stop offset="1" stop-color="#1f6a25"/></linearGradient>
+  <radialGradient id="leaf" cx=".36" cy=".28"><stop stop-color="#9ae56f"/><stop offset=".4" stop-color="#56b447"/><stop offset="1" stop-color="#176123"/></radialGradient>
+  <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#be7b31"/><stop offset=".5" stop-color="#7a481d"/><stop offset="1" stop-color="#4a2810"/></linearGradient>
+  <linearGradient id="barn" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dc6547"/><stop offset="1" stop-color="#8d2a21"/></linearGradient>
+  <linearGradient id="hay" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f5d45d"/><stop offset="1" stop-color="#bf7f21"/></linearGradient>
+  <linearGradient id="path" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9dda0"/><stop offset=".55" stop-color="#d9aa5d"/><stop offset="1" stop-color="#aa6e2a"/></linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity=".28"/></filter>
+  <filter id="soft"><feGaussianBlur stdDeviation="10"/></filter>
+  <filter id="texture"><feTurbulence baseFrequency=".015" numOctaves="2" seed="7" type="fractalNoise" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .08"/></feComponentTransfer></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#sky)"/>
+<circle cx="820" cy="92" r="62" fill="#fff6b0"/>
+<ellipse cx="820" cy="110" rx="245" ry="90" fill="#fffbd5" opacity=".17" filter="url(#soft)"/>
+<g stroke="#fff6a5" stroke-linecap="round" opacity=".22">
+  <path d="M820 120 625 485" stroke-width="20"/><path d="M820 120 725 505" stroke-width="14"/><path d="M820 120 920 505" stroke-width="14"/><path d="M820 120 1030 485" stroke-width="20"/>
+</g>
+<g fill="#fff" opacity=".88">
+  <ellipse cx="260" cy="125" rx="100" ry="34"/><ellipse cx="325" cy="100" rx="62" ry="48"/><ellipse cx="390" cy="130" rx="86" ry="30"/>
+  <ellipse cx="1180" cy="130" rx="100" ry="33"/><ellipse cx="1245" cy="102" rx="63" ry="49"/><ellipse cx="1310" cy="132" rx="88" ry="31"/>
+</g>
+<path d="M0 340Q190 290 390 335T800 335T1210 332T1600 340V900H0Z" fill="url(#grass)"/>
+<path d="M760 250 840 250 1085 900 520 900Z" fill="url(#path)"/>
+<path d="M783 250 816 250 925 900 677 900Z" fill="#f5e0a2" opacity=".55"/>
+<g fill="#e9b44c"><ellipse cx="800" cy="330" rx="22" ry="7"/><ellipse cx="800" cy="390" rx="31" ry="9"/><ellipse cx="800" cy="470" rx="45" ry="11"/><ellipse cx="800" cy="580" rx="64" ry="16"/></g>
+
+<!-- layered orchard -->
+<g opacity=".9">
+  <circle cx="105" cy="365" r="92" fill="#2c7f2f"/><circle cx="240" cy="350" r="108" fill="#3e9539"/><circle cx="400" cy="370" r="95" fill="#24732b"/>
+  <circle cx="1190" cy="360" r="95" fill="#2b7e30"/><circle cx="1345" cy="350" r="112" fill="#3c9438"/><circle cx="1510" cy="370" r="96" fill="#23712a"/>
+</g>
+
+<!-- foreground trees -->
+<g filter="url(#shadow)">
+  <path d="M72 900q62-205 34-382-19-118 13-210 26-75 82-126l115 0q-32 75-38 159-7 98 26 172 65 148 52 387Z" fill="url(#trunk)"/>
+  <g fill="url(#leaf)"><circle cx="145" cy="205" r="150"/><circle cx="270" cy="190" r="128"/><circle cx="42" cy="300" r="130"/><circle cx="292" cy="300" r="122"/></g>
+  <path d="M1528 900q-62-205-34-382 19-118-13-210-26-75-82-126l-115 0q32 75 38 159 7 98-26 172-65 148-52 387Z" fill="url(#trunk)"/>
+  <g fill="url(#leaf)"><circle cx="1455" cy="205" r="150"/><circle cx="1330" cy="190" r="128"/><circle cx="1558" cy="300" r="130"/><circle cx="1308" cy="300" r="122"/></g>
+</g>
+
+<!-- windmill -->
+<g transform="translate(1125 370)" filter="url(#shadow)">
+  <path d="M25 260 70 0 115 260" fill="none" stroke="#6b5131" stroke-width="7"/>
+  <circle cx="70" cy="58" r="20" fill="#8d7a56"/>
+  <g transform="translate(70 58)" fill="#bfb38b" stroke="#716744" stroke-width="4">
+    <path d="M-8-18 3-112 25-102 12-12Z"/><path d="M18-8 112 3 102 25 12 12Z"/>
+    <path d="M8 18-3 112-25 102-12 12Z"/><path d="M-18 8-112-3-102-25-12-12Z"/>
+  </g>
+</g>
+
+<!-- barn and shed -->
+<g transform="translate(1235 420)" filter="url(#shadow)">
+  <path d="M0 130 160 0 320 130v250H0Z" fill="url(#barn)" stroke="#77241b" stroke-width="10"/>
+  <path d="M-20 130 160-23 340 130" fill="none" stroke="#774019" stroke-width="22"/>
+  <path d="M15 132 160 16 305 132" fill="none" stroke="#f4dda5" stroke-width="10"/>
+  <rect x="88" y="190" width="145" height="190" fill="#6f2d1d" stroke="#f3dca7" stroke-width="12"/>
+  <path d="M88 190 233 380M233 190 88 380" stroke="#f3dca7" stroke-width="8"/>
+  <rect x="95" y="72" width="130" height="58" rx="6" fill="#efc26f" stroke="#723713" stroke-width="7"/>
+  <text x="160" y="105" text-anchor="middle" font-family="Arial Black,Arial" font-size="24" fill="#5c2b0e">PINEDA</text>
+  <text x="160" y="127" text-anchor="middle" font-family="Arial Black,Arial" font-size="18" fill="#5c2b0e">POWER</text>
+</g>
+
+<!-- hay bales -->
+<g transform="translate(1320 690)" fill="url(#hay)" stroke="#9b651d" stroke-width="5">
+  <rect x="0" y="0" width="170" height="60" rx="12"/><rect x="28" y="-54" width="155" height="58" rx="12"/>
+  <path d="M18 15h130M45-36h110" stroke="#f7df7c" stroke-width="5"/>
+</g>
+
+<!-- fences -->
+<g stroke="#74461e" stroke-linecap="round" filter="url(#shadow)">
+  <path d="M0 655 510 555M1090 555 1600 655" stroke-width="18"/>
+  <path d="M0 725 530 610M1070 610 1600 725" stroke-width="18"/>
+</g>
+<g fill="#9d632c" stroke="#5f3616" stroke-width="6">
+  <path d="M165 505h36v268h-36z"/><path d="M370 495h36v230h-36z"/><path d="M1399 505h36v268h-36z"/><path d="M1194 495h36v230h-36z"/>
+</g>
+
+<!-- bushes and flowers -->
+<g><circle cx="80" cy="805" r="120" fill="#145a1d"/><circle cx="185" cy="810" r="98" fill="#2d832f"/><circle cx="300" cy="835" r="82" fill="#207328"/><circle cx="1520" cy="805" r="120" fill="#145a1d"/><circle cx="1415" cy="810" r="98" fill="#2d832f"/><circle cx="1300" cy="835" r="82" fill="#207328"/></g>
+<g fill="#fff7dc"><circle cx="335" cy="720" r="9"/><circle cx="355" cy="740" r="8"/><circle cx="1260" cy="720" r="9"/><circle cx="1240" cy="742" r="8"/></g>
+<g fill="#f8c842"><circle cx="335" cy="720" r="3"/><circle cx="355" cy="740" r="3"/><circle cx="1260" cy="720" r="3"/><circle cx="1240" cy="742" r="3"/></g>
+<rect width="1600" height="900" filter="url(#texture)" opacity=".18"/>
+</svg>
