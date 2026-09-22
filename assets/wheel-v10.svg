@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320">
+<defs>
+ <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff7a8"/><stop offset=".18" stop-color="#ffd85c"/><stop offset=".52" stop-color="#f09a22"/><stop offset=".82" stop-color="#b85d0c"/><stop offset="1" stop-color="#5e2a03"/></linearGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#22b7f4"/><stop offset="1" stop-color="#075278"/></linearGradient>
+ <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe16b"/><stop offset="1" stop-color="#d77e0e"/></linearGradient>
+ <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#72d664"/><stop offset="1" stop-color="#1d7028"/></linearGradient>
+ <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d078ec"/><stop offset="1" stop-color="#65277f"/></linearGradient>
+ <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffad3c"/><stop offset="1" stop-color="#a8490b"/></linearGradient>
+ <pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="#fff" opacity=".16"/></pattern>
+ <filter id="s"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-opacity=".55"/></filter>
+</defs>
+<g filter="url(#s)">
+ <path d="M500 610L10 300A580 580 0 0 1 165 69Z" fill="url(#blue)"/>
+ <path d="M500 610L165 69A580 580 0 0 1 392 8Z" fill="url(#yellow)"/>
+ <path d="M500 610L392 8A580 580 0 0 1 608 8Z" fill="url(#orange)"/>
+ <path d="M500 610L608 8A580 580 0 0 1 835 69Z" fill="url(#green)"/>
+ <path d="M500 610L835 69A580 580 0 0 1 990 300Z" fill="url(#purple)"/>
+ <path d="M500 610L10 300A580 580 0 0 1 990 300Z" fill="url(#dots)" opacity=".65"/>
+ <path d="M10 300A580 580 0 0 1 990 300" fill="none" stroke="#663005" stroke-width="34"/>
+ <path d="M18 300A572 572 0 0 1 982 300" fill="none" stroke="url(#rim)" stroke-width="22"/>
+ <path d="M44 300A546 546 0 0 1 956 300" fill="none" stroke="#fff0a0" stroke-width="5"/>
+ <path d="M500 610 165 69M500 610 392 8M500 610 608 8M500 610 835 69" stroke="#6c3107" stroke-width="8"/>
+ <path d="M500 610 165 69M500 610 392 8M500 610 608 8M500 610 835 69" stroke="#ffe982" stroke-width="2" opacity=".75"/>
+ <image href="saw-v4.svg" x="145" y="62" width="165" height="165"/>
+ <image href="hardhat-v4.svg" x="330" y="54" width="160" height="132"/>
+ <image href="pig-blue-v10.svg" x="522" y="55" width="154" height="154"/>
+ <image href="wolf-v10.svg" x="720" y="69" width="150" height="150"/>
+ <g font-family="Arial Black,Arial" text-anchor="middle" paint-order="stroke" stroke-width="5">
+   <text x="225" y="230" fill="#fff" stroke="#154b72" font-size="29">BUZZ SAW</text>
+   <text x="225" y="256" fill="#fff" stroke="#154b72" font-size="16">FREE SPINS</text>
+   <text x="410" y="214" fill="#ffe96f" stroke="#703108" font-size="30">MEGA HAT</text>
+   <text x="410" y="240" fill="#ffe96f" stroke="#703108" font-size="16">FEATURE</text>
+   <text x="602" y="218" fill="#fff0a0" stroke="#5d3210" font-size="28">MANSION</text>
+   <text x="602" y="244" fill="#fff0a0" stroke="#5d3210" font-size="16">FEATURE</text>
+   <text x="790" y="231" fill="#fff" stroke="#392050" font-size="26">WOLF WILD</text>
+   <text x="790" y="256" fill="#fff" stroke="#392050" font-size="15">FEATURE</text>
+   <text x="929" y="207" fill="#79e5ff" stroke="#175575" font-size="52">20</text>
+   <text x="929" y="238" fill="#79e5ff" stroke="#175575" font-size="16">FREE SPINS</text>
+ </g>
+ <path d="M500 310 478 274h44Z" fill="#ffe878" stroke="#6e3507" stroke-width="6"/>
+</g></svg>
