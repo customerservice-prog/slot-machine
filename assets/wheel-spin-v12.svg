@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+<defs>
+ <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff8a9"/><stop offset=".2" stop-color="#ffd958"/><stop offset=".6" stop-color="#ee941f"/><stop offset="1" stop-color="#723205"/></linearGradient>
+ <filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-opacity=".55"/></filter>
+</defs>
+<g filter="url(#s)">
+ <path d="M500 500 500 35A465 465 0 0 1 828.8 171.2Z" fill="#d74732"/>
+ <path d="M500 500 828.8 171.2A465 465 0 0 1 965 500Z" fill="#d64aa8"/>
+ <path d="M500 500 965 500A465 465 0 0 1 828.8 828.8Z" fill="#2798d5"/>
+ <path d="M500 500 828.8 828.8A465 465 0 0 1 500 965Z" fill="#43a94a"/>
+ <path d="M500 500 500 965A465 465 0 0 1 171.2 828.8Z" fill="#f1b43c"/>
+ <path d="M500 500 171.2 828.8A465 465 0 0 1 35 500Z" fill="#9a4ac4"/>
+ <path d="M500 500 35 500A465 465 0 0 1 171.2 171.2Z" fill="#46a544"/>
+ <path d="M500 500 171.2 171.2A465 465 0 0 1 500 35Z" fill="#3b91dd"/>
+ <circle cx="500" cy="500" r="476" fill="none" stroke="#603006" stroke-width="38"/>
+ <circle cx="500" cy="500" r="458" fill="none" stroke="url(#gold)" stroke-width="24"/>
+ <circle cx="500" cy="500" r="426" fill="none" stroke="#fff0a0" stroke-width="6"/>
+ <g stroke="#6c3108" stroke-width="9">
+  <path d="M500 500V35"/><path d="M500 500 828.8 171.2"/><path d="M500 500H965"/><path d="M500 500 828.8 828.8"/>
+  <path d="M500 500V965"/><path d="M500 500 171.2 828.8"/><path d="M500 500H35"/><path d="M500 500 171.2 171.2"/>
+ </g>
+ <g fill="#fff4a2" stroke="#98580d" stroke-width="3">
+  <circle cx="950.0" cy="500.0" r="10"/><circle cx="941.4" cy="587.8" r="10"/><circle cx="915.7" cy="672.2" r="10"/><circle cx="874.2" cy="750.0" r="10"/><circle cx="818.2" cy="818.2" r="10"/><circle cx="750.0" cy="874.2" r="10"/><circle cx="672.2" cy="915.7" r="10"/><circle cx="587.8" cy="941.4" r="10"/><circle cx="500.0" cy="950.0" r="10"/><circle cx="412.2" cy="941.4" r="10"/><circle cx="327.8" cy="915.7" r="10"/><circle cx="250.0" cy="874.2" r="10"/><circle cx="181.8" cy="818.2" r="10"/><circle cx="125.8" cy="750.0" r="10"/><circle cx="84.3" cy="672.2" r="10"/><circle cx="58.6" cy="587.8" r="10"/><circle cx="50.0" cy="500.0" r="10"/><circle cx="58.6" cy="412.2" r="10"/><circle cx="84.3" cy="327.8" r="10"/><circle cx="125.8" cy="250.0" r="10"/><circle cx="181.8" cy="181.8" r="10"/><circle cx="250.0" cy="125.8" r="10"/><circle cx="327.8" cy="84.3" r="10"/><circle cx="412.2" cy="58.6" r="10"/><circle cx="500.0" cy="50.0" r="10"/><circle cx="587.8" cy="58.6" r="10"/><circle cx="672.2" cy="84.3" r="10"/><circle cx="750.0" cy="125.8" r="10"/><circle cx="818.2" cy="181.8" r="10"/><circle cx="874.2" cy="250.0" r="10"/><circle cx="915.7" cy="327.8" r="10"/><circle cx="941.4" cy="412.2" r="10"/>
+ </g>
+ <g font-family="Arial Black,Arial" text-anchor="middle" fill="#fff8d3" stroke="#331b08" stroke-width="5" paint-order="stroke">
+  <text x="500" y="135" font-size="34">GRAND</text>
+  <text x="755" y="245" font-size="31">MINI</text>
+  <text x="855" y="515" font-size="27">BUZZ SAW</text>
+  <text x="750" y="780" font-size="29">20 FREE</text>
+  <text x="500" y="875" font-size="30">MEGA HAT</text>
+  <text x="250" y="780" font-size="28">MANSION</text>
+  <text x="145" y="515" font-size="29">MINOR</text>
+  <text x="250" y="245" font-size="30">MAJOR</text>
+ </g>
+ <circle cx="500" cy="500" r="92" fill="url(#gold)" stroke="#703507" stroke-width="12"/>
+ <circle cx="500" cy="500" r="55" fill="#fff1a0" stroke="#a45c0b" stroke-width="8"/>
+ <text x="500" y="520" text-anchor="middle" font-family="Arial Black,Arial" font-size="55" fill="#672f05">PP</text>
+</g>
+</svg>
