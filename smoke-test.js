@@ -2,81 +2,71 @@
 const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:child_process");
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
-const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"pineda-huff-v10.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"pineda-huff-v10.js"),"utf8");
+const lobby=fs.readFileSync(path.join(root,"index.html"),"utf8");
+const game=fs.readFileSync(path.join(root,"game.html"),"utf8");
+const casinoCss=fs.readFileSync(path.join(root,"casino.css"),"utf8");
+const casinoJs=fs.readFileSync(path.join(root,"casino.js"),"utf8");
+const gameShell=fs.readFileSync(path.join(root,"game-shell.css"),"utf8");
+const gameCss=fs.readFileSync(path.join(root,"pineda-huff-v11.css"),"utf8");
+const gameJs=fs.readFileSync(path.join(root,"pineda-huff-v11.js"),"utf8");
 const core=require(path.join(root,"game-core-v7.js"));
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
 
 [
- ["single cabinet",'class="game-cabinet"'],
- ["jackpots",'class="jackpots"'],
- ["wheel zone",'class="wheel-zone"'],
- ["v9 wheel image",'class="wheel-art-v9"'],
+ ["casino header",'class="casino-header"'],
+ ["casino sidebar",'class="casino-sidebar"'],
+ ["featured hero",'class="hero"'],
+ ["Pineda Power card",'data-game="pineda-power"'],
+ ["coming soon games",'COMING SOON'],
+ ["lobby search",'id="gameSearch"'],
+ ["free-play disclosure",'NO CASH VALUE']
+].forEach(([name,needle])=>assert(lobby.includes(needle),name+" missing"));
+
+[
+ ["game shell",'class="game-page"'],
+ ["game toolbar",'class="game-toolbar"'],
+ ["slot cabinet",'class="game-cabinet"'],
  ["reels",'id="reels"'],
- ["243 ways",'243'],
- ["hard hat trigger",'6+'],
- ["buzz saw trigger",'POWER WHEEL'],
  ["spin control",'id="spinBtn"'],
- ["bottom utilities",'class="utility-strip"'],
- ["runtime error",'id="runtimeError"'],
- ["feature wolf",'/assets/wolf-v4.svg']
-].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
-
-assert(html.includes('/pineda-huff-v10.css'),"v9 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v10.js'),"v9 engine not pinned");
-assert(html.includes('/game-core-v7.js'),"shared feature core missing");
-assert(html.includes('/assets/wheel-v10.svg'),"v9 wheel art not referenced");
-assert(html.includes('/assets/pineda-v4-logo.svg'),"logo art missing");
-["pig-green-v10.svg","pig-blue-v10.svg","tape-v10.svg","toolbox-v10.svg","wolf-v10.svg"].forEach(name=>{
-  assert(app.includes(name),"v10 art "+name+" missing");
-});
-assert(css.includes("V10 VISUAL DENSITY + SIGNAGE PASS"),"v10 detail CSS missing");
-assert(css.includes(".jackpot.grand small")&&css.includes(".jackpot.major small"),"layered jackpot badges missing");
-assert(css.includes('/assets/forest-v10.svg'),"v10 forest art missing");
-assert(app.includes('["PG","PB","TOOL"]'),"curated first-view reel mix missing");
-assert(!html.includes('class="top-utility"'),"old floating utility controls still present");
+ ["rules",'id="rulesModal"'],
+ ["wheel overlay",'id="wheelOverlay"'],
+ ["wheel result",'id="wheelResult"'],
+ ["feature intro",'id="freeOverlay"'],
+ ["feature reveal",'id="revealOverlay"'],
+ ["related games",'class="related-wrap"'],
+ ["v11 css",'/pineda-huff-v11.css'],
+ ["v11 js",'/pineda-huff-v11.js'],
+ ["casino css",'/casino.css'],
+ ["game shell css",'/game-shell.css']
+].forEach(([name,needle])=>assert(game.includes(needle),name+" missing"));
 
 [
- "V10 VISUAL DENSITY + SIGNAGE PASS",
- "grid-template-rows:21.5% 24.5% 47.5% 6.5%",
- "aspect-ratio:433/461",
- "aspect-ratio:auto!important",
- "grid-template-rows:repeat(3,minmax(0,1fr))",
- ".machine-core:before",
- ".machine-core:after",
- ".feature-wolf img",
- ".reel-cabinet",
- ".symbol-art",
- "@keyframes symbolLand",
- ".game-cabinet.big-win",
- ".frame-straw",
- ".frame-wood",
- ".frame-brick",
- "@media(max-width:760px)"
-].forEach(needle=>assert(css.includes(needle),"CSS check missing: "+needle));
-
-["pig-green-v10.svg","pig-blue-v10.svg","hardhat-v4.svg","saw-v4.svg","toolbox-v10.svg","tape-v10.svg","wolf-v10.svg"].forEach(name=>{
-  assert(app.includes(name),"symbol art "+name+" missing");
-});
+ ".casino-header",".casino-sidebar",".hero",".game-grid",".game-card",".search-wrap",".header-balance"
+].forEach(needle=>assert(casinoCss.includes(needle),"casino CSS missing "+needle));
+[
+ "data-filter","pineda_recent_game","pineda_power_huff_v1","Coming soon"
+].forEach(needle=>assert(casinoJs.includes(needle),"casino JS missing "+needle));
+[
+ ".game-page-main",".game-toolbar",".game-viewport",".related-grid"
+].forEach(needle=>assert(gameShell.includes(needle),"game shell CSS missing "+needle));
 
 [
- "function evaluateWays",
- "function startFeature",
- "function resolveFeatureSpin",
- "function startWheel",
- "function awardWheel",
- "function frameReward",
- "function showReveal",
- "function showRuntimeError",
- "const ART=",
- "function symbolHTML",
- "window.__qa"
-].forEach(name=>assert(app.includes(name),name+" missing"));
-new Function(app);
+ "V11 CINEMATIC FEATURE ROUND",".wheel-result",".wheel-label img",".feature-wolf img",".reveal-cell.revealed",
+ "V10 VISUAL DENSITY + SIGNAGE PASS","V9 VIEWPORT-LOCKED MACHINE GEOMETRY",
+ "grid-template-rows:21.5% 24.5% 47.5% 6.5%","grid-template-rows:repeat(3,minmax(0,1fr))"
+].forEach(needle=>assert(gameCss.includes(needle),"game CSS missing "+needle));
 
+[
+ "function startSpin","function resolveSpin","function startFeature","function startWheel","function awardWheel",
+ "function showWheelResult","function showIntro","function showReveal","window.__qa",
+ "pig-green-v10.svg","pig-blue-v10.svg","toolbox-v10.svg","tape-v10.svg","wolf-v10.svg"
+].forEach(needle=>assert(gameJs.includes(needle),"game JS missing "+needle));
+
+new Function(casinoJs);
+new Function(gameJs);
 assert(core.selfTest()===true,"core self-test failed");
+
 const triggerGrid=[
  ["HAT","HAT","SAW"],["HAT","HAT","SAW"],["HAT","HAT","SAW"],["A","K","Q"],["J","T","A"]
 ];
@@ -87,10 +77,8 @@ for(const type of ["free","buzz","mega","mansion"]){
  const frames=core.createFeatureFrames(type,[0,3,6],()=>.2);
  assert(Array.isArray(frames)&&frames.length===15,type+" feature frame creation failed");
 }
-assert(app.includes('function startFeature(type,seedPositions=[],spinCount=6)'),"default 6-spin feature missing");
-assert(app.includes('spins:20'),"20-free-spin wheel award missing");
-assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"wild reel restriction missing");
-
+assert(gameJs.includes('spins:20'),"20 Free Spins wheel result missing");
+assert(gameJs.includes('id==="WILD"&&(reel===0||reel===4)'),"Wild reel restriction missing");
 assert(pkg.scripts&&pkg.scripts.start==="node server.js","start script invalid");
 assert(railway.deploy&&railway.deploy.healthcheckPath==="/health","Railway healthcheck missing");
 
@@ -100,16 +88,33 @@ async function verifyServer(){
  let err="";child.stderr.on("data",d=>err+=d.toString());
  try{
   let h;
-  for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  for(let i=0;i<50;i++){
+   try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}
+   await new Promise(r=>setTimeout(r,100));
+  }
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/game-core-v7.js","/pineda-huff-v10.css","/pineda-huff-v10.js","/assets/wheel-v10.svg","/assets/forest-v10.svg","/assets/pig-green-v10.svg","/assets/pig-blue-v10.svg"]){
-    const r=await fetch("http://127.0.0.1:"+port+p);
-    assert(r.ok,p+" failed");
-    const cache=r.headers.get("cache-control")||"";
-    if(p.endsWith(".svg")) assert(cache.includes("immutable"),p+" should be immutable/versioned");
-    else assert(cache.includes("no-store"),p+" must be no-store");
-    const body=await r.text();assert(body.length>100,p+" unexpectedly empty");
+
+  const checks=[
+   ["/","Pineda Casino"],
+   ["/game/pineda-power","Pineda Power"],
+   ["/casino.css",".casino-header"],
+   ["/casino.js","pineda_recent_game"],
+   ["/game-shell.css",".game-page-main"],
+   ["/game-core-v7.js","classifyTriggers"],
+   ["/pineda-huff-v11.css","V11 CINEMATIC FEATURE ROUND"],
+   ["/pineda-huff-v11.js","showWheelResult"],
+   ["/assets/wheel-v10.svg","svg"],
+   ["/assets/forest-v10.svg","svg"]
+  ];
+  for(const [p,needle] of checks){
+   const r=await fetch("http://127.0.0.1:"+port+p);
+   assert(r.ok,p+" failed");
+   const body=await r.text();
+   assert(body.includes(needle),p+" content mismatch");
+   const cache=r.headers.get("cache-control")||"";
+   if(p.endsWith(".svg"))assert(cache.includes("immutable"),p+" should be immutable/versioned");
+   else assert(cache.includes("no-store"),p+" must be no-store");
   }
  }finally{child.kill("SIGTERM")}
 }
-verifyServer().then(()=>console.log("Smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
+verifyServer().then(()=>console.log("Casino platform smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
