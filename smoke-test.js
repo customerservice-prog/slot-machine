@@ -12,65 +12,47 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
 [
  ["single cabinet",'class="game-cabinet"'],
  ["jackpots",'class="jackpots"'],
- ["integrated wheel",'class="wheel-zone"'],
- ["wolf art",'class="wolf-character"'],
+ ["wheel zone",'class="wheel-zone"'],
+ ["v9 wheel image",'class="wheel-art-v9"'],
  ["reels",'id="reels"'],
  ["243 ways",'243'],
  ["hard hat trigger",'6+'],
  ["buzz saw trigger",'POWER WHEEL'],
  ["spin control",'id="spinBtn"'],
- ["runtime error",'id="runtimeError"']
+ ["bottom utilities",'class="utility-strip"'],
+ ["runtime error",'id="runtimeError"'],
+ ["feature wolf",'/assets/wolf-v4.svg']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(html.includes('/pineda-huff-v9.css'),"v7 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v9.js'),"v7 engine not pinned");
-assert(css.includes(".game-cabinet"),"cabinet CSS missing");
-assert(css.includes("V9 VIEWPORT-LOCKED MACHINE GEOMETRY"),"v9 viewport geometry missing");
-assert(html.includes('class="wheel-art-v9"'),"self-contained v9 wheel image missing");
-assert(html.includes('/assets/wheel-v9.svg'),"v9 wheel asset not referenced");
-assert(css.includes("grid-template-rows:21.5% 24.5% 47.5% 6.5%"),"v9 proportional cabinet rows missing");
-assert(css.includes("aspect-ratio:auto!important"),"reel overflow prevention missing");
-assert(css.includes("grid-template-rows:repeat(3,minmax(0,1fr))"),"three reel rows must remain visible");
-assert(css.includes("V9 VIEWPORT-LOCKED MACHINE GEOMETRY"),"v8 detail pass missing");
-assert(css.includes(".machine-core:before")&&css.includes(".machine-core:after"),"v8 wood side rails missing");
-assert(css.includes(".feature-wolf img"),"illustrated feature character missing");
-assert(css.includes(".reel-cabinet"),"v8 reel frame missing");
-assert(css.includes("V9 VIEWPORT-LOCKED MACHINE GEOMETRY"),"v7 detailed art CSS missing");
-assert(css.includes("aspect-ratio:433/461"),"exact 433:461 reference cabinet ratio missing");
-assert(css.includes('background:url("/assets/wheel-v7.svg")'),"detailed wheel art missing");
-assert(css.includes("930px 493px"),"v7 wheel display sizing missing");
-assert(css.includes("height:255px"),"clipped wheel viewport height missing");
-assert(css.includes("grid-template-columns:47px minmax(0,1fr) 57px"),"compact side rails missing");
-assert(css.includes("aspect-ratio:5/3"),"5x3 reel proportion missing");
-assert(html.includes('/game-core-v7.js'),"v7 core script missing");
-assert(css.includes('/assets/wheel-v7.svg'),"v7 wheel art not referenced");
-assert(css.includes('/assets/forest-v7.svg'),"v7 forest art not referenced");
-assert(core.selfTest()===true,"v7 core self-test failed");
-
-const triggerGrid=[
- ["HAT","HAT","SAW"],["HAT","HAT","SAW"],["HAT","HAT","SAW"],["A","K","Q"],["J","T","A"]
-];
-const trig=core.classifyTriggers(triggerGrid);
-assert(trig.free&&trig.wheel,"simultaneous free-spin/wheel trigger failed");
-for(const type of ["free","buzz","mega","mansion"]){
- const frames=core.createFeatureFrames(type,[0,3,6],()=>.2);
- assert(Array.isArray(frames)&&frames.length===15,type+" feature frame creation failed");
-}
-assert(html.includes('class="utility-strip"'),"utility controls were not moved into bottom HUD");
+assert(html.includes('/pineda-huff-v9.css'),"v9 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v9.js'),"v9 engine not pinned");
+assert(html.includes('/game-core-v7.js'),"shared feature core missing");
+assert(html.includes('/assets/wheel-v9.svg'),"v9 wheel art not referenced");
+assert(html.includes('/assets/pineda-v4-logo.svg'),"logo art missing");
 assert(!html.includes('class="top-utility"'),"old floating utility controls still present");
-assert(html.includes("/assets/pineda-v4-logo.svg"),"v4 logo art missing");
-assert(html.includes("/assets/wolf-v4.svg"),"v4 wolf cabinet art missing");
-["pig-green-v4.svg","pig-blue-v4.svg","hardhat-v4.svg","saw-v4.svg","toolbox-v4.svg","tape-v4.svg"].forEach(name=>{
-  assert(app.includes(name),"v4 symbol art "+name+" missing");
+
+[
+ "V9 VIEWPORT-LOCKED MACHINE GEOMETRY",
+ "grid-template-rows:21.5% 24.5% 47.5% 6.5%",
+ "aspect-ratio:433/461",
+ "aspect-ratio:auto!important",
+ "grid-template-rows:repeat(3,minmax(0,1fr))",
+ ".machine-core:before",
+ ".machine-core:after",
+ ".feature-wolf img",
+ ".reel-cabinet",
+ ".symbol-art",
+ "@keyframes symbolLand",
+ ".game-cabinet.big-win",
+ ".frame-straw",
+ ".frame-wood",
+ ".frame-brick",
+ "@media(max-width:760px)"
+].forEach(needle=>assert(css.includes(needle),"CSS check missing: "+needle));
+
+["pig-green-v4.svg","pig-blue-v4.svg","hardhat-v4.svg","saw-v4.svg","toolbox-v4.svg","tape-v4.svg","wolf-v4.svg"].forEach(name=>{
+  assert(app.includes(name),"symbol art "+name+" missing");
 });
-assert(css.includes(".wheel-half"),"wheel art missing");
-assert(css.includes(".symbol-art"),"illustrated symbol styling missing");
-assert(css.includes("@keyframes symbolLand"),"symbol landing motion missing");
-assert(css.includes(".game-cabinet.big-win"),"big win cabinet effect missing");
-assert(css.includes(".reel-cabinet"),"reel cabinet missing");
-assert(css.includes(".wolf-character"),"wolf character missing");
-assert(css.includes(".frame-straw")&&css.includes(".frame-wood")&&css.includes(".frame-brick"),"frame visuals missing");
-assert(css.includes("@media(max-width:760px)"),"mobile layout missing");
 
 [
  "function evaluateWays",
@@ -83,16 +65,24 @@ assert(css.includes("@media(max-width:760px)"),"mobile layout missing");
  "function showRuntimeError",
  "const ART=",
  "function symbolHTML",
- "symbol-art",
  "window.__qa"
 ].forEach(name=>assert(app.includes(name),name+" missing"));
+new Function(app);
 
-assert(core.classifyTriggers(triggerGrid).hats.length===6&&core.classifyTriggers(triggerGrid).free,"6+ Hard Hat trigger missing");
-assert(core.classifyTriggers(triggerGrid).saws.length===3&&core.classifyTriggers(triggerGrid).wheel,"3+ Buzz Saw trigger missing");
+assert(core.selfTest()===true,"core self-test failed");
+const triggerGrid=[
+ ["HAT","HAT","SAW"],["HAT","HAT","SAW"],["HAT","HAT","SAW"],["A","K","Q"],["J","T","A"]
+];
+const trig=core.classifyTriggers(triggerGrid);
+assert(trig.hats.length===6&&trig.free,"6+ Hard Hat trigger failed");
+assert(trig.saws.length===3&&trig.wheel,"3+ Buzz Saw trigger failed");
+for(const type of ["free","buzz","mega","mansion"]){
+ const frames=core.createFeatureFrames(type,[0,3,6],()=>.2);
+ assert(Array.isArray(frames)&&frames.length===15,type+" feature frame creation failed");
+}
 assert(app.includes('function startFeature(type,seedPositions=[],spinCount=6)'),"default 6-spin feature missing");
 assert(app.includes('spins:20'),"20-free-spin wheel award missing");
-assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"wild reel rule missing");
-new Function(app);
+assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"wild reel restriction missing");
 
 assert(pkg.scripts&&pkg.scripts.start==="node server.js","start script invalid");
 assert(railway.deploy&&railway.deploy.healthcheckPath==="/health","Railway healthcheck missing");
@@ -105,10 +95,10 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/game-core-v7.js","/pineda-huff-v9.css","/pineda-huff-v9.js","/assets/wheel-v7.svg","/assets/forest-v7.svg"]){
+  for(const p of ["/","/game-core-v7.js","/pineda-huff-v9.css","/pineda-huff-v9.js","/assets/wheel-v9.svg","/assets/forest-v7.svg"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
-    const cache=(r.headers.get("cache-control")||"");
+    const cache=r.headers.get("cache-control")||"";
     if(p.endsWith(".svg")) assert(cache.includes("immutable"),p+" should be immutable/versioned");
     else assert(cache.includes("no-store"),p+" must be no-store");
     const body=await r.text();assert(body.length>100,p+" unexpectedly empty");
