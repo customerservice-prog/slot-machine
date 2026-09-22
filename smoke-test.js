@@ -57,7 +57,7 @@ assert(!html.includes('class="top-utility"'),"old floating utility controls stil
  "@media(max-width:760px)"
 ].forEach(needle=>assert(css.includes(needle),"CSS check missing: "+needle));
 
-["pig-green-v4.svg","pig-blue-v4.svg","hardhat-v4.svg","saw-v4.svg","toolbox-v4.svg","tape-v4.svg","wolf-v4.svg"].forEach(name=>{
+["pig-green-v10.svg","pig-blue-v10.svg","hardhat-v4.svg","saw-v4.svg","toolbox-v10.svg","tape-v10.svg","wolf-v10.svg"].forEach(name=>{
   assert(app.includes(name),"symbol art "+name+" missing");
 });
 
