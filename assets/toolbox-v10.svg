@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220">
+<defs>
+ <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#efcf82"/><stop offset="1" stop-color="#9e7135"/></linearGradient>
+ <filter id="s"><feDropShadow dx="0" dy="8" stdDeviation="5" flood-opacity=".48"/></filter>
+</defs>
+<g filter="url(#s)" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M34 92h152v96H34Z" fill="url(#wood)" stroke="#65461f" stroke-width="9"/>
+ <path d="M52 91q9-58 58-58t58 58" fill="none" stroke="#65461f" stroke-width="14"/>
+ <path d="M36 124h148" stroke="#745128" stroke-width="9"/>
+ <path d="m60 50 29 80" stroke="#edf3f4" stroke-width="13"/>
+ <path d="m148 34-43 91" stroke="#d84b3e" stroke-width="13"/>
+ <path d="M140 42 178 24" stroke="#bfc9cc" stroke-width="20"/>
+ <path d="m100 66 47 58" stroke="#5b8fbd" stroke-width="13"/>
+ <path d="M53 151h112" stroke="#d8b774" stroke-width="7" opacity=".88"/>
+ <rect x="99" y="133" width="22" height="27" rx="4" fill="#725127"/>
+ <circle cx="52" cy="169" r="7" fill="#8e652f"/><circle cx="168" cy="169" r="7" fill="#8e652f"/>
+</g></svg>
