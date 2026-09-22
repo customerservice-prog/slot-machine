@@ -47,11 +47,10 @@ assert(css.includes("@media(max-width:760px)"),"mobile layout missing");
  "function frameReward",
  "function showReveal",
  "function showRuntimeError",
- "function svgPigGreen",
- "function svgPigBlue",
- "function svgHat",
- "function svgSaw",
- "function svgWolf"
+ "const ART=",
+ "function symbolHTML",
+ "symbol-art",
+ "window.__qa"
 ].forEach(name=>assert(app.includes(name),name+" missing"));
 
 assert(app.includes('hats.length>=6'),"6+ Hard Hat trigger missing");
