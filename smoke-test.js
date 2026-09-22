@@ -7,8 +7,8 @@ const game=fs.readFileSync(path.join(root,"game.html"),"utf8");
 const casinoCss=fs.readFileSync(path.join(root,"casino.css"),"utf8");
 const casinoJs=fs.readFileSync(path.join(root,"casino.js"),"utf8");
 const gameShell=fs.readFileSync(path.join(root,"game-shell.css"),"utf8");
-const gameCss=fs.readFileSync(path.join(root,"pineda-huff-v11.css"),"utf8");
-const gameJs=fs.readFileSync(path.join(root,"pineda-huff-v11.js"),"utf8");
+const gameCss=fs.readFileSync(path.join(root,"pineda-huff-v12.css"),"utf8");
+const gameJs=fs.readFileSync(path.join(root,"pineda-huff-v12.js"),"utf8");
 const core=require(path.join(root,"game-core-v7.js"));
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
@@ -32,17 +32,20 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["rules",'id="rulesModal"'],
  ["wheel overlay",'id="wheelOverlay"'],
  ["wheel result",'id="wheelResult"'],
+ ["feature mode banner",'id="featureModeBanner"'],
+ ["bonus win panel",'id="bonusWinPanel"'],
+ ["credit plus",'id="creditPlus"'],
  ["feature intro",'id="freeOverlay"'],
  ["feature reveal",'id="revealOverlay"'],
  ["related games",'class="related-wrap"'],
- ["v11 css",'/pineda-huff-v11.css'],
- ["v11 js",'/pineda-huff-v11.js'],
+ ["v11 css",'/pineda-huff-v12.css'],
+ ["v11 js",'/pineda-huff-v12.js'],
  ["casino css",'/casino.css'],
  ["game shell css",'/game-shell.css']
 ].forEach(([name,needle])=>assert(game.includes(needle),name+" missing"));
 
 [
- ".casino-header",".casino-sidebar",".hero",".game-grid",".game-card",".search-wrap",".header-balance"
+ ".casino-header",".casino-sidebar",".hero",".game-grid",".game-card",".search-wrap",".header-balance",".credit-plus",".brand-crown"
 ].forEach(needle=>assert(casinoCss.includes(needle),"casino CSS missing "+needle));
 [
  "data-filter","pineda_recent_game","pineda_power_huff_v1","Coming soon"
@@ -52,14 +55,14 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
 ].forEach(needle=>assert(gameShell.includes(needle),"game shell CSS missing "+needle));
 
 [
- "V11 CINEMATIC FEATURE ROUND",".wheel-result",".wheel-label img",".feature-wolf img",".reveal-cell.revealed",
+ "V11 CINEMATIC FEATURE ROUND","V12 TARGET SIDE-BY-SIDE COMPOSITION",".wheel-result",".wheel-label img",".feature-wolf img",".reveal-cell.revealed",".feature-mode-banner",".bonus-win-panel",
  "V10 VISUAL DENSITY + SIGNAGE PASS","V9 VIEWPORT-LOCKED MACHINE GEOMETRY",
  "grid-template-rows:21.5% 24.5% 47.5% 6.5%","grid-template-rows:repeat(3,minmax(0,1fr))"
 ].forEach(needle=>assert(gameCss.includes(needle),"game CSS missing "+needle));
 
 [
  "function startSpin","function resolveSpin","function startFeature","function startWheel","function awardWheel",
- "function showWheelResult","function showIntro","function showReveal","window.__qa",
+ "function showWheelResult","function showIntro","function showReveal","showFeatureHud","updateFeatureHud","hideFeatureHud","window.__qa",
  "pig-green-v10.svg","pig-blue-v10.svg","toolbox-v10.svg","tape-v10.svg","wolf-v10.svg"
 ].forEach(needle=>assert(gameJs.includes(needle),"game JS missing "+needle));
 
@@ -101,8 +104,8 @@ async function verifyServer(){
    ["/casino.js","pineda_recent_game"],
    ["/game-shell.css",".game-page-main"],
    ["/game-core-v7.js","classifyTriggers"],
-   ["/pineda-huff-v11.css","V11 CINEMATIC FEATURE ROUND"],
-   ["/pineda-huff-v11.js","showWheelResult"],
+   ["/pineda-huff-v12.css","V11 CINEMATIC FEATURE ROUND"],
+   ["/pineda-huff-v12.js","showWheelResult"],
    ["/assets/wheel-v10.svg","svg"],
    ["/assets/forest-v10.svg","svg"]
   ];
