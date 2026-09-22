@@ -7,106 +7,302 @@
 <meta name="theme-color" content="#05060f"/>
 <title>Pineda Power - Free Play</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; user-select:none; }
-  html,body { width:100%; height:100%; overflow:hidden; background:#05060f; font-family:'Segoe UI',system-ui,sans-serif; }
-  #wrap { position:fixed; inset:0; overflow:hidden; }
-  #game { display:block; width:100%; height:100%; }
-  #overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
-  .panel { position:fixed; background:rgba(8,10,22,0.96); border:1px solid #b98a2e; border-radius:14px;
-     color:#f4e9c8; padding:22px 26px; max-width:640px; box-shadow:0 20px 60px rgba(0,0,0,.7); display:none; pointer-events:auto; }
-  .panel h2 { color:#ffcf5c; font-size:20px; margin-bottom:12px; letter-spacing:1px; }
-  .panel .row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(185,138,46,.25); font-size:14px; }
-  .panel button, .btnx { cursor:pointer; }
-  .closex { position:absolute; top:10px; right:14px; color:#ffcf5c; font-size:22px; cursor:pointer; }
-  .buybtn { display:block; width:100%; margin-top:10px; padding:12px; border:none; border-radius:10px;
-     background:linear-gradient(180deg,#e7b64a,#a5761d); color:#241500; font-weight:700; font-size:15px; letter-spacing:.5px; }
-  .buybtn:disabled { filter:grayscale(1) brightness(.7); cursor:default; }
-  #loading { position:fixed; inset:0; background:#05060f; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:50; }
-  #loading .lg { color:#ffcf5c; font-size:30px; letter-spacing:3px; text-shadow:0 0 24px rgba(255,180,60,.5); }
-  #loading .sub { color:#8aa0c8; margin-top:10px; font-size:13px; letter-spacing:2px; }
-
-    #deck { position:fixed; left:0; right:0; bottom:0; height:104px; z-index:50; display:flex; align-items:center; justify-content:center; gap:14px; padding:0 16px; background:linear-gradient(180deg,#161a2e,#0a0c18); border-top:2px solid rgba(185,138,46,0.55); box-shadow:0 -6px 24px rgba(0,0,0,0.5); font-family:Georgia,serif; -webkit-user-select:none; user-select:none; }
-    #deck .meter { color:#f4e9c8; text-align:center; min-width:88px; }
-    #deck .meter .lab { font-size:11px; letter-spacing:2px; color:#8aa0c8; }
-    #deck .meter .val { font-size:22px; font-weight:bold; color:#ffe9a8; }
-    #deck .dbtn { cursor:pointer; border:none; border-radius:10px; color:#2a2205; font-family:Georgia,serif; font-weight:bold; background:linear-gradient(180deg,#ffe07a,#e0a83a); box-shadow:0 3px 0 #9c6f1e, 0 5px 10px rgba(0,0,0,0.4); }
-    #deck .dstep { width:46px; height:46px; font-size:26px; border-radius:50%; }
-    #deck .dspin { width:104px; height:104px; border-radius:50%; font-size:24px; letter-spacing:1px; margin:0 6px; }
-    #deck .dspin:active, #deck .dbtn:active { transform:translateY(2px); box-shadow:0 1px 0 #9c6f1e; }
-    #deck .dspin.busy { filter:grayscale(0.4) brightness(0.9); }
-    #deck .side { display:flex; flex-direction:column; gap:6px; }
-    #deck .mini { padding:6px 10px; font-size:12px; border-radius:8px; letter-spacing:1px; }
-    #deck .mini.off { background:linear-gradient(180deg,#5a6478,#39435a); color:#c8d2e6; box-shadow:0 3px 0 #232c3e; }
-  /* launch-ready responsive overrides */
-  :root { --deck-h:104px; }
-  html,body { overscroll-behavior:none; }
-  #game { touch-action:none; }
-  #deck { height:var(--deck-h); min-height:var(--deck-h); padding-bottom:max(0px,env(safe-area-inset-bottom)); }
-  #deck .dbtn { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
-  #deck .dbtn:disabled { opacity:.48; cursor:not-allowed; transform:none; filter:grayscale(.75) brightness(.8); box-shadow:none; }
-  .panel { width:min(92vw,640px); max-height:calc(100dvh - 32px); overflow:auto; z-index:80; }
-  .panel select.buybtn { appearance:none; text-align:center; }
-  .freeplay-note { margin-top:12px; color:#8aa0c8; font-size:12px; line-height:1.45; text-align:center; }
-  @media (max-width:900px) {
-    #deck { gap:8px; padding-left:8px; padding-right:8px; }
-    #deck .meter { min-width:68px; }
-    #deck .meter .val { font-size:18px; }
-    #deck .dstep { width:40px; height:40px; }
-    #deck .dspin { width:88px; height:88px; font-size:20px; }
-    #deck .mini { padding:5px 7px; font-size:11px; }
+  :root{
+    --top-h:60px;
+    --rail-w:82px;
+    --gamebar-h:52px;
+    --deck-h:96px;
+    --bg:#0b141d;
+    --bg2:#0f1d29;
+    --panel:#172532;
+    --panel2:#1d2d3b;
+    --panel3:#223645;
+    --line:#2b4050;
+    --line2:#385266;
+    --text:#f5f7fa;
+    --muted:#8fa5b7;
+    --accent:#00e701;
+    --accent2:#1fcb67;
+    --accent-dark:#0a8d25;
+    --danger:#ff5a67;
   }
-  @media (max-width:640px) {
-    :root { --deck-h:168px; }
-    #deck {
-      display:grid;
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-user-select:none;user-select:none}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);overscroll-behavior:none}
+  button,select{font:inherit}
+  button{border:0}
+  #casinoTop{
+    position:fixed;inset:0 0 auto 0;height:var(--top-h);z-index:100;
+    display:flex;align-items:center;gap:22px;padding:0 18px;
+    background:#101d28;border-bottom:1px solid #223747;
+    box-shadow:0 4px 20px rgba(0,0,0,.24)
+  }
+  .brand{display:flex;align-items:center;gap:10px;min-width:245px}
+  .brandMark{
+    width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+    background:linear-gradient(145deg,#00f23d,#00b92e);color:#07130b;
+    font-weight:950;font-size:13px;letter-spacing:-.5px;
+    box-shadow:0 0 24px rgba(0,231,1,.16),inset 0 1px 0 rgba(255,255,255,.32)
+  }
+  .brandName{font-size:18px;font-weight:850;letter-spacing:-.45px;white-space:nowrap}
+  .brandName b{color:#7cf68a}
+  .freeBadge{
+    padding:4px 7px;border-radius:6px;background:#203342;color:#9fb4c4;
+    font-size:9px;font-weight:850;letter-spacing:1.2px
+  }
+  .topTabs{display:flex;align-items:center;gap:5px;height:100%}
+  .topTab{
+    height:36px;padding:0 14px;border-radius:8px;background:transparent;color:#9eb1c0;
+    font-size:13px;font-weight:750;cursor:default
+  }
+  .topTab.active{background:#1b2c39;color:#fff}
+  .topSpacer{flex:1}
+  .topStatus{font-size:11px;color:#7d95a7;font-weight:700;white-space:nowrap}
+  .walletPill{
+    height:42px;min-width:164px;padding:0 13px;border-radius:9px;
+    display:flex;align-items:center;gap:10px;background:#172a38;border:1px solid #294254
+  }
+  .walletCoin{
+    width:25px;height:25px;border-radius:50%;display:grid;place-items:center;
+    background:var(--accent);color:#09220d;font-weight:950;font-size:12px
+  }
+  .walletText{display:flex;flex-direction:column;line-height:1.1}
+  .walletText small{font-size:8px;letter-spacing:1.2px;color:#88a0b3;font-weight:850}
+  .walletText b{font-size:15px;letter-spacing:.15px}
+  #sideRail{
+    position:fixed;left:0;top:var(--top-h);bottom:0;width:var(--rail-w);z-index:90;
+    background:#0e1a24;border-right:1px solid #213543;padding:12px 8px;
+    display:flex;flex-direction:column;gap:7px
+  }
+  .railBtn{
+    min-height:58px;border-radius:10px;background:transparent;color:#7891a4;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+    cursor:pointer;transition:.18s ease
+  }
+  .railBtn .ri{font-size:18px;line-height:1}
+  .railBtn span:last-child{font-size:9px;font-weight:800;letter-spacing:.25px}
+  .railBtn:hover{background:#152633;color:#c8d8e4}
+  .railBtn.active{background:#19302c;color:#63f274;box-shadow:inset 3px 0 0 var(--accent)}
+  .railBottom{margin-top:auto}
+  #wrap{
+    position:fixed;top:var(--top-h);left:var(--rail-w);right:0;bottom:0;
+    overflow:hidden;background:#0a131c
+  }
+  #gamebar{
+    position:absolute;left:0;right:0;top:0;height:var(--gamebar-h);z-index:60;
+    display:flex;align-items:center;gap:10px;padding:0 18px;
+    background:#111f2a;border-bottom:1px solid #233846
+  }
+  .gameIdentity{display:flex;align-items:center;gap:10px;min-width:0}
+  .gameThumb{
+    width:34px;height:34px;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(145deg,#214152,#122633);border:1px solid #315369;
+    color:#7cf68a;font-size:18px;font-weight:900
+  }
+  .gameText{min-width:0}
+  .gameTitle{font-size:13px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gameMeta{font-size:9px;color:#7f98aa;margin-top:2px;font-weight:700;letter-spacing:.45px}
+  .originalBadge{
+    padding:4px 7px;border-radius:5px;background:#18352b;color:#63f274;
+    font-size:8px;font-weight:900;letter-spacing:1px
+  }
+  .gamebarSpacer{flex:1}
+  .iconBtn{
+    height:32px;min-width:34px;padding:0 10px;border-radius:7px;
+    background:#192b38;color:#9db2c1;border:1px solid #294252;
+    font-size:11px;font-weight:800;cursor:pointer;transition:.16s ease
+  }
+  .iconBtn:hover{background:#213846;color:#fff}
+  #game{
+    position:absolute;left:0;top:var(--gamebar-h);display:block;
+    touch-action:none;background:#08111a
+  }
+  #deck{
+    position:absolute;left:16px;right:16px;bottom:12px;height:var(--deck-h);z-index:70;
+    display:grid;grid-template-columns:130px minmax(110px,1fr) 44px 112px minmax(250px,1.6fr) 44px minmax(110px,1fr) 104px 104px;
+    align-items:center;gap:8px;padding:10px 12px;
+    background:linear-gradient(180deg,#172836,#14232f);
+    border:1px solid #2a4354;border-radius:12px;
+    box-shadow:0 14px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.025)
+  }
+  #deck .meter{
+    height:58px;border-radius:8px;background:#0f1d27;border:1px solid #273d4c;
+    display:flex;flex-direction:column;justify-content:center;padding:0 12px;min-width:0
+  }
+  #deck .meter .lab{font-size:8px;letter-spacing:1.25px;color:#7e96a7;font-weight:850;margin-bottom:5px}
+  #deck .meter .val{font-size:17px;font-weight:850;color:#f5f7fa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #deck .dbtn{
+    height:42px;border-radius:8px;cursor:pointer;background:#213542;color:#c7d5df;
+    border:1px solid #334e60;font-weight:850;transition:.14s ease;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
+  }
+  #deck .dbtn:hover{background:#294151;color:#fff}
+  #deck .dbtn:active{transform:translateY(1px)}
+  #deck .dbtn:disabled{opacity:.38;cursor:not-allowed;transform:none}
+  #deck .dstep{width:44px;height:44px;font-size:23px}
+  #deck .dspin{
+    width:100%;height:58px;border-radius:9px;margin:0;
+    font-size:17px;letter-spacing:.4px;color:#06160a;
+    background:linear-gradient(180deg,#17ef35,#00c82a);
+    border:1px solid #2aff48;
+    box-shadow:0 6px 18px rgba(0,231,1,.19),inset 0 1px 0 rgba(255,255,255,.35)
+  }
+  #deck .dspin:hover{background:linear-gradient(180deg,#2df148,#08d32e)}
+  #deck .dspin.busy{background:linear-gradient(180deg,#f2b84b,#d89020);border-color:#ffd273;color:#231600;box-shadow:0 6px 18px rgba(235,165,38,.18)}
+  #deck .side{display:flex;gap:8px}
+  #deck .mini{height:42px;padding:0 12px;font-size:10px;border-radius:8px;letter-spacing:.45px;white-space:nowrap}
+  #deck .mini.off{background:#172833;color:#748c9d;border-color:#294150;box-shadow:none}
+  #d_stats{grid-column:1}
+  #d_bal_box{grid-column:2}
+  #d_minus{grid-column:3}
+  #d_bet_box{grid-column:4}
+  #d_spin{grid-column:5}
+  #d_plus{grid-column:6}
+  #d_win_box{grid-column:7}
+  #d_play_modes{grid-column:8;display:grid!important;grid-template-rows:1fr 1fr;gap:5px}
+  #d_utility{grid-column:9;display:grid!important;grid-template-rows:1fr 1fr;gap:5px}
+  #d_play_modes .mini,#d_utility .mini{height:35px;padding:0 8px}
+  #loading{
+    position:fixed;inset:0;background:
+      radial-gradient(circle at 50% 35%,rgba(0,231,1,.08),transparent 28%),
+      #0b151e;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200
+  }
+  #loading:before{
+    content:"PP";width:64px;height:64px;border-radius:16px;display:grid;place-items:center;
+    background:linear-gradient(145deg,#00f23d,#00b92e);color:#07130b;font-weight:950;font-size:24px;
+    box-shadow:0 18px 50px rgba(0,231,1,.18);margin-bottom:18px
+  }
+  #loading .lg{color:#f5f7fa;font-size:26px;font-weight:900;letter-spacing:-.7px}
+  #loading .sub{color:#7790a3;margin-top:8px;font-size:10px;font-weight:800;letter-spacing:1.8px}
+  .panel{
+    position:fixed;width:min(92vw,560px);max-height:calc(100dvh - 32px);overflow:auto;z-index:150;
+    background:#14232f;border:1px solid #2d4657;border-radius:12px;color:#eaf0f5;
+    padding:22px 24px;box-shadow:0 28px 80px rgba(0,0,0,.58);display:none
+  }
+  .panel h2{font-size:17px;margin-bottom:15px;letter-spacing:-.15px}
+  .panel .row{display:flex;justify-content:space-between;gap:20px;padding:9px 0;border-bottom:1px solid #243b4b;font-size:12px;color:#b8c8d3}
+  .panel .row span:last-child{color:#f2f6f8;text-align:right;font-weight:750}
+  .closex{position:absolute;top:12px;right:15px;color:#829bad;font-size:23px;cursor:pointer}
+  .buybtn{
+    display:block;width:100%;margin-top:9px;padding:11px 12px;border:1px solid #334d5e;border-radius:8px;
+    background:#213644;color:#eef4f7;font-weight:800;font-size:12px;letter-spacing:.2px;cursor:pointer
+  }
+  .buybtn:hover{background:#294454}
+  .panel select.buybtn{appearance:none;text-align:center}
+  .freeplay-note{
+    margin-top:15px;padding:11px;border-radius:8px;background:#0f1d27;color:#829aaa;
+    border:1px solid #263d4c;font-size:10px;line-height:1.45;text-align:center
+  }
+  @media(max-width:1180px){
+    #deck{grid-template-columns:94px minmax(90px,1fr) 40px 96px minmax(190px,1.4fr) 40px minmax(90px,1fr) 86px 86px}
+    #deck .mini{font-size:9px}
+  }
+  @media(max-width:820px){
+    :root{--rail-w:0px;--top-h:56px;--gamebar-h:48px;--deck-h:150px}
+    #sideRail{display:none}
+    #casinoTop{height:var(--top-h);padding:0 10px;gap:10px}
+    .brand{min-width:0;flex:1}
+    .brandName{font-size:15px}
+    .freeBadge,.topTabs,.topStatus{display:none}
+    .walletPill{min-width:126px;height:38px;padding:0 9px}
+    .walletCoin{width:22px;height:22px;font-size:10px}
+    .walletText b{font-size:13px}
+    #gamebar{height:var(--gamebar-h);padding:0 10px}
+    #gamebar .iconBtn .wideLabel{display:none}
+    #deck{
+      left:8px;right:8px;bottom:8px;height:var(--deck-h);
       grid-template-columns:repeat(6,minmax(0,1fr));
-      grid-template-rows:38px 70px 36px;
-      gap:5px;
-      padding:6px 7px calc(6px + env(safe-area-inset-bottom));
-      align-items:center;
+      grid-template-rows:38px 58px 34px;
+      gap:5px;padding:7px;border-radius:10px
     }
-    #deck .meter { min-width:0; width:100%; }
-    #deck .meter .lab { font-size:9px; letter-spacing:1.3px; }
-    #deck .meter .val { font-size:18px; line-height:1.05; }
-    #d_bal_box { grid-column:1 / 3; grid-row:1; }
-    #d_bet_box { grid-column:3 / 5; grid-row:1; }
-    #d_win_box { grid-column:5 / 7; grid-row:1; }
-    #d_minus { grid-column:1; grid-row:2; }
-    #d_spin { grid-column:2 / 6; grid-row:2; }
-    #d_plus { grid-column:6; grid-row:2; }
-    #deck .dstep { width:100%; height:52px; border-radius:14px; }
-    #deck .dspin { width:100%; height:64px; border-radius:20px; margin:0; font-size:22px; }
-    #deck .side { display:contents; }
-    #d_stats { grid-column:1; grid-row:3; }
-    #d_auto { grid-column:2; grid-row:3; }
-    #d_turbo { grid-column:3; grid-row:3; }
-    #d_menu { grid-column:4; grid-row:3; }
-    #d_sound { grid-column:5 / 7; grid-row:3; }
-    #deck .mini { width:100%; padding:7px 3px; font-size:10px; line-height:1; }
-    .panel { padding:18px 18px; border-radius:12px; }
-    .panel h2 { font-size:18px; padding-right:24px; }
-    .panel .row { gap:12px; font-size:12px; }
+    #deck .meter{height:38px;padding:0 8px;border-radius:7px}
+    #deck .meter .lab{font-size:7px;margin-bottom:2px}
+    #deck .meter .val{font-size:14px}
+    #d_bal_box{grid-column:1/3;grid-row:1}
+    #d_bet_box{grid-column:3/5;grid-row:1}
+    #d_win_box{grid-column:5/7;grid-row:1}
+    #d_minus{grid-column:1;grid-row:2}
+    #d_spin{grid-column:2/6;grid-row:2}
+    #d_plus{grid-column:6;grid-row:2}
+    #d_stats{grid-column:1;grid-row:3}
+    #d_play_modes,#d_utility{display:contents!important}
+    #d_auto{grid-column:2;grid-row:3}
+    #d_turbo{grid-column:3;grid-row:3}
+    #d_menu{grid-column:4;grid-row:3}
+    #d_sound{grid-column:5/7;grid-row:3}
+    #deck .dstep{width:100%;height:50px;border-radius:8px}
+    #deck .dspin{height:50px;border-radius:8px}
+    #deck .mini{height:30px;padding:0 3px;font-size:8px}
   }
-  @media (max-width:420px) {
-    #deck .meter .val { font-size:16px; }
-    #deck .dspin { font-size:19px; }
-    #deck .mini { font-size:9px; }
+  @media(max-width:430px){
+    .gameMeta{display:none}
+    .gameThumb{width:30px;height:30px}
+    .originalBadge{display:none}
+    .walletPill{min-width:112px}
+    #deck .dspin{font-size:15px}
   }
-  @media (max-height:560px) and (orientation:landscape) {
-    :root { --deck-h:82px; }
-    #deck { display:flex; grid-template:none; gap:6px; padding:0 8px; }
-    #deck .side { display:flex; }
-    #deck .meter { min-width:58px; width:auto; }
-    #deck .meter .lab { font-size:8px; }
-    #deck .meter .val { font-size:15px; }
-    #deck .dstep { width:34px; height:34px; border-radius:50%; font-size:20px; }
-    #deck .dspin { width:76px; height:76px; border-radius:50%; font-size:17px; margin:0 2px; }
-    #deck .mini { width:auto; padding:4px 6px; font-size:9px; }
+  @media(max-height:560px) and (orientation:landscape){
+    :root{--top-h:48px;--gamebar-h:42px;--deck-h:76px}
+    #casinoTop{height:var(--top-h)}
+    #gamebar{height:var(--gamebar-h)}
+    #deck{
+      height:var(--deck-h);left:8px;right:8px;bottom:5px;
+      display:grid;grid-template-columns:72px 92px 34px 80px minmax(150px,1fr) 34px 92px 70px 70px;
+      grid-template-rows:1fr;gap:5px;padding:5px 7px
+    }
+    #d_stats,#d_bal_box,#d_minus,#d_bet_box,#d_spin,#d_plus,#d_win_box,#d_play_modes,#d_utility{grid-row:1}
+    #d_stats{grid-column:1}
+    #d_bal_box{grid-column:2}
+    #d_minus{grid-column:3}
+    #d_bet_box{grid-column:4}
+    #d_spin{grid-column:5}
+    #d_plus{grid-column:6}
+    #d_win_box{grid-column:7}
+    #d_play_modes{grid-column:8;display:grid!important}
+    #d_utility{grid-column:9;display:grid!important}
+    #deck .meter{height:48px;padding:0 6px}
+    #deck .meter .val{font-size:12px}
+    #deck .dstep{height:38px}
+    #deck .dspin{height:48px;font-size:14px}
+    #deck .mini{height:22px!important;font-size:7px!important}
   }
 </style>
 </head>
 <body>
+<header id="casinoTop">
+  <div class="brand">
+    <div class="brandMark">PP</div>
+    <div class="brandName">Pineda <b>Power</b></div>
+    <div class="freeBadge">FREE PLAY</div>
+  </div>
+  <div class="topTabs" aria-label="Primary navigation">
+    <button class="topTab active" type="button">Casino</button>
+    <button class="topTab" type="button">Originals</button>
+    <button class="topTab" type="button">Rewards</button>
+  </div>
+  <div class="topSpacer"></div>
+  <div class="topStatus">NO PURCHASE • NO CASH VALUE</div>
+  <div class="walletPill" aria-label="Play credit balance">
+    <div class="walletCoin">C</div>
+    <div class="walletText"><small>PLAY CREDITS</small><b id="shell_bal">2,500</b></div>
+  </div>
+</header>
+<aside id="sideRail" aria-label="Game navigation">
+  <button class="railBtn active" id="rail_game" type="button"><span class="ri">◆</span><span>GAME</span></button>
+  <button class="railBtn" id="rail_info" type="button"><span class="ri">ⓘ</span><span>RULES</span></button>
+  <button class="railBtn" id="rail_stats" type="button"><span class="ri">▥</span><span>STATS</span></button>
+  <button class="railBtn railBottom" id="rail_sound" type="button"><span class="ri">◖</span><span>SOUND</span></button>
+</aside>
 <div id="wrap">
+  <div id="gamebar">
+    <div class="gameIdentity">
+      <div class="gameThumb">W</div>
+      <div class="gameText"><div class="gameTitle">Pineda Power</div><div class="gameMeta">5×3 REELS • 20 LINES • FREE PLAY</div></div>
+      <div class="originalBadge">ORIGINAL</div>
+    </div>
+    <div class="gamebarSpacer"></div>
+    <button class="iconBtn" id="game_info" type="button"><span class="wideLabel">HOW TO PLAY</span><span> ⓘ</span></button>
+    <button class="iconBtn" id="game_full" type="button" aria-label="Fullscreen">⛶</button>
+  </div>
   <canvas id="game"></canvas>
 <div id="deck" aria-label="Game controls">
   <button class="dbtn mini" id="d_stats" type="button">STATS</button>
@@ -126,7 +322,7 @@
   <h2>MENU</h2>
   <button class="buybtn" id="mnuInfo">PAYTABLE &amp; RULES</button>
   <button class="buybtn" id="mnuStats">STATISTICS</button>
-  <button class="buybtn" id="mnuDev" style="background:linear-gradient(180deg,#4a5568,#2a3040);color:#eaf2ff;">DEVELOPER</button>
+  <button class="buybtn" id="mnuDev" >DEVELOPER</button>
 </div>
 <div id="infoPanel" class="panel">
   <span class="closex" data-close="infoPanel">&times;</span>
@@ -274,8 +470,15 @@ function getDeckHeight(){
   return d?Math.max(0,Math.ceil(d.getBoundingClientRect().height)):104;
 }
 function resize(force){
-  var vw=window.innerWidth, vh=window.innerHeight, dh=getDeckHeight();
-  var ndpr=Math.min(2,window.devicePixelRatio||1), h=Math.max(180,vh-dh);
+  var wrap=document.getElementById("wrap");
+  var r=wrap?wrap.getBoundingClientRect():{width:window.innerWidth,height:window.innerHeight};
+  var gamebar=document.getElementById("gamebar");
+  var gbh=gamebar?Math.ceil(gamebar.getBoundingClientRect().height):52;
+  var dh=getDeckHeight();
+  var vw=Math.max(280,Math.floor(r.width)), vh=Math.max(300,Math.floor(r.height));
+  var ndpr=Math.min(2,window.devicePixelRatio||1);
+  var gap=window.innerWidth<=820?16:24;
+  var h=Math.max(170,vh-gbh-dh-gap);
   if(!force && vw===lastVW && vh===lastVH && dh===lastDeckH && ndpr===DPR) return false;
   DPR=ndpr; W=vw; H=h; lastVW=vw; lastVH=vh; lastDeckH=dh;
   cv.width=Math.max(1,Math.round(W*DPR)); cv.height=Math.max(1,Math.round(H*DPR));
@@ -290,12 +493,12 @@ resize(true);
 
 // reel geometry computed each frame from W/H so it always fits (no scroll)
 function geom(){
-  var top=Math.max(W<640?74:68, Math.min(118,H*0.15));
-  var availH=Math.max(110,H-top-10);
-  var widthFrac=W<640?0.92:(W<960?0.80:0.68);
-  var gw=Math.min(W*widthFrac, availH*1.55);
-  var gh=gw/1.55;
-  if(gh>availH){ gh=availH; gw=gh*1.55; }
+  var top=Math.max(W<640?62:64,Math.min(92,H*0.14));
+  var availH=Math.max(120,H-top-14);
+  var widthFrac=W<640?0.94:(W<1000?0.86:0.78);
+  var gw=Math.min(W*widthFrac,availH*1.62);
+  var gh=gw/1.62;
+  if(gh>availH){ gh=availH; gw=gh*1.62; }
   var gx=(W-gw)/2, gy=top+(availH-gh)/2+2;
   var cwe=gw/5, che=gh/3;
   return {gx:gx,gy:gy,gw:gw,gh:gh,cw:cwe,ch:che,deckH:0,top:top};
@@ -312,34 +515,50 @@ var clouds=[], leaves=[], fireflies=[], stars=[];
 var moonPulse=0, windGust=0;
 
 function drawBG(t){
-  var sky=cx.createLinearGradient(0,0,0,H*0.62);
-  sky.addColorStop(0,"#6fbdf0"); sky.addColorStop(0.5,"#a6dcf6"); sky.addColorStop(1,"#e8f7ff");
-  cx.fillStyle=sky; cx.fillRect(0,0,W,H*0.64);
-  var sx=W*0.13, sy=H*0.14, sr=Math.min(W,H)*0.06*(1+0.015*Math.sin(t*0.001)+moonPulse*0.15);
-  var sgl=cx.createRadialGradient(sx,sy,sr*0.3,sx,sy,sr*3.2);
-  sgl.addColorStop(0,"rgba(255,244,190,0.7)"); sgl.addColorStop(0.4,"rgba(255,232,150,0.18)"); sgl.addColorStop(1,"rgba(255,232,150,0)");
-  cx.fillStyle=sgl; cx.beginPath(); cx.arc(sx,sy,sr*3.2,0,6.2832); cx.fill();
-  var sc2=cx.createRadialGradient(sx-sr*0.3,sy-sr*0.3,sr*0.2,sx,sy,sr);
-  sc2.addColorStop(0,"#fffdf0"); sc2.addColorStop(1,"#ffe07a");
-  cx.fillStyle=sc2; cx.beginPath(); cx.arc(sx,sy,sr,0,6.2832); cx.fill();
-  for(var i=0;i<clouds.length;i++){ var c=clouds[i]; c.x+=c.v*(1+windGust); if(c.x>1.2)c.x=-0.3;
-    drawCloud(c.x*W, (0.08+c.y*0.5)*H, sr*1.1*c.s, "rgba(255,255,255,0.92)"); }
-  cx.fillStyle="#bcd9a0"; cx.fillRect(0,H*0.44,W,H*0.14);
-  var vpx=W*0.5, vpy=H*0.46;
-  var pg=cx.createLinearGradient(0,vpy,0,H*0.64); pg.addColorStop(0,"#e0cf92"); pg.addColorStop(1,"#c9b271");
-  cx.fillStyle=pg; cx.beginPath(); cx.moveTo(vpx-5,vpy); cx.lineTo(vpx+5,vpy); cx.lineTo(W*0.60,H*0.64); cx.lineTo(W*0.40,H*0.64); cx.closePath(); cx.fill();
-  drawOrchard(t, vpx, vpy);
-  var gr=cx.createLinearGradient(0,H*0.56,0,H); gr.addColorStop(0,"#7fb84a"); gr.addColorStop(0.5,"#5ea23a"); gr.addColorStop(1,"#3f7a28");
-  cx.fillStyle=gr; cx.fillRect(0,H*0.56,W,H*0.44);
-  cx.strokeStyle="rgba(30,80,20,0.18)"; cx.lineWidth=1.4;
-  for(var i=0;i<leaves.length;i++){ var l=leaves[i]; var gx2=l.x*W, gy2=(0.6+l.y*0.38)*H;
-    cx.beginPath(); cx.moveTo(gx2,gy2); cx.lineTo(gx2+Math.sin(t*0.002+l.r)*3,gy2-8-l.sz); cx.stroke(); }
-  for(var i=0;i<fireflies.length;i++){ var f=fireflies[i]; f.x+=0.0004*(1+windGust*2); if(f.x>1.05)f.x=-0.05;
-    var a=0.3+0.4*Math.abs(Math.sin(t*0.001*f.sp+f.ph));
-    cx.fillStyle="rgba(255,255,235,"+a.toFixed(3)+")";
-    var fx=(f.x)*W, fy=(0.5+f.y*0.4)*H; cx.beginPath(); cx.arc(fx,fy,2,0,6.2832); cx.fill(); }
-  if(windGust>0) windGust*=0.96;
-  if(moonPulse>0) moonPulse*=0.94;
+  var bg=cx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,"#07111b"); bg.addColorStop(0.48,"#0b1c28"); bg.addColorStop(1,"#071119");
+  cx.fillStyle=bg; cx.fillRect(0,0,W,H);
+
+  var g=geom();
+  var aura=cx.createRadialGradient(W*0.5,g.gy+g.gh*0.48,10,W*0.5,g.gy+g.gh*0.48,Math.max(g.gw,g.gh)*0.75);
+  aura.addColorStop(0,"rgba(26,94,102,0.32)");
+  aura.addColorStop(0.5,"rgba(18,57,77,0.18)");
+  aura.addColorStop(1,"rgba(3,10,16,0)");
+  cx.fillStyle=aura; cx.fillRect(0,0,W,H);
+
+  var purple=cx.createRadialGradient(W*0.78,H*0.18,0,W*0.78,H*0.18,W*0.44);
+  purple.addColorStop(0,"rgba(81,43,126,0.14)"); purple.addColorStop(1,"rgba(81,43,126,0)");
+  cx.fillStyle=purple; cx.fillRect(0,0,W,H);
+
+  for(var i=0;i<stars.length;i++){
+    var st=stars[i], tw=0.25+0.42*Math.abs(Math.sin(t*0.0008+st.tw));
+    cx.fillStyle="rgba(176,214,231,"+(tw*st.b).toFixed(3)+")";
+    cx.beginPath(); cx.arc(st.x*W,st.y*H*0.82,Math.max(0.45,1.2*st.b),0,6.2832); cx.fill();
+  }
+
+  var mx=W*0.13,my=H*0.18,mr=Math.max(15,Math.min(W,H)*0.038)*(1+moonPulse*0.08);
+  var mg=cx.createRadialGradient(mx-mr*.25,my-mr*.25,2,mx,my,mr);
+  mg.addColorStop(0,"#effcff"); mg.addColorStop(0.72,"#9bcdd8"); mg.addColorStop(1,"#5f8794");
+  cx.shadowColor="rgba(127,222,228,.24)";cx.shadowBlur=30;cx.fillStyle=mg;cx.beginPath();cx.arc(mx,my,mr,0,6.2832);cx.fill();cx.shadowBlur=0;
+
+  cx.fillStyle="rgba(13,35,44,.72)";
+  cx.beginPath();cx.moveTo(0,H*.78);cx.quadraticCurveTo(W*.16,H*.58,W*.33,H*.76);cx.quadraticCurveTo(W*.49,H*.57,W*.65,H*.77);cx.quadraticCurveTo(W*.82,H*.62,W,H*.75);cx.lineTo(W,H);cx.lineTo(0,H);cx.closePath();cx.fill();
+  cx.fillStyle="rgba(7,20,27,.92)";
+  cx.beginPath();cx.moveTo(0,H*.86);cx.quadraticCurveTo(W*.25,H*.73,W*.45,H*.87);cx.quadraticCurveTo(W*.73,H*.73,W,H*.84);cx.lineTo(W,H);cx.lineTo(0,H);cx.closePath();cx.fill();
+
+  for(var j=0;j<fireflies.length;j++){
+    var f=fireflies[j]; f.x+=0.00012; if(f.x>1.03)f.x=-0.03;
+    var fa=0.08+0.20*Math.abs(Math.sin(t*0.001*f.sp+f.ph));
+    cx.fillStyle="rgba(72,239,192,"+fa.toFixed(3)+")";
+    cx.beginPath();cx.arc(f.x*W,(0.56+f.y*0.34)*H,1.2,0,6.2832);cx.fill();
+  }
+
+  var vg=cx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.25,W/2,H/2,Math.max(W,H)*0.78);
+  vg.addColorStop(0,"rgba(0,0,0,0)");vg.addColorStop(1,"rgba(0,0,0,.58)");
+  cx.fillStyle=vg;cx.fillRect(0,0,W,H);
+
+  if(windGust>0)windGust*=0.96;
+  if(moonPulse>0)moonPulse*=0.94;
 }
 function drawOrchard(t, vpx, vpy){
   var rows=7;
@@ -401,7 +620,7 @@ function drawVillage(t){
 var wolf={ state:"IDLE", t:0, lean:0, blink:0, mouth:0 };
 function setWolf(s){ wolf.state=s; wolf.t=0; }
 function drawWolf(t){
-  if(W<700) return;
+  return;
   var g=geom();
   var sc=Math.min(0.72, g.gh/560); var wx=g.gx-Math.min(120,g.gx*0.62), wy=g.gy+g.gh*0.62;
   if(wx<24) wx=24;
@@ -1090,30 +1309,24 @@ function drawReels(t){
   var g=geom();
   updateReels(performance.now());
   cx.save();
-  // ---- CABINET: sculpted multi-layer frame ----
-  var bez=Math.max(16,g.cw*0.12);
+  // ---- MODERN GAME FRAME ----
+  var bez=Math.max(10,g.cw*0.075);
   var fx=g.gx-bez, fy=g.gy-bez, fw=g.gw+bez*2, fh=g.gh+bez*2;
-  // contact shadow into the world
-  cx.save(); cx.shadowColor="rgba(0,0,0,0.45)"; cx.shadowBlur=40; cx.shadowOffsetY=18;
-  cx.fillStyle="#241a10"; roundRect(fx,fy,fw,fh,22); cx.fill(); cx.restore();
-  // outer wood/gold bevel
+  cx.save();cx.shadowColor="rgba(0,0,0,.62)";cx.shadowBlur=42;cx.shadowOffsetY=20;
+  cx.fillStyle="#061018";roundRect(fx,fy,fw,fh,16);cx.fill();cx.restore();
   var og=cx.createLinearGradient(fx,fy,fx,fy+fh);
-  og.addColorStop(0,"#e8c15a"); og.addColorStop(0.06,"#b8862e"); og.addColorStop(0.5,"#7d5a1e"); og.addColorStop(0.94,"#5c4015"); og.addColorStop(1,"#8a6626");
-  cx.fillStyle=og; roundRect(fx,fy,fw,fh,22); cx.fill();
-  // top highlight sheen on frame
-  var sh=cx.createLinearGradient(fx,fy,fx,fy+bez); sh.addColorStop(0,"rgba(255,245,210,0.6)"); sh.addColorStop(1,"rgba(255,245,210,0)");
-  cx.fillStyle=sh; roundRect(fx+3,fy+3,fw-6,bez,18); cx.fill();
-  // inner dark trim groove
-  var tg=g.gx-6, tgy=g.gy-6;
-  cx.fillStyle="#120d1c"; roundRect(tg,tgy,g.gw+12,g.gh+12,12); cx.fill();
-  // light state ring on inner trim
-  var lit = antic.active? "rgba(120,170,255,"+(0.5+0.4*Math.sin(t*0.02))+")"
-          : (G.state==="SPINNING"? "rgba(255,207,92,"+(0.35+0.25*Math.sin(t*0.01))+")" : "rgba(230,190,90,0.7)");
-  cx.strokeStyle=lit; cx.lineWidth=3; roundRect(tg,tgy,g.gw+12,g.gh+12,12); cx.stroke();
-  if(antic.active){ cx.save(); cx.strokeStyle="rgba(120,180,255,0.5)"; cx.lineWidth=8; cx.shadowColor="#6fa8ff"; cx.shadowBlur=24; roundRect(tg,tgy,g.gw+12,g.gh+12,12); cx.stroke(); cx.restore(); }
+  og.addColorStop(0,"#223847");og.addColorStop(.12,"#142633");og.addColorStop(.85,"#0d1c27");og.addColorStop(1,"#1b3140");
+  cx.fillStyle=og;roundRect(fx,fy,fw,fh,16);cx.fill();
+  cx.strokeStyle="#355469";cx.lineWidth=1.5;roundRect(fx+.5,fy+.5,fw-1,fh-1,16);cx.stroke();
+  var tg=g.gx-5,tgy=g.gy-5;
+  cx.fillStyle="#07131d";roundRect(tg,tgy,g.gw+10,g.gh+10,10);cx.fill();
+  var lit=antic.active?"rgba(92,181,255,"+(0.52+0.30*Math.sin(t*.02))+")":
+    (G.state==="SPINNING"?"rgba(92,201,220,.55)":"rgba(0,231,1,.46)");
+  cx.strokeStyle=lit;cx.lineWidth=2;roundRect(tg,tgy,g.gw+10,g.gh+10,10);cx.stroke();
+  if(antic.active){cx.save();cx.strokeStyle="rgba(84,171,255,.35)";cx.lineWidth=6;cx.shadowColor="#4ca8ff";cx.shadowBlur=20;roundRect(tg,tgy,g.gw+10,g.gh+10,10);cx.stroke();cx.restore();}
   // ---- REEL WINDOW: purposeful lit navy backdrop (NOT a black overlay) ----
   var wg=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh);
-  wg.addColorStop(0,"#2b3566"); wg.addColorStop(0.5,"#3a4680"); wg.addColorStop(1,"#232c55");
+  wg.addColorStop(0,"#152a38"); wg.addColorStop(0.5,"#1a3343"); wg.addColorStop(1,"#102431");
   cx.fillStyle=wg; roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.fill();
   cx.save(); roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.clip(); var _vg=cx.createRadialGradient(g.gx+g.gw/2,g.gy+g.gh/2,g.gh*0.2,g.gx+g.gw/2,g.gy+g.gh/2,g.gh*0.9); _vg.addColorStop(0,"rgba(0,0,0,0)"); _vg.addColorStop(1,"rgba(0,0,0,0.5)"); cx.fillStyle=_vg; cx.fillRect(g.gx,g.gy,g.gw,g.gh); var _tg=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh*0.28); _tg.addColorStop(0,"rgba(0,0,0,0.55)"); _tg.addColorStop(1,"rgba(0,0,0,0)"); cx.fillStyle=_tg; cx.fillRect(g.gx,g.gy,g.gw,g.gh*0.28); var _bg=cx.createLinearGradient(0,g.gy+g.gh*0.78,0,g.gy+g.gh); _bg.addColorStop(0,"rgba(0,0,0,0)"); _bg.addColorStop(1,"rgba(0,0,0,0.4)"); cx.fillStyle=_bg; cx.fillRect(g.gx,g.gy+g.gh*0.78,g.gw,g.gh*0.22);
   // per-reel strip shading bands (gives 5 distinct reel-strip feel, hides grid look)
@@ -1148,9 +1361,9 @@ function drawReels(t){
   }
   cx.restore();
   // soft top & bottom cylindrical depth (lighter than before)
-  var tf=cx.createLinearGradient(0,g.gy,0,g.gy+g.ch*0.6); tf.addColorStop(0,"rgba(10,14,34,0.55)"); tf.addColorStop(1,"rgba(10,14,34,0)");
+  var tf=cx.createLinearGradient(0,g.gy,0,g.gy+g.ch*0.6); tf.addColorStop(0,"rgba(3,10,15,0.52)"); tf.addColorStop(1,"rgba(10,14,34,0)");
   cx.fillStyle=tf; cx.fillRect(g.gx,g.gy,g.gw,g.ch*0.6);
-  var bf=cx.createLinearGradient(0,g.gy+g.gh-g.ch*0.6,0,g.gy+g.gh); bf.addColorStop(0,"rgba(10,14,34,0)"); bf.addColorStop(1,"rgba(10,14,34,0.55)");
+  var bf=cx.createLinearGradient(0,g.gy+g.gh-g.ch*0.6,0,g.gy+g.gh); bf.addColorStop(0,"rgba(10,14,34,0)"); bf.addColorStop(1,"rgba(3,10,15,0.52)");
   cx.fillStyle=bf; cx.fillRect(g.gx,g.gy+g.gh-g.ch*0.6,g.gw,g.ch*0.6);
   // inner top gloss (glass)
   var gl=cx.createLinearGradient(0,g.gy,0,g.gy+g.gh*0.28); gl.addColorStop(0,"rgba(255,255,255,0.10)"); gl.addColorStop(1,"rgba(255,255,255,0)");
@@ -1175,15 +1388,17 @@ function drawSymbolDepth(id,x,y,w,h,glow,scale,g){
   if(dark>0){ cx.save(); cx.globalAlpha=dark; cx.fillStyle="#04050e"; cx.fillRect(x,y,w,h); cx.restore(); }
 }
 function drawBanner(t){
-  if(bannerFx.t<=0) return;
-  bannerFx.t*=0.985; var a=Math.min(1,bannerFx.t*2);
-  cx.save(); cx.globalAlpha=a; cx.textAlign="center";
-  cx.fillStyle="rgba(0,0,0,"+(0.4*a)+")"; cx.fillRect(0,H*0.30,W,H*0.24);
-  cx.fillStyle="#ffcf5c"; cx.shadowColor="#ffcf5c"; cx.shadowBlur=24;
-  cx.font="bold "+Math.round(Math.min(56,W*0.05))+"px Georgia"; cx.textBaseline="middle";
-  cx.fillText(bannerFx.title, W/2, H*0.39);
-  cx.shadowBlur=0; cx.fillStyle="#fff3c0"; cx.font="bold "+Math.round(Math.min(34,W*0.03))+"px Georgia";
-  cx.fillText(bannerFx.sub, W/2, H*0.47);
+  if(bannerFx.t<=0)return;
+  bannerFx.t*=0.984;var a=Math.min(1,bannerFx.t*2);
+  var bw=Math.min(W*.72,560),bh=Math.min(H*.22,126),bx=(W-bw)/2,by=H*.34;
+  cx.save();cx.globalAlpha=a;
+  cx.fillStyle="rgba(7,19,27,.92)";cx.shadowColor="rgba(0,0,0,.45)";cx.shadowBlur=30;roundRect(bx,by,bw,bh,14);cx.fill();cx.shadowBlur=0;
+  cx.strokeStyle="rgba(74,112,132,.82)";cx.lineWidth=1.5;roundRect(bx+.5,by+.5,bw-1,bh-1,14);cx.stroke();
+  cx.textAlign="center";cx.textBaseline="middle";
+  cx.fillStyle="#79f287";cx.font="900 "+Math.round(Math.min(34,bw*.07))+"px 'Segoe UI',sans-serif";
+  cx.fillText(bannerFx.title,W/2,by+bh*.41);
+  cx.fillStyle="#f3f7fa";cx.font="850 "+Math.round(Math.min(24,bw*.05))+"px 'Segoe UI',sans-serif";
+  cx.fillText(bannerFx.sub,W/2,by+bh*.70);
   cx.restore();
 }
 // ---------- main loop ----------
@@ -1245,103 +1460,69 @@ function drawHousePlot(px,py,pw,ph,tier,glow,anim){
 }
 function drawHouses(t){
   var g=geom();
-  if(W<700){
-    var barW=Math.min(190,g.gw*0.58), barH=24, bx=g.gx+g.gw-barW-6, by=g.gy+g.gh-barH-6;
-    cx.save(); cx.fillStyle="rgba(8,10,22,0.78)"; cx.strokeStyle="rgba(231,182,74,0.55)"; cx.lineWidth=1;
-    roundRect(bx,by,barW,barH,8); cx.fill(); cx.stroke();
-    cx.fillStyle="#ffd76a"; cx.font="700 9px 'Segoe UI',sans-serif"; cx.textAlign="left"; cx.textBaseline="middle"; cx.fillText("VILLAGE",bx+7,by+barH/2);
-    var start=bx+49, seg=(barW-56)/3;
-    for(var mi=0;mi<3;mi++){
-      var fill=Math.max(0,Math.min(1,houses[mi]/4));
-      cx.fillStyle="rgba(255,255,255,0.12)"; roundRect(start+mi*seg,by+7,seg-5,10,4); cx.fill();
-      if(fill>0){ cx.fillStyle="#ffd76a"; roundRect(start+mi*seg,by+7,(seg-5)*fill,10,4); cx.fill(); }
-    }
-    cx.restore(); return;
-  }
-  var rightSpace = W - (g.gx+g.gw);
-  var pw = Math.min(120, rightSpace*0.78);
-  var ph = pw*0.82;
-  var colX = (g.gx+g.gw) + rightSpace*0.5;
-  var stackH = ph*3 + ph*0.35*2;
-  var y0 = g.gy + g.gh*0.42;
-  if(y0 + stackH > g.gy+g.gh) y0 = (g.gy+g.gh) - stackH;
-  if(y0 < g.gy+ph*0.6) y0 = g.gy+ph*0.6;
+  var bw=Math.min(264,g.gw*0.52),bh=38;
+  var bx=g.gx+g.gw-bw-8,by=g.gy+g.gh-bh-8;
   cx.save();
-  cx.font="bold 12px Georgia"; cx.textAlign="center"; cx.fillStyle="#ffd76a"; cx.textBaseline="alphabetic";
-  cx.fillText("VILLAGE", colX, y0 - ph*0.55);
+  cx.fillStyle="rgba(7,17,25,.88)";cx.strokeStyle="rgba(70,101,120,.78)";cx.lineWidth=1;
+  roundRect(bx,by,bw,bh,8);cx.fill();cx.stroke();
+  cx.fillStyle="#8fa6b6";cx.font="800 8px 'Segoe UI',sans-serif";cx.textAlign="left";cx.textBaseline="middle";
+  cx.fillText("VILLAGE BUILD",bx+9,by+10);
+  var start=bx+9, top=by+21, seg=(bw-18)/3;
   for(var i=0;i<3;i++){
-    var py = y0 + i*(ph*1.35);
-    if(houseAnim[i].p<1){ houseAnim[i].p+= (houses[i]===4?0.03:0.045); if(houseAnim[i].p>1)houseAnim[i].p=1; }
-    drawHousePlot(colX, py, pw, ph, houses[i], houseGlow[i], houseAnim[i]);
-    if(houseGlow[i]>0){ houseGlow[i]-=0.03; if(houseGlow[i]<0) houseGlow[i]=0; }
+    var sx=start+i*seg;
+    cx.fillStyle="#0e202c";roundRect(sx,top,seg-5,10,4);cx.fill();
+    var fill=Math.max(0,Math.min(1,houses[i]/4));
+    if(fill>0){
+      var pg=cx.createLinearGradient(sx,0,sx+seg,0);pg.addColorStop(0,"#00b92e");pg.addColorStop(1,"#52ef72");
+      cx.fillStyle=pg;roundRect(sx,top,(seg-5)*fill,10,4);cx.fill();
+    }
+    cx.fillStyle="#d7e1e8";cx.font="800 7px 'Segoe UI',sans-serif";cx.textAlign="center";
+    cx.fillText((i+1)+"  "+houses[i]+"/4",sx+(seg-5)/2,top+5);
   }
   cx.restore();
 }
-
 
 function jpPlate(x,y,w,h,label,val,c1,c2,glow,t){
-  cx.save();
-  cx.translate(x,y);
-  // outer frame
-  var fg=cx.createLinearGradient(0,0,0,h);
-  fg.addColorStop(0,"#3a2a12"); fg.addColorStop(0.5,"#8c6a24"); fg.addColorStop(1,"#3a2a12");
-  cx.fillStyle=fg; roundRect(-3,-3,w+6,h+6,10); cx.fill();
-  cx.strokeStyle="#d9b24e"; cx.lineWidth=1.5; roundRect(-3,-3,w+6,h+6,10); cx.stroke();
-  // inner panel
-  var ig=cx.createLinearGradient(0,0,0,h);
-  ig.addColorStop(0,c1); ig.addColorStop(1,c2);
-  cx.fillStyle=ig; roundRect(0,0,w,h,7); cx.fill();
-  // gloss
-  cx.save(); roundRect(0,0,w,h,7); cx.clip();
-  var gl=cx.createLinearGradient(0,0,0,h*0.5); gl.addColorStop(0,"rgba(255,255,255,0.35)"); gl.addColorStop(1,"rgba(255,255,255,0)");
-  cx.fillStyle=gl; cx.fillRect(0,0,w,h*0.5); cx.restore();
-  // pulsing glow when glow true
-  if(glow){ cx.save(); cx.strokeStyle="rgba(255,236,150,"+(0.4+0.4*Math.sin(t*0.02))+")"; cx.lineWidth=3; cx.shadowColor="#ffe08a"; cx.shadowBlur=14; roundRect(0,0,w,h,7); cx.stroke(); cx.restore(); }
-  // label
-  cx.textAlign="center"; cx.textBaseline="middle";
-  cx.fillStyle="rgba(0,0,0,0.35)"; cx.font="800 "+Math.round(h*0.30)+"px 'Segoe UI',sans-serif";
-  cx.fillText(label, w/2, h*0.30+1);
-  cx.fillStyle="#fff3c8"; cx.fillText(label, w/2, h*0.30);
-  // value
-  cx.fillStyle="#0a0a0a"; cx.font="900 "+Math.round(h*0.40)+"px 'Segoe UI',sans-serif";
-  cx.fillText(val, w/2+1, h*0.70+1);
-  cx.fillStyle="#fffbe6"; cx.fillText(val, w/2, h*0.70);
+  cx.save();cx.translate(x,y);
+  cx.fillStyle="rgba(12,29,39,.90)";roundRect(0,0,w,h,8);cx.fill();
+  cx.strokeStyle=glow?c1:"rgba(72,104,124,.65)";cx.lineWidth=glow?1.7:1;roundRect(.5,.5,w-1,h-1,8);cx.stroke();
+  if(glow){
+    cx.save();cx.globalAlpha=.15+.08*Math.sin(t*.006);cx.fillStyle=c1;roundRect(0,0,w,h,8);cx.fill();cx.restore();
+  }
+  cx.textAlign="left";cx.textBaseline="middle";
+  cx.fillStyle=c1;cx.font="850 "+Math.max(7,Math.round(h*.19))+"px 'Segoe UI',sans-serif";
+  cx.fillText(label,9,h*.32);
+  cx.fillStyle="#f4f8fa";cx.font="900 "+Math.max(9,Math.round(h*.28))+"px 'Segoe UI',sans-serif";
+  cx.fillText(val,9,h*.68);
   cx.restore();
 }
+function fmtCompact(n){
+  n=Math.floor(n);
+  if(n>=1000000)return (n/1000000).toFixed(n>=10000000?0:1)+"M";
+  if(n>=1000)return (n/1000).toFixed(n>=100000?0:1)+"K";
+  return fmt(n);
+}
 function drawJackpots(t){
-cx.save(); cx.setTransform(DPR,0,0,DPR,0,0); cx.globalAlpha=1;
-var g=geom();
-var jp = (window.JP = window.JP || {mega:250000,grand:50000,major:5000,minor:500,mini:100});
-jp.mega += (0.5+rng())*4; jp.grand += (0.3+rng())*2; jp.major += rng()*0.7;
-// ---- ONE unified header assembly spanning the top ----
-var hx = Math.max(10, g.gx - g.gw*0.06);
-var hw = Math.min(W-20, (g.gx+g.gw) - hx + g.gw*0.06);
-var hy = 6;
-var hh = Math.max(60, g.top - 12);
-// header shell (dark wood-tone frame with gold trim)
-cx.save();
-var sh=cx.createLinearGradient(0,hy,0,hy+hh);
-sh.addColorStop(0,"#1c1408"); sh.addColorStop(0.5,"#3a2a12"); sh.addColorStop(1,"#140d05");
-cx.fillStyle=sh; roundRect(hx,hy,hw,hh,14); cx.fill();
-var trg=cx.createLinearGradient(0,hy,0,hy+hh);
-trg.addColorStop(0,"#f0cf6e"); trg.addColorStop(0.5,"#a67c2c"); trg.addColorStop(1,"#6e4f18");
-cx.strokeStyle=trg; cx.lineWidth=3; roundRect(hx,hy,hw,hh,14); cx.stroke();
-cx.restore();
-// layout inside header: [GRAND/MAJOR] [ MEGA ] [MINOR/MINI]
-var pad=10;
-var innerX=hx+pad, innerY=hy+pad, innerW=hw-pad*2, innerH=hh-pad*2;
-var sideW=innerW*0.24, megaW=innerW-sideW*2-16;
-var lX=innerX, mX=innerX+sideW+8, rX=innerX+sideW+8+megaW+8;
-var halfH=(innerH-6)/2;
-// left column
-jpPlate(lX,innerY,sideW,halfH,"GRAND",fmt(Math.floor(jp.grand)),"#c9a2ff","#7d43d6",false,t);
-jpPlate(lX,innerY+halfH+6,sideW,halfH,"MAJOR",fmt(Math.floor(jp.major)),"#8fd0ff","#2f7fd6",false,t);
-// center MEGA (emphasized, full height)
-jpPlate(mX,innerY,megaW,innerH,"MEGA JACKPOT",fmt(Math.floor(jp.mega)),"#ffe27a","#e0a51f",true,t);
-// right column
-jpPlate(rX,innerY,sideW,halfH,"MINOR",fmt(jp.minor),"#ffd28f","#d67f2f",false,t);
-jpPlate(rX,innerY+halfH+6,sideW,halfH,"MINI",fmt(jp.mini),"#a8f0a0","#3f9a3a",false,t);
-cx.restore();
+  cx.save();cx.setTransform(DPR,0,0,DPR,0,0);cx.globalAlpha=1;
+  var g=geom(),jp=(window.JP=window.JP||{mega:250000,grand:50000,major:5000,minor:500,mini:100});
+  jp.mega+=(0.5+rng())*4;jp.grand+=(0.3+rng())*2;jp.major+=rng()*.7;
+  var gap=W<560?4:7;
+  var hx=Math.max(8,g.gx), hw=Math.min(g.gw,W-16),hy=7,hh=Math.max(42,Math.min(54,g.top-12));
+  var weights=[1,1,1.35,1,1],sum=5.35;
+  var totalGaps=gap*4,unit=(hw-totalGaps)/sum,xx=hx;
+  var data=[
+    ["GRAND",jp.grand,"#c69cff","#8059cc"],
+    ["MAJOR",jp.major,"#68b9ff","#3c87c8"],
+    ["MEGA",jp.mega,"#74f48b","#00b92e"],
+    ["MINOR",jp.minor,"#ffbd66","#c77828"],
+    ["MINI",jp.mini,"#6bd8ff","#3185a7"]
+  ];
+  for(var i=0;i<data.length;i++){
+    var cw=unit*weights[i];
+    jpPlate(xx,hy,cw,hh,data[i][0],fmtCompact(data[i][1]),data[i][2],data[i][3],i===2,t);
+    xx+=cw+gap;
+  }
+  cx.restore();
 }
 
 
@@ -1500,7 +1681,7 @@ window.addEventListener("keydown",function(e){
     function $(id){ return document.getElementById(id); }
     function fmtNum(n){ return (Math.round(n)).toLocaleString(); }
     var dSpin=$("d_spin"), dMinus=$("d_minus"), dPlus=$("d_plus"), dAuto=$("d_auto"), dTurbo=$("d_turbo"), dMenu=$("d_menu"), dSound=$("d_sound"), dStats=$("d_stats");
-    var dBal=$("d_bal"), dBet=$("d_bet"), dWin=$("d_win");
+    var dBal=$("d_bal"), dBet=$("d_bet"), dWin=$("d_win"), shellBal=$("shell_bal"), railSound=$("rail_sound");
     function resumeAudio(){ try{ if(ac() && ac().state==="suspended") ac().resume(); }catch(e){} }
     if(dSpin) dSpin.addEventListener("click",function(){ resumeAudio(); if(G.state==="SPINNING"){ quickStop=true; } else if(canSpin()){ doSpin(); } });
     if(dMinus) dMinus.addEventListener("click",function(){ if(G.state!=="READY") return; var i=BETS.indexOf(G.bet); if(i>0){ G.bet=BETS[i-1]; save(); } });
@@ -1512,6 +1693,7 @@ window.addEventListener("keydown",function(e){
     if(dStats) dStats.addEventListener("click",function(){ try{ showStats(); }catch(e){} openPanel("statsPanel"); });
     window.__syncDeck=function(){
       if(dBal) dBal.textContent=fmtNum(G.bal);
+      if(shellBal) shellBal.textContent=fmtNum(G.bal);
       if(dBet) dBet.textContent=fmtNum(G.bet);
       var winShow = (typeof winFx!=="undefined" && winFx.active)? Math.floor(winFx.shown) : (G.lastWin||0);
       if(dWin) dWin.textContent=fmtNum(winShow);
@@ -1525,8 +1707,25 @@ window.addEventListener("keydown",function(e){
       if(dAuto){ dAuto.classList.toggle("off", !(G.auto>0)); dAuto.textContent=G.auto>0?("AUTO "+G.auto):"AUTO"; }
       if(dTurbo){ dTurbo.classList.toggle("off", !G.turbo); dTurbo.textContent=G.turbo?"TURBO ON":"TURBO"; }
       if(dSound){ dSound.classList.toggle("off", !G.sound); dSound.textContent=G.sound?"SOUND":"MUTED"; }
+      if(railSound){ railSound.classList.toggle("active",G.sound); var rtxt=railSound.querySelector("span:last-child"); if(rtxt)rtxt.textContent=G.sound?"SOUND":"MUTED"; }
     };
   })();
+// ---------- casino shell controls ----------
+function toggleFullscreen(){
+  try{
+    if(document.fullscreenElement){ document.exitFullscreen(); }
+    else if(document.documentElement.requestFullscreen){ document.documentElement.requestFullscreen(); }
+  }catch(e){}
+}
+(function(){
+  var ri=document.getElementById("rail_info"), rs=document.getElementById("rail_stats"), rso=document.getElementById("rail_sound");
+  var gi=document.getElementById("game_info"), gf=document.getElementById("game_full");
+  if(ri)ri.addEventListener("click",function(){openPanel("infoPanel");});
+  if(rs)rs.addEventListener("click",function(){showStats();openPanel("statsPanel");});
+  if(rso)rso.addEventListener("click",function(){G.sound=!G.sound;save();});
+  if(gi)gi.addEventListener("click",function(){openPanel("infoPanel");});
+  if(gf)gf.addEventListener("click",toggleFullscreen);
+})();
 // ---------- panels ----------
 function openPanel(id){ var p=document.getElementById(id); if(!p)return; centerPanel(p); p.style.display="block"; }
 function closePanel(id){ var p=document.getElementById(id); if(p) p.style.display="none"; }
@@ -1560,7 +1759,7 @@ function refreshBuyLabels(){ if(bfs)bfs.textContent="FORCE FREE SPINS"; if(bhw)b
 setInterval(refreshBuyLabels, 500);
 // ---------- boot ----------
 initReels();
-var ld=document.getElementById("loading"); if(ld) setTimeout(function(){ ld.style.display="none"; }, 500);
+var ld=document.getElementById("loading"); if(ld) setTimeout(function(){ ld.style.display="none"; }, 650);
  // WATCHDOG: reels advance in the RAF loop, which browsers pause when the tab is hidden. If a spin gets stuck (e.g. player switched tabs mid-spin), force it to resolve on wall-clock time so the game never soft-locks in SPINNING.
  setInterval(function(){ try{ if(G.state==="SPINNING" && spinStart>0 && (performance.now()-spinStart)>6000){ for(var wr=0;wr<5;wr++){ var rl=reels[wr]; if(rl.phase!=="landed"){ rl.phase="landed"; rl.pos=rl.landing; rl.pt=0; rl.blurOff=0; rl.spring=0; rl.pop=1; rl.spinning=false; } } if(!spinResolved){ spinResolved=true; spinResolved=false; finishSpin(); } } }catch(e){} }, 1000);
 requestAnimationFrame(loop);
