@@ -1,4 +1,4 @@
-body.game-page{--header:58px;--sidebar:72px;overflow:auto!important;background:#08131b!important}
+html{overflow:auto!important}\nbody.game-page{--header:58px;--sidebar:72px;overflow:auto!important;background:#08131b!important}
 body.game-page .casino-header{height:var(--header)}body.game-page .casino-sidebar{top:var(--header);width:var(--sidebar)}
 .game-page-main{margin-left:var(--sidebar);padding-top:var(--header);min-height:100vh;background:#07121a}
 .game-toolbar{height:48px;display:flex;align-items:center;gap:10px;padding:0 13px;background:#0e202b;border-bottom:1px solid #223b4b;position:sticky;top:var(--header);z-index:180}
