@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220">
+<defs>
+ <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#98a3ad"/><stop offset=".5" stop-color="#59616a"/><stop offset="1" stop-color="#30363b"/></linearGradient>
+ <radialGradient id="muzzle"><stop stop-color="#aab3ba"/><stop offset="1" stop-color="#5d656b"/></radialGradient>
+ <filter id="s"><feDropShadow dx="0" dy="8" stdDeviation="5" flood-opacity=".55"/></filter>
+</defs>
+<g filter="url(#s)" stroke="#22272c" stroke-linejoin="round">
+ <path d="M50 67 24 15l57 34M170 67l26-52-57 34" fill="#454b52" stroke-width="8"/>
+ <path d="M61 59 42 29l39 25M159 59l19-30-39 25" fill="#747d86" stroke-width="5"/>
+ <path d="M110 22 150 59 183 55 171 120 151 173 110 201 69 173 49 120 37 55 70 59Z" fill="url(#fur)" stroke-width="8"/>
+ <path d="M68 91q19-23 39-6M152 91q-19-23-39-6" fill="none" stroke-width="7"/>
+ <path d="m65 102 36 6-32 22M155 102l-36 6 32 22" fill="#c4f4ff" stroke-width="4"/>
+ <ellipse cx="85" cy="113" rx="5" ry="7" fill="#0e1519" stroke="none"/><ellipse cx="135" cy="113" rx="5" ry="7" fill="#0e1519" stroke="none"/>
+ <path d="M75 140q35-29 70 0v22q-35 30-70 0Z" fill="url(#muzzle)" stroke-width="5"/>
+ <path d="m94 142 16 14 16-14Z" fill="#131619" stroke-width="3"/>
+ <path d="M87 165q23 18 46 0" fill="none" stroke-width="5"/>
+ <path d="m83 174 9 22 12-18M137 174l-9 22-12-18" fill="#f7f6f1" stroke-width="3"/>
+ <path d="M54 132 38 145M166 132l16 13" stroke="#7b858d" stroke-width="5"/>
+</g></svg>
