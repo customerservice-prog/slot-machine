@@ -1,8 +1,13 @@
 {
-  "name": "big-bad-wolf-riches",
-  "version": "1.0.0",
-  "description": "Free-play virtual slot machine (no real money).",
+  "name": "pineda-power-free-play",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Free-play slot-style browser game with bonus features and no real-money wagering.",
   "scripts": {
-    "start": "npx --yes serve -s . -l ${PORT:-3000}"
+    "start": "node server.js",
+    "test": "node smoke-test.js"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
