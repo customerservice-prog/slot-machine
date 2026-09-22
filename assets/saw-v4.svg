@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220">
+<defs><radialGradient id="steel" cx=".34" cy=".28"><stop stop-color="#fff"/><stop offset=".45" stop-color="#c2ced2"/><stop offset="1" stop-color="#687477"/></radialGradient><filter id="d"><feDropShadow dx="0" dy="8" stdDeviation="5" flood-opacity=".55"/></filter></defs>
+<g filter="url(#d)" transform="translate(110 110)" stroke-linejoin="round">
+ <path d="M0-93 18-75 43-86 52-60 80-54 70-25 95 0 70 25 80 54 52 60 43 86 18 75 0 93-18 75-43 86-52 60-80 54-70 25-95 0-70-25-80-54-52-60-43-86-18-75Z" fill="url(#steel)" stroke="#4d585b" stroke-width="8"/>
+ <circle r="57" fill="none" stroke="#eef6f7" stroke-width="7" opacity=".72"/>
+ <circle r="39" fill="#879397" stroke="#566164" stroke-width="7"/>
+ <circle r="19" fill="#f29b34" stroke="#874812" stroke-width="7"/>
+ <circle r="6" fill="#3b4143"/>
+ <path d="M-69 0h27M42 0h27M0-69v27M0 42v27" stroke="#e2e9ea" stroke-width="5" opacity=".8"/>
+</g></svg>
