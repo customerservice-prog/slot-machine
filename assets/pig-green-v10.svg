@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220">
+<defs>
+ <radialGradient id="skin" cx=".33" cy=".23"><stop stop-color="#ffe6ed"/><stop offset=".5" stop-color="#f5b1c2"/><stop offset="1" stop-color="#c76584"/></radialGradient>
+ <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7ed45c"/><stop offset="1" stop-color="#2b7b34"/></linearGradient>
+ <filter id="s"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-opacity=".45"/></filter>
+</defs>
+<g filter="url(#s)" stroke-linejoin="round">
+ <path d="M35 214q9-69 75-69t75 69Z" fill="url(#shirt)" stroke="#1f5c28" stroke-width="8"/>
+ <path d="M59 187h103" stroke="#baf09a" stroke-width="7" opacity=".65"/>
+ <path d="M68 73 42 28l53 28M152 73l26-45-53 28" fill="#dc7896" stroke="#9f4e6b" stroke-width="7"/>
+ <circle cx="110" cy="100" r="67" fill="url(#skin)" stroke="#9f4e6b" stroke-width="8"/>
+ <ellipse cx="110" cy="129" rx="41" ry="30" fill="#ffcbd8" stroke="#d87996" stroke-width="5"/>
+ <ellipse cx="95" cy="129" rx="6" ry="8" fill="#7b4056"/><ellipse cx="125" cy="129" rx="6" ry="8" fill="#7b4056"/>
+ <circle cx="86" cy="96" r="8" fill="#19211e"/><circle cx="134" cy="96" r="8" fill="#19211e"/>
+ <circle cx="83" cy="93" r="2.4" fill="#fff"/><circle cx="131" cy="93" r="2.4" fill="#fff"/>
+ <path d="M62 66q18-48 75-36 28 6 39 34l-8 21H69Z" fill="#5dc447" stroke="#246c2f" stroke-width="7"/>
+ <path d="M66 82h106" stroke="#99e978" stroke-width="7"/>
+ <path d="M81 154q29 17 58 0" fill="none" stroke="#9c4e67" stroke-width="4"/>
+ <g transform="translate(140 160)">
+  <path d="M0 9 36 0l10 40-35 9Z" fill="#b17a3b" stroke="#6c421e" stroke-width="6"/>
+  <path d="M8 7 18-12M23 4 34-17M37 3 50-11" stroke="#d7e2e4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M36 0 51-8" stroke="#d94a3f" stroke-width="7" stroke-linecap="round"/>
+ </g>
+</g></svg>
