@@ -507,6 +507,7 @@ function initEvents(){
   dom.statsBtn.addEventListener("click",()=>showModal("stats"));
   dom.soundBtn.addEventListener("click",()=>{state.sound=!state.sound;dom.soundBtn.textContent=state.sound?"◖":"×";save();toast(state.sound?"Sound on":"Muted")});
   dom.fullBtn.addEventListener("click",fullscreen);
+  dom.creditPlus?.addEventListener("click",()=>{state.balance+=2500;syncMeters();toast("+2,500 free-play credits")});
   dom.brandHome.addEventListener("click",closeModal);
   dom.backdrop.addEventListener("click",closeModal);document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",closeModal));
   dom.reloadBtn.addEventListener("click",()=>location.reload());
@@ -530,7 +531,7 @@ function boot(){
       revealOverlay:$("revealOverlay"),revealGrid:$("revealGrid"),revealTotal:$("revealTotal"),
       toast:$("toast"),runtimeError:$("runtimeError"),runtimeErrorText:$("runtimeErrorText"),reloadBtn:$("reloadBtn"),
       featureModeBanner:$("featureModeBanner"),featureBannerText:$("featureBannerText"),featureBannerIcon:$("featureBannerIcon"),
-      bonusWinPanel:$("bonusWinPanel"),bonusWinValue:$("bonusWinValue")
+      bonusWinPanel:$("bonusWinPanel"),bonusWinValue:$("bonusWinValue"),creditPlus:$("creditPlus")
     });
     const required=["reels","spinBtn","balance","wheelOverlay","freeOverlay","revealOverlay","runtimeError"];
     required.forEach(k=>{if(!dom[k])throw new Error("Missing UI element: "+k)});
