@@ -3,8 +3,8 @@ const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:chil
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"pineda-huff-v4.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"pineda-huff-v4.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"pineda-huff-v5.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"pineda-huff-v5.js"),"utf8");
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
 
@@ -21,9 +21,14 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["runtime error",'id="runtimeError"']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(html.includes('/pineda-huff-v4.css'),"v3 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v4.js'),"v3 engine not pinned");
+assert(html.includes('/pineda-huff-v5.css'),"v3 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v5.js'),"v3 engine not pinned");
 assert(css.includes(".game-cabinet"),"cabinet CSS missing");
+assert(css.includes("V5 REFERENCE-PROPORTION CABINET"),"v5 reference-proportion CSS missing");
+assert(css.includes("aspect-ratio:1.035/1"),"near-square cabinet proportion missing");
+assert(css.includes("width:920px"),"reference-scale wheel missing");
+assert(css.includes("grid-template-columns:56px minmax(0,1fr) 68px"),"compact side rails missing");
+assert(css.includes("aspect-ratio:5/3"),"5x3 reel proportion missing");
 assert(html.includes("/assets/pineda-v4-logo.svg"),"v4 logo art missing");
 assert(html.includes("/assets/wolf-v4.svg"),"v4 wolf cabinet art missing");
 ["pig-green-v4.svg","pig-blue-v4.svg","hardhat-v4.svg","saw-v4.svg","toolbox-v4.svg","tape-v4.svg"].forEach(name=>{
@@ -70,7 +75,7 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/pineda-huff-v4.css","/pineda-huff-v4.js"]){
+  for(const p of ["/","/pineda-huff-v5.css","/pineda-huff-v5.js"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
     assert((r.headers.get("cache-control")||"").includes("no-store"),p+" must be no-store");
