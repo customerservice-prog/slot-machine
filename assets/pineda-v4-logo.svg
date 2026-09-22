@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 190">
+<defs>
+ <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff488"/><stop offset=".45" stop-color="#ffd23f"/><stop offset="1" stop-color="#e48b1a"/></linearGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b9f4ff"/><stop offset=".45" stop-color="#5fc9f2"/><stop offset="1" stop-color="#2777aa"/></linearGradient>
+ <filter id="ds"><feDropShadow dx="0" dy="8" stdDeviation="4" flood-color="#251300" flood-opacity=".72"/></filter>
+</defs>
+<g filter="url(#ds)">
+ <path d="M82 74c12-52 56-70 92-49 28-25 82-10 86 34 29-19 77-3 80 35-55 10-195 10-258-20Z" fill="#fff" opacity=".93"/>
+ <text x="310" y="84" text-anchor="middle" font-family="Arial Black,Arial" font-size="69" font-style="italic" fill="url(#gold)" stroke="#6f3c0a" stroke-width="8" paint-order="stroke">PINEDA</text>
+ <text x="310" y="151" text-anchor="middle" font-family="Arial Black,Arial" font-size="83" font-style="italic" fill="url(#blue)" stroke="#24516d" stroke-width="8" paint-order="stroke">POWER</text>
+ <path d="M145 160h330" stroke="#ffdf63" stroke-width="7" stroke-linecap="round"/>
+ <rect x="250" y="161" width="120" height="25" rx="12" fill="#6c3510" stroke="#f1ad35" stroke-width="3"/>
+ <text x="310" y="179" text-anchor="middle" font-family="Arial Black,Arial" font-size="12" fill="#fff0aa" letter-spacing="3">FREE PLAY</text>
+</g></svg>
