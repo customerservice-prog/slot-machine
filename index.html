@@ -3,196 +3,206 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#07131c">
-  <meta name="description" content="Pineda Power — a free-play social slot-style game with bonus features, jackpots, free spins and hold-and-win.">
+  <meta name="theme-color" content="#17380f">
+  <meta name="description" content="Pineda Power — a free-play Three Little Pigs-inspired slot-style game with hard hats, buzz saws, free spins and a bonus wheel.">
   <title>Pineda Power — Free Play</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div id="app" class="app">
-  <header class="topbar">
-    <button class="brand" id="navGame" type="button" aria-label="Return to game">
+<div class="site-shell">
+  <header class="site-topbar">
+    <button class="brand" id="brandHome" type="button">
       <span class="brand-mark">PP</span>
-      <span class="brand-copy"><b>Pineda Power</b><small>ORIGINAL • FREE PLAY</small></span>
+      <span class="brand-copy">
+        <b>Pineda Power</b>
+        <small>FREE-PLAY ORIGINAL</small>
+      </span>
     </button>
-    <nav class="topnav" aria-label="Game navigation">
-      <button class="nav-pill active" id="navGame2" type="button">Game</button>
-      <button class="nav-pill" id="navRules" type="button">Rules</button>
-      <button class="nav-pill" id="navStats" type="button">Stats</button>
-    </nav>
-    <div class="topbar-spacer"></div>
-    <div class="free-note">NO PURCHASE • NO CASH VALUE</div>
-    <div class="wallet" aria-label="Free-play credit balance">
-      <span class="wallet-icon">C</span>
-      <span class="wallet-copy"><small>PLAY CREDITS</small><strong id="topBalance">2,500</strong></span>
+
+    <div class="top-actions">
+      <button class="top-btn" id="rulesBtn" type="button">RULES</button>
+      <button class="top-btn" id="statsBtn" type="button">STATS</button>
+      <button class="top-btn icon" id="soundBtn" type="button" aria-label="Toggle sound">◖</button>
+      <button class="top-btn icon" id="fullBtn" type="button" aria-label="Fullscreen">⛶</button>
+    </div>
+
+    <div class="wallet">
+      <small>PLAY CREDITS</small>
+      <strong id="walletBalance">2,500</strong>
     </div>
   </header>
 
-  <aside class="rail">
-    <button class="rail-btn active" id="railGame" type="button"><span>◆</span><small>GAME</small></button>
-    <button class="rail-btn" id="railRules" type="button"><span>ⓘ</span><small>RULES</small></button>
-    <button class="rail-btn" id="railStats" type="button"><span>▥</span><small>STATS</small></button>
-    <div class="rail-grow"></div>
-    <button class="rail-btn" id="railSound" type="button"><span>◖</span><small>SOUND</small></button>
-    <button class="rail-btn" id="railFull" type="button"><span>⛶</span><small>FULL</small></button>
-  </aside>
+  <main class="page">
+    <section class="game-shell" aria-label="Pineda Power game">
+      <div class="forest-sky"></div>
 
-  <main class="main">
-    <section class="machine" aria-label="Pineda Power slot game">
-      <div class="machine-top">
-        <div>
-          <div class="eyebrow">PINEDA POWER ORIGINAL</div>
-          <h1>BUILD. SPIN. BREAK THROUGH.</h1>
+      <div class="game-logo" aria-label="Pineda Power">
+        <span class="logo-top">PINEDA</span>
+        <span class="logo-bottom">POWER</span>
+        <i class="puff p1"></i><i class="puff p2"></i><i class="puff p3"></i>
+      </div>
+
+      <section class="jackpot-row" aria-label="Free-play jackpot values">
+        <div class="jp minor">
+          <small>MINOR</small>
+          <strong id="jpMinor">500</strong>
         </div>
-        <div class="mode-badge" id="modeBadge">BASE GAME</div>
-      </div>
+        <div class="jp grand">
+          <small>GRAND</small>
+          <strong id="jpGrand">50,000</strong>
+        </div>
+        <div class="jp major">
+          <small>MAJOR</small>
+          <strong id="jpMajor">10,000</strong>
+        </div>
+        <div class="jp mini">
+          <small>MINI</small>
+          <strong id="jpMini">100</strong>
+        </div>
+      </section>
 
-      <div class="jackpots" aria-label="Jackpot values">
-        <div class="jackpot mini"><small>MINI</small><strong id="jpMini">100</strong></div>
-        <div class="jackpot minor"><small>MINOR</small><strong id="jpMinor">250</strong></div>
-        <div class="jackpot grand"><small>GRAND</small><strong id="jpGrand">5,000</strong></div>
-        <div class="jackpot major"><small>MAJOR</small><strong id="jpMajor">1,000</strong></div>
-      </div>
+      <section class="wheel-crown" aria-label="Bonus wheel">
+        <div class="wheel-arc">
+          <div class="wheel-seg seg1"><b>BUZZ SAW</b><span>FEATURE</span></div>
+          <div class="wheel-seg seg2"><b>MEGA HAT</b><span>FEATURE</span></div>
+          <div class="wheel-seg seg3"><b>MANSION</b><span>FEATURE</span></div>
+          <div class="wheel-seg seg4"><b>GRAND</b><span>JACKPOT</span></div>
+          <div class="wheel-seg seg5"><b>MAJOR</b><span>JACKPOT</span></div>
+          <div class="wheel-seg seg6"><b>MINOR</b><span>BONUS</span></div>
+        </div>
+        <div class="wolf-peek" aria-hidden="true">
+          <div class="wolf-ear left"></div>
+          <div class="wolf-ear right"></div>
+          <div class="wolf-head">
+            <span class="wolf-eye e1"></span><span class="wolf-eye e2"></span>
+            <span class="wolf-nose"></span>
+          </div>
+        </div>
+      </section>
 
-      <div class="game-layout">
-        <aside class="build-panel">
-          <div class="build-title">
-            <span>BUILD METER</span>
-            <b>Finish all 3 for 50×</b>
+      <div class="machine-body">
+        <aside class="feature-rail">
+          <button class="feature-info" id="featureInfo" type="button">
+            <span>?</span>
+            <b>HOW TO PLAY</b>
+          </button>
+          <div class="ways-badge">
+            <strong>243</strong>
+            <span>WAYS</span>
           </div>
-          <div class="build-project" data-project="0">
-            <div class="house-icon"><i></i></div>
-            <div class="build-copy"><strong>LOT 01</strong><small id="buildLabel0">FOUNDATION</small></div>
-            <div class="build-track"><span id="buildBar0"></span></div>
+          <div class="trigger-card hat-trigger">
+            <div class="tiny-hat"></div>
+            <b>6+</b>
+            <span>FREE SPINS</span>
           </div>
-          <div class="build-project" data-project="1">
-            <div class="house-icon"><i></i></div>
-            <div class="build-copy"><strong>LOT 02</strong><small id="buildLabel1">FOUNDATION</small></div>
-            <div class="build-track"><span id="buildBar1"></span></div>
-          </div>
-          <div class="build-project" data-project="2">
-            <div class="house-icon"><i></i></div>
-            <div class="build-copy"><strong>LOT 03</strong><small id="buildLabel2">FOUNDATION</small></div>
-            <div class="build-track"><span id="buildBar2"></span></div>
-          </div>
-          <div class="feature-tip">
-            <span class="tip-dot"></span>
-            Build symbols upgrade the lowest lot. Complete all three to trigger a 50× credit award.
+          <div class="trigger-card saw-trigger">
+            <div class="tiny-saw">✹</div>
+            <b>3+</b>
+            <span>POWER WHEEL</span>
           </div>
         </aside>
 
-        <div class="reel-stage">
-          <div class="stage-light"></div>
-          <div id="reels" class="reels" aria-label="5 reel by 3 row slot grid"></div>
-          <div class="reel-shadow top"></div>
-          <div class="reel-shadow bottom"></div>
-          <div id="anticipation" class="anticipation"></div>
-        </div>
+        <section class="reel-window" aria-label="Five reels">
+          <div class="tree-line"></div>
+          <div id="reels" class="reels"></div>
+          <div class="grass-edge"></div>
+          <div id="anticipationGlow" class="anticipation-glow"></div>
+          <div id="featureLabel" class="feature-label" hidden></div>
+        </section>
+
+        <aside class="spin-rail">
+          <button class="round-control small" id="betMinus" type="button" aria-label="Decrease bet">−</button>
+          <button class="spin-control" id="spinBtn" type="button" aria-label="Spin">
+            <span class="spin-arrow">↻</span>
+            <b id="spinLabel">SPIN</b>
+          </button>
+          <button class="round-control small" id="betPlus" type="button" aria-label="Increase bet">+</button>
+          <button class="side-mode" id="autoBtn" type="button">AUTO</button>
+          <button class="side-mode" id="turboBtn" type="button">TURBO</button>
+        </aside>
       </div>
 
-      <div class="statusbar">
-        <div class="status-left"><span class="status-dot"></span><span id="statusText">READY</span></div>
-        <div class="status-center" id="sessionMessage">6+ Bonus Coins trigger Hold & Win • 3+ Saws trigger the Bonus Wheel</div>
-        <div class="status-right">20 LINES</div>
-      </div>
+      <footer class="game-meter">
+        <div class="meter-block">
+          <small>BALANCE</small>
+          <strong id="balance">2,500</strong>
+        </div>
+        <div class="meter-block center">
+          <small>WIN</small>
+          <strong id="winValue">0</strong>
+        </div>
+        <div class="meter-block right">
+          <small>BET</small>
+          <strong id="betValue">10</strong>
+        </div>
+        <div class="status-copy" id="statusCopy">6+ hard hats = Free Spins • 3+ buzz saws = Power Wheel</div>
+      </footer>
     </section>
   </main>
-
-  <footer class="controls" aria-label="Game controls">
-    <button class="ghost-btn" id="btnMenu" type="button">MENU</button>
-    <div class="meter"><small>BALANCE</small><strong id="balance">2,500</strong></div>
-    <button class="step-btn" id="betDown" type="button" aria-label="Decrease bet">−</button>
-    <div class="meter bet-meter"><small>BET</small><strong id="bet">10</strong></div>
-    <button class="spin-btn" id="spin" type="button">SPIN</button>
-    <button class="step-btn" id="betUp" type="button" aria-label="Increase bet">+</button>
-    <div class="meter"><small>LAST WIN</small><strong id="lastWin">0</strong></div>
-    <button class="control-btn" id="auto" type="button">AUTO</button>
-    <button class="control-btn" id="turbo" type="button">TURBO</button>
-  </footer>
 </div>
 
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="modalBackdrop" class="backdrop" hidden></div>
 
-<div id="winSplash" class="win-splash" aria-hidden="true">
-  <div class="win-card">
-    <small id="winTier">BIG WIN</small>
-    <strong id="winAmount">0</strong>
-    <span>PLAY CREDITS</span>
-  </div>
-</div>
-
-<div id="modalBackdrop" class="modal-backdrop" hidden></div>
-
-<section id="rulesModal" class="modal" hidden aria-modal="true" role="dialog" aria-labelledby="rulesTitle">
+<section id="rulesModal" class="modal" hidden aria-modal="true" role="dialog">
   <button class="modal-close" data-close type="button">×</button>
   <div class="modal-kicker">HOW TO PLAY</div>
-  <h2 id="rulesTitle">Pineda Power Rules</h2>
-  <div class="rules-grid">
-    <article><b>3+ Buzz Saws</b><span>Triggers the Bonus Wheel.</span></article>
-    <article><b>6+ Bonus Coins</b><span>Starts Hold & Win with 3 respins.</span></article>
-    <article><b>Build Symbols</b><span>Straw, Timber, Brick and Estate upgrade the lowest construction lot.</span></article>
-    <article><b>Complete All Lots</b><span>Earns 50× your current bet, then the build meter resets.</span></article>
-    <article><b>Wild</b><span>Substitutes for standard paying symbols.</span></article>
-    <article><b>Free Spins</b><span>Can be awarded by the Bonus Wheel. Build progress accelerates during the feature.</span></article>
+  <h2>Build the Houses. Beat the Wolf.</h2>
+  <div class="rules-list">
+    <article><div class="rule-icon hat"></div><b>6+ Hard Hats</b><p>Start 6 free spins. The triggering positions begin with Straw Frames.</p></article>
+    <article><div class="rule-icon saw">✹</div><b>3+ Buzz Saws</b><p>Start the Power Wheel for jackpots or one of three special build features.</p></article>
+    <article><div class="rule-icon frame"></div><b>Frame Upgrades</b><p>Hard Hats upgrade reel positions from Straw → Wood → Brick during feature spins.</p></article>
+    <article><div class="rule-icon house"></div><b>House Reveal</b><p>At the end of a feature, framed positions reveal free-play credit awards and jackpot chances.</p></article>
   </div>
   <div class="paytable" id="paytable"></div>
-  <p class="legal-note">Free-play entertainment only. Credits have no cash value. No deposits, purchases, withdrawals, or prize redemption are available in this game.</p>
+  <p class="legal-note">This is a free-play entertainment game. Credits have no cash value and cannot be deposited, withdrawn, purchased, or redeemed for prizes.</p>
 </section>
 
-<section id="statsModal" class="modal" hidden aria-modal="true" role="dialog" aria-labelledby="statsTitle">
+<section id="statsModal" class="modal small" hidden aria-modal="true" role="dialog">
   <button class="modal-close" data-close type="button">×</button>
   <div class="modal-kicker">SESSION</div>
-  <h2 id="statsTitle">Game Statistics</h2>
-  <div id="statsGrid" class="stats-grid"></div>
-  <p class="legal-note">Session RTP is a record of this device's current free-play session, not a theoretical RTP claim.</p>
+  <h2>Statistics</h2>
+  <div class="stats-grid" id="statsGrid"></div>
+  <p class="legal-note">Session statistics describe only this device's current free-play history.</p>
 </section>
 
-<section id="menuModal" class="modal small" hidden aria-modal="true" role="dialog" aria-labelledby="menuTitle">
-  <button class="modal-close" data-close type="button">×</button>
-  <div class="modal-kicker">GAME MENU</div>
-  <h2 id="menuTitle">Controls & Testing</h2>
-  <button class="menu-row" id="menuRules" type="button"><span>Rules & Paytable</span><b>›</b></button>
-  <button class="menu-row" id="menuStats" type="button"><span>Statistics</span><b>›</b></button>
-  <button class="menu-row" id="menuSound" type="button"><span>Sound</span><b id="menuSoundState">ON</b></button>
-  <button class="menu-row" id="menuRefill" type="button"><span>Refill Free Credits</span><b>+2,500</b></button>
-  <details class="dev-tools">
-    <summary>Feature Testing</summary>
-    <button type="button" id="testWheel">Test Bonus Wheel</button>
-    <button type="button" id="testHold">Test Hold & Win</button>
-    <button type="button" id="testFree">Test Free Spins</button>
-  </details>
-</section>
-
-<div id="bonusOverlay" class="bonus-overlay" hidden>
-  <section id="wheelPanel" class="bonus-panel wheel-panel" hidden>
-    <div class="bonus-kicker">FEATURE TRIGGERED</div>
-    <h2>POWER WHEEL</h2>
-    <p>Spin for a credit prize, jackpot, or feature.</p>
-    <div class="wheel-wrap">
-      <div class="wheel-pointer"></div>
-      <div id="wheelDisc" class="wheel-disc"></div>
+<section id="wheelOverlay" class="feature-overlay" hidden>
+  <div class="feature-stage wheel-stage">
+    <div class="feature-kicker">POWER WHEEL</div>
+    <h2>SPIN FOR A FEATURE</h2>
+    <div class="big-wheel-wrap">
+      <div class="big-wheel-pointer"></div>
+      <div id="bigWheel" class="big-wheel"></div>
       <div id="wheelLabels" class="wheel-labels"></div>
-      <div class="wheel-hub">PP</div>
+      <div class="big-wheel-hub">PP</div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="holdPanel" class="bonus-panel hold-panel" hidden>
-    <div class="bonus-kicker">HOLD & WIN</div>
-    <h2>LOCK THE COINS</h2>
-    <div class="hold-meta">
-      <div><small>RESPINS</small><strong id="holdRespins">3</strong></div>
-      <div><small>COLLECTED</small><strong id="holdCollected">0</strong></div>
-      <div><small>VALUE</small><strong id="holdValue">0</strong></div>
+<section id="freeOverlay" class="feature-overlay" hidden>
+  <div class="feature-stage intro-stage">
+    <div class="feature-kicker" id="featureKicker">FREE SPINS</div>
+    <div class="feature-wolf">
+      <div class="feature-wolf-head"><i></i><i></i><span></span></div>
     </div>
-    <div id="holdGrid" class="hold-grid"></div>
-  </section>
+    <h2 id="featureTitle">BUILD IT BIGGER</h2>
+    <p id="featureSub">6 Free Spins</p>
+  </div>
+</section>
 
-  <section id="featurePanel" class="bonus-panel feature-panel" hidden>
-    <div class="feature-burst"></div>
-    <div class="bonus-kicker" id="featureKicker">FEATURE</div>
-    <h2 id="featureTitle">FREE SPINS</h2>
-    <p id="featureSubtitle">8 spins awarded</p>
-  </section>
+<section id="revealOverlay" class="feature-overlay" hidden>
+  <div class="feature-stage reveal-stage">
+    <div class="feature-kicker">HOUSE REVEAL</div>
+    <h2>HUFF… PUFF… REVEAL!</h2>
+    <div id="revealGrid" class="reveal-grid"></div>
+    <div class="reveal-total">FEATURE WIN <strong id="revealTotal">0</strong></div>
+  </div>
+</section>
+
+<div id="toast" class="toast" aria-live="polite"></div>
+<div id="runtimeError" class="runtime-error" hidden>
+  <strong>Game error</strong>
+  <span id="runtimeErrorText">The game could not start.</span>
+  <button type="button" id="reloadBtn">Reload</button>
 </div>
 
 <script src="/app.js" defer></script>
