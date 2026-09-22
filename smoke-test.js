@@ -6,29 +6,53 @@ const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const css=fs.readFileSync(path.join(root,"styles.css"),"utf8");
 const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
-const rail=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
-assert(html.includes('id="reels"'),"reel grid missing");
-assert(html.includes('id="wheelPanel"'),"bonus wheel panel missing");
-assert(html.includes('id="holdPanel"'),"hold-and-win panel missing");
-assert(html.includes('id="buildBar0"'),"build meter missing");
-assert(html.includes('/styles.css')&&html.includes('/app.js'),"split app assets missing");
-assert(css.includes(".spin-btn")&&css.includes(".bonus-overlay")&&css.includes("@media(max-width:820px)"),"responsive premium UI missing");
-assert(app.includes("function startFreeSpins"),"free spins logic missing");
-assert(app.includes("function startWheel"),"wheel logic missing");
-assert(app.includes("function startHoldWin"),"hold-and-win logic missing");
-assert(app.includes("function handleBuild"),"build progression missing");
-assert(app.includes("Free-play")||html.includes("Free-play"),"free-play disclosure missing");
+const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8");
+
+[
+ ['reel grid','id="reels"'],
+ ['jackpot strip','id="jpGrand"'],
+ ['wheel crown','class="wheel-crown"'],
+ ['Hard Hat trigger','6+ Hard Hats'],
+ ['Buzz Saw trigger','3+ Buzz Saws'],
+ ['feature wheel','id="wheelOverlay"'],
+ ['feature intro','id="freeOverlay"'],
+ ['house reveal','id="revealOverlay"'],
+ ['runtime error UI','id="runtimeError"']
+].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
+
+assert(css.includes(".wheel-crown"),"Huff-style wheel crown missing");
+assert(css.includes(".frame-straw")&&css.includes(".frame-wood")&&css.includes(".frame-brick"),"frame visuals missing");
+assert(css.includes(".rank")&&css.includes(".forest-sky"),"bright forest reel design missing");
+assert(css.includes("@media(max-width:900px)"),"responsive layout missing");
+
+[
+ "function evaluateWays",
+ "function startFeature",
+ "function resolveFeatureSpin",
+ "function startWheel",
+ "function awardWheel",
+ "function frameReward",
+ "function showReveal",
+ "function showRuntimeError"
+].forEach(name=>assert(app.includes(name),name+" missing"));
+
+assert(app.includes('state.pendingFree'),"simultaneous wheel/free-spin sequencing missing");
+assert(app.includes('spinsLeft:6'),"features must begin with 6 spins");
+assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"Wild reel restriction missing");
 new Function(app);
-assert(pkg.scripts.start==="node server.js","production start script invalid");
-assert(rail.deploy.healthcheckPath==="/health","healthcheck missing");
-async function run(){
- const port=32145,child=spawn(process.execPath,["server.js"],{cwd:root,env:{...process.env,PORT:String(port)},stdio:["ignore","pipe","pipe"]});
- let err="";child.stderr.on("data",d=>err+=d);
+
+assert(pkg.scripts&&pkg.scripts.start==="node server.js","start script invalid");
+assert(railway.deploy&&railway.deploy.healthcheckPath==="/health","Railway healthcheck missing");
+
+async function verifyServer(){
+ const port=32145;
+ const child=spawn(process.execPath,["server.js"],{cwd:root,env:{...process.env,PORT:String(port)},stdio:["ignore","pipe","pipe"]});
+ let err="";child.stderr.on("data",d=>err+=d.toString());
  try{
-  let health;
-  for(let i=0;i<40;i++){try{health=await fetch("http://127.0.0.1:"+port+"/health");if(health.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
-  assert(health&&health.ok,"health endpoint failed "+err);
-  for(const p of ["/","/styles.css","/app.js"]){const r=await fetch("http://127.0.0.1:"+port+p);assert(r.ok,p+" failed")}
+  let h;
+  for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  assert(h&&h.ok,"health endpoint failed "+err);
+  for(const p of ["/","/styles.css","/app.js"]){const r=await fetch("http://127.0.0.1:"+port+p);assert(r.ok,p+" failed");const text=await r.text();assert(text.length>100,p+" unexpectedly empty")}
  }finally{child.kill("SIGTERM")}
 }
-run().then(()=>console.log("Smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
+verifyServer().then(()=>console.log("Smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
