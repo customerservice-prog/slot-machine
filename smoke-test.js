@@ -3,8 +3,8 @@ const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:chil
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"pineda-huff-v8.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"pineda-huff-v8.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"pineda-huff-v9.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"pineda-huff-v9.js"),"utf8");
 const core=require(path.join(root,"game-core-v7.js"));
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
@@ -22,14 +22,20 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["runtime error",'id="runtimeError"']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(html.includes('/pineda-huff-v8.css'),"v7 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v8.js'),"v7 engine not pinned");
+assert(html.includes('/pineda-huff-v9.css'),"v7 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v9.js'),"v7 engine not pinned");
 assert(css.includes(".game-cabinet"),"cabinet CSS missing");
-assert(css.includes("V8 CABINET DETAIL PASS"),"v8 detail pass missing");
+assert(css.includes("V9 VIEWPORT-LOCKED MACHINE GEOMETRY"),"v9 viewport geometry missing");
+assert(html.includes('class="wheel-art-v9"'),"self-contained v9 wheel image missing");
+assert(html.includes('/assets/wheel-v9.svg'),"v9 wheel asset not referenced");
+assert(css.includes("grid-template-rows:21.5% 24.5% 47.5% 6.5%"),"v9 proportional cabinet rows missing");
+assert(css.includes("aspect-ratio:auto!important"),"reel overflow prevention missing");
+assert(css.includes("grid-template-rows:repeat(3,minmax(0,1fr))"),"three reel rows must remain visible");
+assert(css.includes("V9 VIEWPORT-LOCKED MACHINE GEOMETRY"),"v8 detail pass missing");
 assert(css.includes(".machine-core:before")&&css.includes(".machine-core:after"),"v8 wood side rails missing");
 assert(css.includes(".feature-wolf img"),"illustrated feature character missing");
 assert(css.includes(".reel-cabinet"),"v8 reel frame missing");
-assert(css.includes("V8 CABINET DETAIL PASS"),"v7 detailed art CSS missing");
+assert(css.includes("V9 VIEWPORT-LOCKED MACHINE GEOMETRY"),"v7 detailed art CSS missing");
 assert(css.includes("aspect-ratio:433/461"),"exact 433:461 reference cabinet ratio missing");
 assert(css.includes('background:url("/assets/wheel-v7.svg")'),"detailed wheel art missing");
 assert(css.includes("930px 493px"),"v7 wheel display sizing missing");
@@ -99,7 +105,7 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/game-core-v7.js","/pineda-huff-v8.css","/pineda-huff-v8.js","/assets/wheel-v7.svg","/assets/forest-v7.svg"]){
+  for(const p of ["/","/game-core-v7.js","/pineda-huff-v9.css","/pineda-huff-v9.js","/assets/wheel-v7.svg","/assets/forest-v7.svg"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
     const cache=(r.headers.get("cache-control")||"");
