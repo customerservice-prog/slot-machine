@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#10220d">
   <meta name="description" content="Pineda Power — a free-play cartoon construction slot-style game with hard hats, buzz saws, free spins and a power wheel.">
   <title>Pineda Power — Free Play</title>
-  <link rel="stylesheet" href="/pineda-huff-v10.css">\n<link rel="stylesheet" href="/casino.css">\n<link rel="stylesheet" href="/game-shell.css">
+  <link rel="stylesheet" href="/pineda-huff-v11.css">\n<link rel="stylesheet" href="/casino.css">\n<link rel="stylesheet" href="/game-shell.css">
 </head>
 <body class="game-page">
 <header class="casino-header">
@@ -171,12 +171,12 @@
 <section id="wheelOverlay" class="feature-overlay" hidden>
   <div class="feature-stage wheel-stage">
     <div class="feature-kicker">POWER WHEEL</div>
-    <h2>SPIN FOR A FEATURE</h2>
+    <h2>POWER WHEEL</h2><p class="wheel-subtitle">Jackpots • 20 Free Spins • Buzz Saw • Mega Hat • Mansion</p>
     <div class="big-wheel-wrap">
       <div class="big-wheel-pointer"></div>
       <div id="bigWheel" class="big-wheel"></div>
       <div id="wheelLabels" class="wheel-labels"></div>
-      <div class="big-wheel-hub">PP</div>
+      <div class="big-wheel-hub">PP</div><div id="wheelResult" class="wheel-result" hidden><small id="wheelResultLabel">FEATURE</small><strong id="wheelResultValue">READY</strong></div>
     </div>
   </div>
 </section>
@@ -209,8 +209,8 @@
 </div>
 
 <script src="/game-core-v7.js"></script>
-<script src="/pineda-huff-v10.js" defer></script>
-<script>
+<script src="/pineda-huff-v11.js" defer></script>
+<script>setTimeout(function(){if(location.hash==="#rules")document.getElementById("rulesBtn")?.click()},450);
     setInterval(function(){
       var a=document.getElementById("balance"),b=document.getElementById("shellBalance");
       if(a&&b)b.textContent=a.textContent;
