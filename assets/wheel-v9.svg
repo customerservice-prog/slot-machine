@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320">
+<defs>
+ <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff6a0"/><stop offset=".25" stop-color="#ffc63a"/><stop offset=".7" stop-color="#e18110"/><stop offset="1" stop-color="#6d3005"/></linearGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#13a7e6"/><stop offset="1" stop-color="#075080"/></linearGradient>
+ <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd65a"/><stop offset="1" stop-color="#da8112"/></linearGradient>
+ <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#67c75b"/><stop offset="1" stop-color="#1a6a29"/></linearGradient>
+ <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c96be6"/><stop offset="1" stop-color="#64267f"/></linearGradient>
+ <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9c34"/><stop offset="1" stop-color="#a9490a"/></linearGradient>
+ <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#fff" opacity=".15"/></pattern>
+ <filter id="s"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-opacity=".55"/></filter>
+</defs>
+
+<g filter="url(#s)">
+ <path d="M500 610L18 300A570 570 0 0 1 176 78Z" fill="url(#blue)"/>
+ <path d="M500 610L176 78A570 570 0 0 1 398 12Z" fill="url(#yellow)"/>
+ <path d="M500 610L398 12A570 570 0 0 1 602 12Z" fill="url(#orange)"/>
+ <path d="M500 610L602 12A570 570 0 0 1 824 78Z" fill="url(#green)"/>
+ <path d="M500 610L824 78A570 570 0 0 1 982 300Z" fill="url(#purple)"/>
+ <path d="M18 300A570 570 0 0 1 982 300" fill="none" stroke="#6d3205" stroke-width="32"/>
+ <path d="M23 300A565 565 0 0 1 977 300" fill="none" stroke="url(#rim)" stroke-width="20"/>
+ <path d="M48 300A540 540 0 0 1 952 300" fill="none" stroke="#ffe985" stroke-width="5"/>
+ <path d="M500 610 176 78M500 610 398 12M500 610 602 12M500 610 824 78" stroke="#713605" stroke-width="8"/>
+ <path d="M500 610 176 78M500 610 398 12M500 610 602 12M500 610 824 78" stroke="#ffe47c" stroke-width="2" opacity=".72"/>
+ <path d="M500 610L18 300A570 570 0 0 1 982 300Z" fill="url(#dots)" opacity=".55"/>
+</g>
+
+<!-- Buzz saw icon -->
+<g transform="translate(210 135)" filter="url(#s)">
+ <circle r="61" fill="#ffd13f" stroke="#713707" stroke-width="6"/>
+ <g fill="#dce7e9" stroke="#59676a" stroke-width="3">
+  <path d="M0-48 10-40 22-44 27-32 40-28 35-14 50 0 35 14 40 28 27 32 22 44 10 40 0 48-10 40-22 44-27 32-40 28-35 14-50 0-35-14-40-28-27-32-22-44-10-40Z"/>
+ </g>
+ <circle r="23" fill="#8d999c"/><circle r="10" fill="#e34c32"/>
+</g>
+<g font-family="Arial Black,Arial" text-anchor="middle" fill="#fff" stroke="#154b72" stroke-width="4" paint-order="stroke">
+ <text x="210" y="222" font-size="30">BUZZ SAW</text><text x="210" y="249" font-size="17">FREE SPINS</text>
+</g>
+
+<!-- hard hat -->
+<g transform="translate(410 118)" filter="url(#s)">
+ <path d="M-55 28q4-62 55-62t55 62Z" fill="#ffd34d" stroke="#8b4e09" stroke-width="6"/>
+ <rect x="-66" y="22" width="132" height="22" rx="10" fill="#e79516" stroke="#8b4e09" stroke-width="6"/>
+ <circle cx="0" cy="3" r="17" fill="#f3a7ba"/><ellipse cx="0" cy="9" rx="10" ry="7" fill="#ffc7d4"/>
+</g>
+<g font-family="Arial Black,Arial" text-anchor="middle" fill="#ffe86a" stroke="#74320a" stroke-width="4" paint-order="stroke">
+ <text x="410" y="205" font-size="31">MEGA HAT</text><text x="410" y="232" font-size="17">FEATURE</text>
+</g>
+
+<!-- house -->
+<g transform="translate(602 122)" filter="url(#s)">
+ <path d="M-60 10 0-45 60 10" fill="#ee9c46" stroke="#6d3512" stroke-width="6"/>
+ <rect x="-48" y="8" width="96" height="70" fill="#d96c35" stroke="#6d3512" stroke-width="6"/>
+ <rect x="-12" y="40" width="24" height="38" fill="#245e8e"/>
+ <rect x="-36" y="27" width="18" height="20" fill="#a9e6ff"/><rect x="18" y="27" width="18" height="20" fill="#a9e6ff"/>
+</g>
+<g font-family="Arial Black,Arial" text-anchor="middle" fill="#fff0a0" stroke="#5d3210" stroke-width="4" paint-order="stroke">
+ <text x="602" y="214" font-size="29">MANSION</text><text x="602" y="241" font-size="17">FEATURE</text>
+</g>
+
+<!-- wolf -->
+<g transform="translate(785 135)" filter="url(#s)" stroke="#22282c" stroke-linejoin="round">
+ <path d="M-53-30-34-22 0-62 34-22 53-30 45 28 26 58 0 72-26 58-45 28Z" fill="#535a62" stroke-width="6"/>
+ <path d="m-29 0 22 5-21 13M29 0 7 5l21 13" fill="#b9f2ff" stroke-width="3"/>
+ <path d="m-13 31 13 12 13-12" fill="#15191c" stroke-width="3"/>
+</g>
+<g font-family="Arial Black,Arial" text-anchor="middle" fill="#fff" stroke="#392050" stroke-width="4" paint-order="stroke">
+ <text x="785" y="222" font-size="28">WOLF WILD</text><text x="785" y="249" font-size="17">FEATURE</text>
+</g>
+
+<!-- 20 free spins -->
+<g transform="translate(930 190)" font-family="Arial Black,Arial" text-anchor="middle" fill="#72deff" stroke="#175575" stroke-width="4" paint-order="stroke">
+ <text y="0" font-size="57">20</text><text y="32" font-size="17">FREE SPINS</text>
+</g>
+
+<!-- center pointer -->
+<path d="M500 307 481 274h38Z" fill="#ffe874" stroke="#713706" stroke-width="6"/>
+</svg>
