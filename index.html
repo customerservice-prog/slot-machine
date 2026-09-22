@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="description" content="Pineda Power is a free-play slot-style game with bonus features, jackpots, village progression, free spins, and Hold & Win."/>
+<meta name="theme-color" content="#05060f"/>
 <title>Pineda Power - Free Play</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; user-select:none; }
@@ -35,21 +37,87 @@
     #deck .side { display:flex; flex-direction:column; gap:6px; }
     #deck .mini { padding:6px 10px; font-size:12px; border-radius:8px; letter-spacing:1px; }
     #deck .mini.off { background:linear-gradient(180deg,#5a6478,#39435a); color:#c8d2e6; box-shadow:0 3px 0 #232c3e; }
+  /* launch-ready responsive overrides */
+  :root { --deck-h:104px; }
+  html,body { overscroll-behavior:none; }
+  #game { touch-action:none; }
+  #deck { height:var(--deck-h); min-height:var(--deck-h); padding-bottom:max(0px,env(safe-area-inset-bottom)); }
+  #deck .dbtn { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  #deck .dbtn:disabled { opacity:.48; cursor:not-allowed; transform:none; filter:grayscale(.75) brightness(.8); box-shadow:none; }
+  .panel { width:min(92vw,640px); max-height:calc(100dvh - 32px); overflow:auto; z-index:80; }
+  .panel select.buybtn { appearance:none; text-align:center; }
+  .freeplay-note { margin-top:12px; color:#8aa0c8; font-size:12px; line-height:1.45; text-align:center; }
+  @media (max-width:900px) {
+    #deck { gap:8px; padding-left:8px; padding-right:8px; }
+    #deck .meter { min-width:68px; }
+    #deck .meter .val { font-size:18px; }
+    #deck .dstep { width:40px; height:40px; }
+    #deck .dspin { width:88px; height:88px; font-size:20px; }
+    #deck .mini { padding:5px 7px; font-size:11px; }
+  }
+  @media (max-width:640px) {
+    :root { --deck-h:168px; }
+    #deck {
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      grid-template-rows:38px 70px 36px;
+      gap:5px;
+      padding:6px 7px calc(6px + env(safe-area-inset-bottom));
+      align-items:center;
+    }
+    #deck .meter { min-width:0; width:100%; }
+    #deck .meter .lab { font-size:9px; letter-spacing:1.3px; }
+    #deck .meter .val { font-size:18px; line-height:1.05; }
+    #d_bal_box { grid-column:1 / 3; grid-row:1; }
+    #d_bet_box { grid-column:3 / 5; grid-row:1; }
+    #d_win_box { grid-column:5 / 7; grid-row:1; }
+    #d_minus { grid-column:1; grid-row:2; }
+    #d_spin { grid-column:2 / 6; grid-row:2; }
+    #d_plus { grid-column:6; grid-row:2; }
+    #deck .dstep { width:100%; height:52px; border-radius:14px; }
+    #deck .dspin { width:100%; height:64px; border-radius:20px; margin:0; font-size:22px; }
+    #deck .side { display:contents; }
+    #d_stats { grid-column:1; grid-row:3; }
+    #d_auto { grid-column:2; grid-row:3; }
+    #d_turbo { grid-column:3; grid-row:3; }
+    #d_menu { grid-column:4; grid-row:3; }
+    #d_sound { grid-column:5 / 7; grid-row:3; }
+    #deck .mini { width:100%; padding:7px 3px; font-size:10px; line-height:1; }
+    .panel { padding:18px 18px; border-radius:12px; }
+    .panel h2 { font-size:18px; padding-right:24px; }
+    .panel .row { gap:12px; font-size:12px; }
+  }
+  @media (max-width:420px) {
+    #deck .meter .val { font-size:16px; }
+    #deck .dspin { font-size:19px; }
+    #deck .mini { font-size:9px; }
+  }
+  @media (max-height:560px) and (orientation:landscape) {
+    :root { --deck-h:82px; }
+    #deck { display:flex; grid-template:none; gap:6px; padding:0 8px; }
+    #deck .side { display:flex; }
+    #deck .meter { min-width:58px; width:auto; }
+    #deck .meter .lab { font-size:8px; }
+    #deck .meter .val { font-size:15px; }
+    #deck .dstep { width:34px; height:34px; border-radius:50%; font-size:20px; }
+    #deck .dspin { width:76px; height:76px; border-radius:50%; font-size:17px; margin:0 2px; }
+    #deck .mini { width:auto; padding:4px 6px; font-size:9px; }
+  }
 </style>
 </head>
 <body>
 <div id="wrap">
   <canvas id="game"></canvas>
-<div id="deck">
-  <button class="dbtn mini" id="d_stats">STATS</button>
-  <div class="meter"><div class="lab">BALANCE</div><div class="val" id="d_bal">0</div></div>
-  <button class="dbtn dstep" id="d_minus">&minus;</button>
-  <div class="meter"><div class="lab">BET</div><div class="val" id="d_bet">0</div></div>
-  <button class="dbtn dspin" id="d_spin">SPIN</button>
-  <button class="dbtn dstep" id="d_plus">+</button>
-  <div class="meter"><div class="lab">WIN</div><div class="val" id="d_win">0</div></div>
-  <div class="side"><button class="dbtn mini" id="d_auto">AUTO</button><button class="dbtn mini" id="d_turbo">TURBO</button></div>
-  <div class="side"><button class="dbtn mini" id="d_menu">MENU</button><button class="dbtn mini" id="d_sound">SOUND</button></div>
+<div id="deck" aria-label="Game controls">
+  <button class="dbtn mini" id="d_stats" type="button">STATS</button>
+  <div class="meter" id="d_bal_box"><div class="lab">BALANCE</div><div class="val" id="d_bal" aria-live="polite">0</div></div>
+  <button class="dbtn dstep" id="d_minus" type="button" aria-label="Decrease bet">&minus;</button>
+  <div class="meter" id="d_bet_box"><div class="lab">BET</div><div class="val" id="d_bet">0</div></div>
+  <button class="dbtn dspin" id="d_spin" type="button" aria-label="Spin">SPIN</button>
+  <button class="dbtn dstep" id="d_plus" type="button" aria-label="Increase bet">+</button>
+  <div class="meter" id="d_win_box"><div class="lab">WIN</div><div class="val" id="d_win" aria-live="polite">0</div></div>
+  <div class="side" id="d_play_modes"><button class="dbtn mini" id="d_auto" type="button">AUTO</button><button class="dbtn mini" id="d_turbo" type="button">TURBO</button></div>
+  <div class="side" id="d_utility"><button class="dbtn mini" id="d_menu" type="button">MENU</button><button class="dbtn mini" id="d_sound" type="button">SOUND</button></div>
 </div>
 </div>
 <div id="loading"><div class="lg">PINEDA POWER</div><div class="sub">FREE PLAY &mdash; LOADING</div></div>
@@ -64,18 +132,28 @@
   <span class="closex" data-close="infoPanel">&times;</span>
   <h2>PAYTABLE &amp; RULES</h2>
   <div class="row"><span>Money Coins (6+)</span><span>Hold &amp; Win</span></div>
-  <div class="row"><span>Buzz Saws (3/4/5)</span><span>8 / 12 / 20 Free Spins</span></div>
+  <div class="row"><span>Buzz Saws (3+)</span><span>Bonus Wheel</span></div>
+  <div class="row"><span>Mansion Feature</span><span>8 Free Spins</span></div>
+  <div class="row"><span>Saws during Free Spins</span><span>+8 / +12 / +20 for 3 / 4 / 5+</span></div>
   <div class="row"><span>Wild (Pig Boss)</span><span>Subs all except Buzz Saw/Coin</span></div>
   <div class="row"><span>Mansion</span><span>15 / 60 / 200</span></div>
   <div class="row"><span>Pig</span><span>10 / 40 / 120</span></div>
   <div class="row"><span>Brick / Wood / Straw</span><span>High symbols</span></div>
   <div class="row"><span>Village Build</span><span>Foundation&rarr;Straw&rarr;Wood&rarr;Brick&rarr;Mansion</span></div>
   <div class="row"><span>Complete Village</span><span>50&times; bet reward</span></div>
+  <div class="freeplay-note">Free-play entertainment only. Credits have no cash value and there are no deposits, purchases, or withdrawals.</div>
 </div>
 <div id="devPanel" class="panel">
   <span class="closex" data-close="devPanel">&times;</span>
   <h2>DEVELOPER &mdash; FEATURE TESTING</h2>
   <div style="font-size:12px;color:#8aa0c8;margin-bottom:8px;">Force features (free). Not part of normal play.</div>
+  <select class="buybtn" id="devDiff" aria-label="Math profile">
+    <option value="LOOSE">LOOSE MATH PROFILE</option>
+    <option value="EASY">EASY MATH PROFILE</option>
+    <option value="NORMAL">NORMAL MATH PROFILE</option>
+    <option value="HARD">HARD MATH PROFILE</option>
+    <option value="BRUTAL">BRUTAL MATH PROFILE</option>
+  </select>
   <button class="buybtn" id="buyFSbtn">FORCE FREE SPINS</button>
   <button class="buybtn" id="buyHWbtn">FORCE HOLD &amp; WIN</button>
   <button class="buybtn" id="devHouseBtn">FORCE HOUSE UPGRADE</button>
@@ -95,7 +173,7 @@ var rng = Math.random;
 var G = {
   bal: 2500, bet: 10, win: 0, lastWin: 0,
   state: "READY",            // READY, SPINNING, WIN, FS, HW
-  spins: 0, totalWon: 0, biggest: 0,
+  spins: 0, paidSpins: 0, totalBet: 0, totalWon: 0, biggest: 0,
   fsLeft: 0, fsTotal: 0, fsWin: 0,
   hwLeft: 0, hwCoins: [], hwWin: 0,
   auto: 0, turbo: false, sound: true,
@@ -115,11 +193,11 @@ function prof(){ return PROFILES[G.diff]||PROFILES.NORMAL; }
 
 // ---------- persistence ----------
 function save(){ try{ localStorage.setItem("bbwr_v3", JSON.stringify({
-  bal:G.bal, bet:G.bet, spins:G.spins, totalWon:G.totalWon, biggest:G.biggest, diff:G.diff, sound:G.sound, houses:houses
+  bal:G.bal, bet:G.bet, spins:G.spins, paidSpins:G.paidSpins, totalBet:G.totalBet, totalWon:G.totalWon, biggest:G.biggest, diff:G.diff, sound:G.sound, houses:houses
 })); }catch(e){} }
 function load(){ try{ var s=JSON.parse(localStorage.getItem("bbwr_v3")||"null"); if(s){
-  G.bal=+s.bal||2500; G.bet=+s.bet||10; G.spins=+s.spins||0; G.totalWon=+s.totalWon||0;
-  G.biggest=+s.biggest||0; G.diff=s.diff||"NORMAL"; G.sound=s.sound!==false; if(s.houses&&s.houses.length===3){ window.__loadedHouses=[+s.houses[0]||0,+s.houses[1]||0,+s.houses[2]||0]; }
+  G.bal=+s.bal||2500; G.bet=+s.bet||10; G.spins=+s.spins||0; G.paidSpins=+s.paidSpins||0; G.totalBet=+s.totalBet||0; G.totalWon=+s.totalWon||0;
+  G.biggest=+s.biggest||0; G.diff=PROFILES[s.diff]?s.diff:"NORMAL"; G.sound=s.sound!==false; if(s.houses&&s.houses.length===3){ window.__loadedHouses=[+s.houses[0]||0,+s.houses[1]||0,+s.houses[2]||0]; }
 } }catch(e){} }
 load();
 if(G.bal < 100) G.bal = 2500;   // welcome refill
@@ -190,25 +268,37 @@ var LINES=[
 
 // ---------- canvas & layout ----------
 var cv=document.getElementById("game"), cx=cv.getContext("2d");
-var W=1280,H=720, DPR=1;
-function resize(){
-  var w=window.innerWidth,h=Math.max(200,window.innerHeight-104); DPR=Math.min(2,window.devicePixelRatio||1);
-  cv.width=Math.round(w*DPR); cv.height=Math.round(h*DPR); cv.style.width=w+"px"; cv.style.height=h+"px";
-  W=w; H=h; cx.setTransform(DPR,0,0,DPR,0,0);
+var W=1280,H=720, DPR=1, lastVW=0, lastVH=0, lastDeckH=0;
+function getDeckHeight(){
+  var d=document.getElementById("deck");
+  return d?Math.max(0,Math.ceil(d.getBoundingClientRect().height)):104;
 }
-window.addEventListener("resize",resize); resize();
+function resize(force){
+  var vw=window.innerWidth, vh=window.innerHeight, dh=getDeckHeight();
+  var ndpr=Math.min(2,window.devicePixelRatio||1), h=Math.max(180,vh-dh);
+  if(!force && vw===lastVW && vh===lastVH && dh===lastDeckH && ndpr===DPR) return false;
+  DPR=ndpr; W=vw; H=h; lastVW=vw; lastVH=vh; lastDeckH=dh;
+  cv.width=Math.max(1,Math.round(W*DPR)); cv.height=Math.max(1,Math.round(H*DPR));
+  cv.style.width=W+"px"; cv.style.height=H+"px";
+  cx.setTransform(DPR,0,0,DPR,0,0);
+  return true;
+}
+window.addEventListener("resize",function(){ resize(true); },{passive:true});
+window.addEventListener("orientationchange",function(){ setTimeout(function(){ resize(true); },80); },{passive:true});
+if(window.visualViewport) window.visualViewport.addEventListener("resize",function(){ resize(true); },{passive:true});
+resize(true);
 
 // reel geometry computed each frame from W/H so it always fits (no scroll)
 function geom(){
-  var deckH=Math.max(96, H*0.18);
-  var top=Math.max(78, H*0.145);
-  var availH=H-deckH-top-16;
-  var gw=Math.min(W*0.66, availH*1.55);
-  var gh=Math.min(availH, gw/1.55);
-  gw=gh*1.55;
-  var gx=(W-gw)/2, gy=top+ (availH-gh)/2 + 4;
+  var top=Math.max(W<640?74:68, Math.min(118,H*0.15));
+  var availH=Math.max(110,H-top-10);
+  var widthFrac=W<640?0.92:(W<960?0.80:0.68);
+  var gw=Math.min(W*widthFrac, availH*1.55);
+  var gh=gw/1.55;
+  if(gh>availH){ gh=availH; gw=gh*1.55; }
+  var gx=(W-gw)/2, gy=top+(availH-gh)/2+2;
   var cwe=gw/5, che=gh/3;
-  return {gx:gx,gy:gy,gw:gw,gh:gh,cw:cwe,ch:che,deckH:deckH,top:top};
+  return {gx:gx,gy:gy,gw:gw,gh:gh,cw:cwe,ch:che,deckH:0,top:top};
 }
 
 // ---------- background layers ----------
@@ -311,6 +401,7 @@ function drawVillage(t){
 var wolf={ state:"IDLE", t:0, lean:0, blink:0, mouth:0 };
 function setWolf(s){ wolf.state=s; wolf.t=0; }
 function drawWolf(t){
+  if(W<700) return;
   var g=geom();
   var sc=Math.min(0.72, g.gh/560); var wx=g.gx-Math.min(120,g.gx*0.62), wy=g.gy+g.gh*0.62;
   if(wx<24) wx=24;
@@ -585,10 +676,25 @@ function triggerBonus(kind, fn){
   spawnSpark(W/2, H*0.42, 50, kind==="FS"?"#8fb7e0":"#ffcf5c");
   setWolf("CELEBRATE");
   banner(kind==="WHEEL"?"BONUS WHEEL!":(kind==="FS"?"FREE SPINS!":"HOLD & WIN!"), "FEATURE ACTIVATED");
-  spinTimers.push(setTimeout(function(){ if(fn) fn(); }, G.turbo?700:1500));
+  later(function(){ if(fn) fn(); }, G.turbo?700:1500);
 }
-var spinTimers=[];
-function clearTimers(){ for(var i=0;i<spinTimers.length;i++) clearTimeout(spinTimers[i]); spinTimers=[]; }
+var spinTimers=[], autoTimer=0;
+function later(fn,delay){
+  var id=setTimeout(function(){
+    var ix=spinTimers.indexOf(id); if(ix>=0) spinTimers.splice(ix,1);
+    fn();
+  },delay);
+  spinTimers.push(id); return id;
+}
+function cancelLater(id){
+  if(!id) return;
+  clearTimeout(id);
+  var ix=spinTimers.indexOf(id); if(ix>=0) spinTimers.splice(ix,1);
+}
+function clearTimers(){
+  for(var i=0;i<spinTimers.length;i++) clearTimeout(spinTimers[i]);
+  spinTimers=[]; autoTimer=0;
+}
 
 function canSpin(){ return G.state==="READY" || G.state==="FS" || G.state==="HW_READY"; }
 
@@ -597,7 +703,8 @@ function doSpin(){
   var freeSpin = (G.fsLeft>0);
   if(!freeSpin){
     if(G.bal < G.bet){ if(G.bal<100){ G.bal=2500; save(); } return; }
-    G.bal -= G.bet; 
+    G.bal -= G.bet;
+    G.totalBet += G.bet; G.paidSpins++;
   }
   G.state="SPINNING"; G.win=0; winFx.active=false; winFx.cells=[];
   G.spins++;
@@ -648,20 +755,24 @@ function finishSpin(){
   for(var r=0;r<5;r++) for(var row=0;row<3;row++){ var id=g[r][row]; if(id==="STRAW"||id==="WOOD"||id==="BRICK"||id==="MANS") build++; }
   if(build>=2){ var ups = build>=4?2:1; for(var u=0; u<ups; u++){ upgradeHouse(lowestHouse()); } checkVillageComplete(); } else if(housesNearMax()){ setWolf("WATCHING"); }
   // base game feature triggers
-  if(coins.length>=6){ startHoldWin(coins); save(); return; }
-  if(scat>=3){ triggerBonus("WHEEL", function(){ startWheel(); }); save(); return; }
-  if(res.win>0){ addWin(res.win,res.cells); }
-  else { G.state="READY"; setWolf(rng()<0.3?"DISAPPOINT":"IDLE"); }
-  save();
-  scheduleAuto();
+  if(coins.length>=6){ if(res.win>0) addWin(res.win,res.cells,true); startHoldWin(coins); save(); return; }
+  if(scat>=3){ if(res.win>0) addWin(res.win,res.cells,true); triggerBonus("WHEEL", function(){ startWheel(); }); save(); return; }
+  if(res.win>0){ addWin(res.win,res.cells); save(); return; }
+  G.state="READY"; setWolf(rng()<0.3?"DISAPPOINT":"IDLE");
+  save(); scheduleAuto();
 }
 
-function addWin(amount,cells){
+function addWin(amount,cells,keepState){
   G.bal+=amount; G.totalWon+=amount; if(amount>G.biggest)G.biggest=amount;
-  G.state="WIN"; startWin(amount,cells);
-  // after countup, go ready
+  if(!keepState) G.state="WIN";
+  startWin(amount,cells);
+  if(keepState) return;
   var dur=(amount/G.bet>=5)? (G.turbo?900:1800) : (G.turbo?350:700);
-  spinTimers.push(setTimeout(function(){ if(G.fsLeft<=0 && G.hwLeft<=0){ G.state="READY"; setWolf("IDLE"); } }, dur));
+  later(function(){
+    if(G.state==="WIN" && G.fsLeft<=0 && G.hwLeft<=0){
+      G.state="READY"; setWolf("IDLE"); scheduleAuto();
+    }
+  }, dur);
 }
 
 function evaluate(g){
@@ -685,6 +796,56 @@ function evaluate(g){
   return { win:Math.round(totalWin), cells:cells };
 }
 
+// ---------- HOLD & WIN PRESENTATION ----------
+function drawHoldCoin(x,y,w,h,coin,t){
+  var r=Math.min(w,h)*0.31;
+  var age=coin.born?Math.min(1,(performance.now()-coin.born)/260):1;
+  var pop=0.72+0.28*Math.sin(age*Math.PI/2);
+  r*=pop;
+  cx.save();
+  var glow=0.55+0.25*Math.sin(t*0.008+(coin.r||0));
+  cx.shadowColor="rgba(255,207,92,"+glow+")"; cx.shadowBlur=18;
+  var cg=cx.createRadialGradient(x-r*0.32,y-r*0.32,2,x,y,r);
+  cg.addColorStop(0,"#fff7c9"); cg.addColorStop(0.48,"#ffd35d"); cg.addColorStop(1,"#a96d12");
+  cx.fillStyle=cg; cx.beginPath(); cx.arc(x,y,r,0,6.2832); cx.fill();
+  cx.shadowBlur=0; cx.strokeStyle="#fff0a0"; cx.lineWidth=Math.max(2,r*0.08); cx.stroke();
+  cx.textAlign="center"; cx.textBaseline="middle";
+  if(coin.val.t){
+    cx.fillStyle="#5b3708"; cx.font="900 "+Math.max(9,Math.round(r*0.38))+"px 'Segoe UI',sans-serif";
+    cx.fillText(coin.val.t,x,y-r*0.08);
+    cx.font="800 "+Math.max(8,Math.round(r*0.25))+"px 'Segoe UI',sans-serif";
+    cx.fillText(fmt(coin.val.v),x,y+r*0.28);
+  } else {
+    var mult=Math.max(1,Math.round(coin.val.v/Math.max(1,G.bet)));
+    cx.fillStyle="#5b3708"; cx.font="900 "+Math.max(12,Math.round(r*0.62))+"px Georgia";
+    cx.fillText(mult+"×",x,y+1);
+  }
+  cx.restore();
+}
+function drawHoldWin(t){
+  if(G.state!=="HW") return;
+  var g=geom(), occ={};
+  for(var i=0;i<G.hwCoins.length;i++) occ[G.hwCoins[i].r+"_"+G.hwCoins[i].row]=G.hwCoins[i];
+  cx.save();
+  roundRect(g.gx,g.gy,g.gw,g.gh,8); cx.clip();
+  cx.fillStyle="rgba(5,7,18,0.90)"; cx.fillRect(g.gx,g.gy,g.gw,g.gh);
+  for(var r=0;r<5;r++) for(var row=0;row<3;row++){
+    var x=g.gx+r*g.cw, y=g.gy+row*g.ch, pad=Math.max(4,Math.min(g.cw,g.ch)*0.06);
+    cx.fillStyle="rgba(24,31,65,0.82)"; cx.strokeStyle="rgba(231,182,74,0.38)"; cx.lineWidth=1.5;
+    roundRect(x+pad,y+pad,g.cw-pad*2,g.ch-pad*2,10); cx.fill(); cx.stroke();
+    var coin=occ[r+"_"+row];
+    if(coin) drawHoldCoin(x+g.cw/2,y+g.ch/2,g.cw,g.ch,coin,t);
+    else {
+      cx.fillStyle="rgba(255,255,255,0.08)"; cx.beginPath(); cx.arc(x+g.cw/2,y+g.ch/2,Math.min(g.cw,g.ch)*0.17,0,6.2832); cx.fill();
+    }
+  }
+  var bw=Math.min(260,g.gw*0.58), bh=Math.min(34,g.ch*0.26), bx=g.gx+g.gw/2-bw/2, by=g.gy+8;
+  cx.fillStyle="rgba(8,10,22,0.90)"; cx.strokeStyle="#e7b64a"; cx.lineWidth=1.5; roundRect(bx,by,bw,bh,10); cx.fill(); cx.stroke();
+  cx.fillStyle="#fff3c0"; cx.font="800 "+Math.max(11,Math.round(bh*0.42))+"px 'Segoe UI',sans-serif"; cx.textAlign="center"; cx.textBaseline="middle";
+  cx.fillText("HOLD & WIN  •  RESPINS "+G.hwLeft,bx+bw/2,by+bh/2);
+  cx.restore();
+}
+
 // ---------- FREE SPINS ----------
 function startFreeSpins(scat){
   var n = scat>=5?20:scat>=4?12:8;
@@ -692,7 +853,7 @@ function startFreeSpins(scat){
   setWolf("CELEBRATE"); moonPulse=1; sfxBig();
   spawnSpark(W/2,H*0.4,40,"#8fb7e0");
   // brief intro then auto-run
-  spinTimers.push(setTimeout(function(){ scheduleAuto(); }, G.turbo?500:1400));
+  later(function(){ scheduleAuto(); }, G.turbo?500:1400);
 }
 function endFreeSpins(){
   var total=G.fsWin;
@@ -700,16 +861,16 @@ function endFreeSpins(){
   if(total>0){ G.bal+=0; } // fsWin already added per-spin via addWin
   G.state="READY"; setWolf("SMIRK");
   banner("FREE SPINS COMPLETE", "TOTAL "+fmt(total));
-  save();
+  save(); scheduleAuto();
 }
 // ---------- HOLD & WIN ----------
 function startHoldWin(coins){
   G.state="HW"; G.hwLeft=3; G.hwWin=0; G.hwCoins=[];
   // seed grid coins with values
-  for(var i=0;i<coins.length;i++){ G.hwCoins.push({r:coins[i][0],row:coins[i][1],val:coinVal()}); }
+  for(var i=0;i<coins.length;i++){ G.hwCoins.push({r:coins[i][0],row:coins[i][1],val:coinVal(),born:performance.now()}); }
   setWolf("CELEBRATE"); moonPulse=1; sfxBig();
   banner("HOLD & WIN", "COLLECT COINS");
-  spinTimers.push(setTimeout(hwRespin, G.turbo?500:1400));
+  later(hwRespin, G.turbo?500:1400);
 }
 function coinVal(){
   var r=rng();
@@ -726,23 +887,23 @@ function hwRespin(){
   var got=false; var p=prof();
   for(var r=0;r<5;r++) for(var row=0;row<3;row++){
     var key=r+"_"+row; if(occupied[key]) continue;
-    if(rng() < 0.14*p.coinW){ G.hwCoins.push({r:r,row:row,val:coinVal()}); got=true; sfxCoin(); }
+    if(rng() < 0.14*p.coinW){ G.hwCoins.push({r:r,row:row,val:coinVal(),born:performance.now()}); got=true; sfxCoin(); }
   }
   if(got){ G.hwLeft=3; setWolf("CELEBRATE"); }
   else { G.hwLeft--; setWolf(G.hwLeft<=1?"ANTIC":"IDLE"); }
   save();
   if(G.hwCoins.length>=15){ hwEnd(true); return; }         // full grid
   if(G.hwLeft<=0){ hwEnd(false); return; }
-  spinTimers.push(setTimeout(hwRespin, G.turbo?450:1200));
+  later(hwRespin, G.turbo?450:1200);
 }
 function hwEnd(fullGrid){
   var sum=0; for(var i=0;i<G.hwCoins.length;i++){ sum+=G.hwCoins[i].val.v; }
   if(fullGrid) sum+=G.bet*500; // GRAND for full grid
   G.bal+=sum; G.totalWon+=sum; if(sum>G.biggest)G.biggest=sum;
-  G.hwWin=sum;
+  G.hwWin=sum; G.win=sum; G.lastWin=sum;
   banner(fullGrid?"FULL GRID!":"HOLD & WIN WIN", fmt(sum));
   spawnCoins(W/2,H*0.4,Math.min(80,20+Math.round(sum/G.bet)));
-  G.hwCoins=[]; G.hwLeft=0; G.state="READY"; setWolf("SMIRK"); save();
+  G.hwCoins=[]; G.hwLeft=0; G.state="READY"; setWolf("SMIRK"); save(); scheduleAuto();
 }
 // ---------- FEATURE BUY (virtual credits only) ----------
 function buyFreeSpins(){
@@ -768,8 +929,15 @@ function fmt(n){ n=Math.round(n); return n.toString().replace(/\B(?=(\d{3})+(?!\
 var bannerFx={t:0,title:"",sub:""};
 function banner(title,sub){ bannerFx.title=title; bannerFx.sub=sub; bannerFx.t=1; }
 function scheduleAuto(){
-  if(G.fsLeft>0){ spinTimers.push(setTimeout(doSpin, G.turbo?250:900)); return; }
-  if(G.auto>0){ G.auto--; spinTimers.push(setTimeout(function(){ if(G.state==="READY") doSpin(); }, G.turbo?250:700)); }
+  if(autoTimer){ cancelLater(autoTimer); autoTimer=0; }
+  if(G.fsLeft>0 && G.state==="FS"){
+    autoTimer=later(function(){ autoTimer=0; if(G.state==="FS") doSpin(); }, G.turbo?250:900);
+    return;
+  }
+  if(G.auto>0 && G.state==="READY"){
+    G.auto--;
+    autoTimer=later(function(){ autoTimer=0; if(G.state==="READY") doSpin(); }, G.turbo?250:700);
+  }
 }
 // ---------- HUD ----------
 function drawHUD(t){
@@ -908,7 +1076,7 @@ function updateReels(now){
   // resolve once every reel landed
   var everyLanded=true; for(var r2=0;r2<5;r2++){ if(reels[r2].phase!=="landed") everyLanded=false; }
   if(everyLanded && !spinResolved){ spinResolved=true;
-    spinTimers.push(setTimeout(function(){ spinResolved=false; finishSpin(); }, G.turbo?40:120)); }
+    later(function(){ spinResolved=false; finishSpin(); }, G.turbo?40:120); }
   // anticipation flags
   if(antic.on){
     var r3=reels[3], r4=reels[4];
@@ -1077,6 +1245,19 @@ function drawHousePlot(px,py,pw,ph,tier,glow,anim){
 }
 function drawHouses(t){
   var g=geom();
+  if(W<700){
+    var barW=Math.min(190,g.gw*0.58), barH=24, bx=g.gx+g.gw-barW-6, by=g.gy+g.gh-barH-6;
+    cx.save(); cx.fillStyle="rgba(8,10,22,0.78)"; cx.strokeStyle="rgba(231,182,74,0.55)"; cx.lineWidth=1;
+    roundRect(bx,by,barW,barH,8); cx.fill(); cx.stroke();
+    cx.fillStyle="#ffd76a"; cx.font="700 9px 'Segoe UI',sans-serif"; cx.textAlign="left"; cx.textBaseline="middle"; cx.fillText("VILLAGE",bx+7,by+barH/2);
+    var start=bx+49, seg=(barW-56)/3;
+    for(var mi=0;mi<3;mi++){
+      var fill=Math.max(0,Math.min(1,houses[mi]/4));
+      cx.fillStyle="rgba(255,255,255,0.12)"; roundRect(start+mi*seg,by+7,seg-5,10,4); cx.fill();
+      if(fill>0){ cx.fillStyle="#ffd76a"; roundRect(start+mi*seg,by+7,(seg-5)*fill,10,4); cx.fill(); }
+    }
+    cx.restore(); return;
+  }
   var rightSpace = W - (g.gx+g.gw);
   var pw = Math.min(120, rightSpace*0.78);
   var ph = pw*0.82;
@@ -1192,7 +1373,7 @@ function startWheel(){
   var seg=(Math.PI*2)/n; var wedgeCenter=idx*seg+seg/2;
   var base=(-Math.PI/2)-wedgeCenter; var spins=5+Math.floor(rng()*3);
   WHEEL.target=base-spins*Math.PI*2; WHEEL.angle=0; WHEEL.vel=0;
-  spinTimers.push(setTimeout(function(){ WHEEL.phase="spin"; if(sfxSpin)sfxSpin(); }, G.turbo?400:900));
+  later(function(){ WHEEL.phase="spin"; if(sfxSpin)sfxSpin(); }, G.turbo?400:900);
 }
 function updateWheel(){
   if(!WHEEL.active) return;
@@ -1219,9 +1400,9 @@ function updateWheel(){
 function awardWheel(){
   var wd=WHEEL.wedges[WHEEL.resultIdx];
   moonPulse=1; shake=14; spawnCoins(W/2,H*0.42,60); spawnSpark(W/2,H*0.42,40,wd.c1); if(sfxBig)sfxBig(); setWolf("CELEBRATE");
-  if(wd.type==="cash"){ var amt=wd.val*(G.bet/10); addWin(Math.round(amt),[]); banner(wd.label+" WIN!", fmt(Math.round(amt))); }
+  if(wd.type==="cash"){ var amt=wd.val*(G.bet/10); addWin(Math.round(amt),[],true); banner(wd.label+" WIN!", fmt(Math.round(amt))); }
   else if(wd.type==="jack"){ var jp=(window.JP=window.JP||{mega:250000,grand:50000,major:5000,minor:500,mini:100});
-    var amt2=Math.floor(jp[wd.val]||0); addWin(amt2,[]); banner((wd.val==="mega"?"MEGA ":wd.val.toUpperCase()+" ")+"JACKPOT!", fmt(amt2)); }
+    var amt2=Math.floor(jp[wd.val]||0); addWin(amt2,[],true); banner((wd.val==="mega"?"MEGA ":wd.val.toUpperCase()+" ")+"JACKPOT!", fmt(amt2)); }
   else if(wd.type==="feat"){
     if(wd.val==="FS"){ banner("MANSION FEATURE","FREE SPINS!"); startFreeSpins(3); }
     else { banner("MEGA HAT FEATURE","HOLD & WIN!"); startHoldWin([[0,0],[1,0],[2,0],[3,0],[4,0],[2,1]]); }
@@ -1265,8 +1446,7 @@ function drawWheel(t){
 function loop(t){
   try{
   frame++;
-  if(W!==window.innerWidth||H!==window.innerHeight){ resize(); }
-    cx.globalAlpha=1; cx.shadowBlur=0;
+  cx.globalAlpha=1; cx.shadowBlur=0;
     if(window.__syncDeck) window.__syncDeck();
   cx.save();
   if(shake>0){ cx.translate((rng()-0.5)*shake,(rng()-0.5)*shake); shake*=0.9; }
@@ -1274,6 +1454,7 @@ function loop(t){
   drawJackpots(t);
   drawWolf(t);
   drawReels(t);
+  drawHoldWin(t);
   drawHouses(t);
   updateParts(); drawParts();
   drawHUD(t);
@@ -1298,8 +1479,8 @@ function inBox(b,x,y){ return b && x>=b[0]&&y>=b[1]&&x<=b[2]&&y<=b[3]; }
 function onClick(x,y){
   if(ac() && ac().state==="suspended") ac().resume();
   if(inBox(hot.spinBox,x,y)){ spinPress=1; if(G.state==="SPINNING"){ quickStop=true; } else if(canSpin()){ doSpin(); } return; }
-  if(inBox(hot.betMinus,x,y)){ var i=BETS.indexOf(G.bet); if(i>0){G.bet=BETS[i-1];save();} return; }
-  if(inBox(hot.betPlus,x,y)){ var i=BETS.indexOf(G.bet); if(i<BETS.length-1){G.bet=BETS[i+1];save();} return; }
+  if(inBox(hot.betMinus,x,y)){ if(G.state!=="READY") return; var i=BETS.indexOf(G.bet); if(i>0){G.bet=BETS[i-1];save();} return; }
+  if(inBox(hot.betPlus,x,y)){ if(G.state!=="READY") return; var i=BETS.indexOf(G.bet); if(i<BETS.length-1){G.bet=BETS[i+1];save();} return; }
   if(inBox(hot.btn_AUTO,x,y)){ G.auto = G.auto>0?0:25; if(G.auto>0&&G.state==="READY") doSpin(); return; }
   if(inBox(hot.btn_TURBO,x,y)){ G.turbo=!G.turbo; return; }
   if(inBox(hot.btn_SOUND,x,y)||inBox(hot.btn_MUTED,x,y)){ G.sound=!G.sound; save(); return; }
@@ -1308,8 +1489,10 @@ function onClick(x,y){
   if(inBox(hot.btn_STATS,x,y)){ showStats(); openPanel("statsPanel"); return; }
 }
 cv.addEventListener("click",function(e){ var rct=cv.getBoundingClientRect(); onClick(e.clientX-rct.left,e.clientY-rct.top); });
+function anyPanelOpen(){ var ps=document.querySelectorAll(".panel"); for(var pi=0;pi<ps.length;pi++){ if(ps[pi].style.display==="block") return true; } return false; }
 window.addEventListener("keydown",function(e){
-  if(e.code==="Space"){ e.preventDefault(); if(canSpin()) doSpin(); }
+  if(e.code==="Escape"){ var ps=document.querySelectorAll(".panel"); for(var pi=0;pi<ps.length;pi++) ps[pi].style.display="none"; return; }
+  if(e.code==="Space" && !anyPanelOpen()){ e.preventDefault(); if(G.state==="SPINNING"){ quickStop=true; } else if(canSpin()) doSpin(); }
 });
 
   // ===== HTML control deck wiring =====
@@ -1320,9 +1503,9 @@ window.addEventListener("keydown",function(e){
     var dBal=$("d_bal"), dBet=$("d_bet"), dWin=$("d_win");
     function resumeAudio(){ try{ if(ac() && ac().state==="suspended") ac().resume(); }catch(e){} }
     if(dSpin) dSpin.addEventListener("click",function(){ resumeAudio(); if(G.state==="SPINNING"){ quickStop=true; } else if(canSpin()){ doSpin(); } });
-    if(dMinus) dMinus.addEventListener("click",function(){ var i=BETS.indexOf(G.bet); if(i>0){ G.bet=BETS[i-1]; save(); } });
-    if(dPlus) dPlus.addEventListener("click",function(){ var i=BETS.indexOf(G.bet); if(i<BETS.length-1){ G.bet=BETS[i+1]; save(); } });
-    if(dAuto) dAuto.addEventListener("click",function(){ G.auto=G.auto>0?0:25; if(G.auto>0&&G.state==="READY"){ resumeAudio(); doSpin(); } });
+    if(dMinus) dMinus.addEventListener("click",function(){ if(G.state!=="READY") return; var i=BETS.indexOf(G.bet); if(i>0){ G.bet=BETS[i-1]; save(); } });
+    if(dPlus) dPlus.addEventListener("click",function(){ if(G.state!=="READY") return; var i=BETS.indexOf(G.bet); if(i<BETS.length-1){ G.bet=BETS[i+1]; save(); } });
+    if(dAuto) dAuto.addEventListener("click",function(){ if(G.auto>0){ G.auto=0; if(autoTimer){ cancelLater(autoTimer); autoTimer=0; } return; } G.auto=G.state==="READY"?24:25; if(G.state==="READY"){ resumeAudio(); doSpin(); } });
     if(dTurbo) dTurbo.addEventListener("click",function(){ G.turbo=!G.turbo; });
     if(dSound) dSound.addEventListener("click",function(){ G.sound=!G.sound; save(); });
     if(dMenu) dMenu.addEventListener("click",function(){ openPanel("menuPanel"); });
@@ -1332,10 +1515,16 @@ window.addEventListener("keydown",function(e){
       if(dBet) dBet.textContent=fmtNum(G.bet);
       var winShow = (typeof winFx!=="undefined" && winFx.active)? Math.floor(winFx.shown) : (G.lastWin||0);
       if(dWin) dWin.textContent=fmtNum(winShow);
-      if(dSpin){ if(G.state==="SPINNING"){ dSpin.classList.add("busy"); } else { dSpin.classList.remove("busy"); } dSpin.textContent="SPIN"; }
-      if(dAuto) dAuto.classList.toggle("off", !(G.auto>0));
-      if(dTurbo) dTurbo.classList.toggle("off", !G.turbo);
-      if(dSound) dSound.classList.toggle("off", !G.sound);
+      if(dSpin){
+        dSpin.classList.toggle("busy", G.state==="SPINNING");
+        dSpin.disabled=!(G.state==="SPINNING"||canSpin());
+        dSpin.textContent=G.state==="SPINNING"?"STOP":(G.state==="HW"?"RESPIN "+G.hwLeft:(G.fsLeft>0?"FREE "+G.fsLeft:"SPIN"));
+      }
+      if(dMinus) dMinus.disabled=G.state!=="READY";
+      if(dPlus) dPlus.disabled=G.state!=="READY";
+      if(dAuto){ dAuto.classList.toggle("off", !(G.auto>0)); dAuto.textContent=G.auto>0?("AUTO "+G.auto):"AUTO"; }
+      if(dTurbo){ dTurbo.classList.toggle("off", !G.turbo); dTurbo.textContent=G.turbo?"TURBO ON":"TURBO"; }
+      if(dSound){ dSound.classList.toggle("off", !G.sound); dSound.textContent=G.sound?"SOUND":"MUTED"; }
     };
   })();
 // ---------- panels ----------
@@ -1350,21 +1539,24 @@ var closers=document.querySelectorAll(".closex");
 for(var i=0;i<closers.length;i++){ (function(el){ el.addEventListener("click",function(){ closePanel(el.getAttribute("data-close")); }); })(closers[i]); }
 function showStats(){
   var b=document.getElementById("statsBody");
+  var rtp=G.totalBet>0?((G.totalWon/G.totalBet)*100).toFixed(1)+"%":"—";
   b.innerHTML =
-   row("Spins", fmt(G.spins)) + row("Total Won", fmt(G.totalWon)) +
-   row("Biggest Win", fmt(G.biggest)) + row("Balance", fmt(G.bal)) +
-   row("Difficulty", G.diff);
+   row("Total Spins", fmt(G.spins)) + row("Paid Spins", fmt(G.paidSpins)) +
+   row("Total Wagered", fmt(G.totalBet)) + row("Total Won", fmt(G.totalWon)) +
+   row("Session RTP", rtp) + row("Biggest Win", fmt(G.biggest)) +
+   row("Balance", fmt(G.bal)) + row("Math Profile", G.diff);
 }
 function row(k,v){ return '<div class="row"><span>'+k+'</span><span>'+v+'</span></div>'; }
 // buy buttons
-var bfs=document.getElementById("buyFSbtn"), bhw=document.getElementById("buyHWbtn");
+var bfs=document.getElementById("buyFSbtn"), bhw=document.getElementById("buyHWbtn"), dd=document.getElementById("devDiff");
+if(dd){ dd.value=G.diff; dd.addEventListener("change",function(){ if(G.state!=="READY"){ this.value=G.diff; return; } G.diff=this.value; rebuildStrips(); initReels(); save(); }); }
 var dhb=document.getElementById("devHouseBtn");
 if(dhb) dhb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ upgradeHouse(lowestHouse()); closePanel("devPanel"); } });
 var dwb=document.getElementById("devWheelBtn");
 if(dwb) dwb.addEventListener("click",function(){ if(G.state==="READY"||G.state==="WIN"){ clearTimers(); closePanel("devPanel"); triggerBonus("WHEEL", function(){ startWheel(); }); } });
 if(bfs) bfs.addEventListener("click",function(){ if(!buyFreeSpins()){ this.textContent="BUY FREE SPINS (FREE)"; } });
 if(bhw) bhw.addEventListener("click",function(){ if(!buyHoldWin()){ this.textContent="BUY HOLD & WIN (FREE)"; } });
-function refreshBuyLabels(){ if(bfs)bfs.textContent="BUY FREE SPINS (FREE)"; if(bhw)bhw.textContent="BUY HOLD & WIN (FREE)"; }
+function refreshBuyLabels(){ if(bfs)bfs.textContent="FORCE FREE SPINS"; if(bhw)bhw.textContent="FORCE HOLD & WIN"; if(dd&&document.activeElement!==dd)dd.value=G.diff; }
 setInterval(refreshBuyLabels, 500);
 // ---------- boot ----------
 initReels();
