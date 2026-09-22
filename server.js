@@ -81,7 +81,12 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const relative = pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
+  const routeMap = {
+    "/": "index.html",
+    "/game/pineda-power": "game.html",
+    "/game/pineda-power/": "game.html"
+  };
+  const relative = routeMap[pathname] || pathname.replace(/^\/+/, "");
   const resolved = path.resolve(ROOT, relative);
   const rootPrefix = ROOT.endsWith(path.sep) ? ROOT : ROOT + path.sep;
 
