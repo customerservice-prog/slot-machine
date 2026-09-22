@@ -3,27 +3,32 @@ const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:chil
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"pineda-huff-v2.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"pineda-huff-v2.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"pineda-huff-v3.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"pineda-huff-v3.js"),"utf8");
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
 
 [
- ['reel grid','id="reels"'],
- ['jackpot strip','id="jpGrand"'],
- ['wheel crown','class="wheel-crown"'],
- ['Hard Hat trigger','6+ Hard Hats'],
- ['Buzz Saw trigger','3+ Buzz Saws'],
- ['feature wheel','id="wheelOverlay"'],
- ['feature intro','id="freeOverlay"'],
- ['house reveal','id="revealOverlay"'],
- ['runtime error UI','id="runtimeError"']
+ ["single cabinet",'class="game-cabinet"'],
+ ["jackpots",'class="jackpots"'],
+ ["integrated wheel",'class="wheel-zone"'],
+ ["wolf art",'class="wolf-character"'],
+ ["reels",'id="reels"'],
+ ["243 ways",'243'],
+ ["hard hat trigger",'6+'],
+ ["buzz saw trigger",'POWER WHEEL'],
+ ["spin control",'id="spinBtn"'],
+ ["runtime error",'id="runtimeError"']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(css.includes(".wheel-crown"),"Huff-style wheel crown missing");
+assert(html.includes('/pineda-huff-v3.css'),"v3 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v3.js'),"v3 engine not pinned");
+assert(css.includes(".game-cabinet"),"cabinet CSS missing");
+assert(css.includes(".wheel-half"),"wheel art missing");
+assert(css.includes(".reel-cabinet"),"reel cabinet missing");
+assert(css.includes(".wolf-character"),"wolf character missing");
 assert(css.includes(".frame-straw")&&css.includes(".frame-wood")&&css.includes(".frame-brick"),"frame visuals missing");
-assert(css.includes(".rank")&&css.includes(".forest-sky"),"bright forest reel design missing");
-assert(css.includes("@media(max-width:900px)"),"responsive layout missing");
+assert(css.includes("@media(max-width:760px)"),"mobile layout missing");
 
 [
  "function evaluateWays",
@@ -33,12 +38,18 @@ assert(css.includes("@media(max-width:900px)"),"responsive layout missing");
  "function awardWheel",
  "function frameReward",
  "function showReveal",
- "function showRuntimeError"
+ "function showRuntimeError",
+ "function svgPigGreen",
+ "function svgPigBlue",
+ "function svgHat",
+ "function svgSaw",
+ "function svgWolf"
 ].forEach(name=>assert(app.includes(name),name+" missing"));
 
-assert(app.includes('state.pendingFree'),"simultaneous wheel/free-spin sequencing missing");
-assert(app.includes('spinsLeft:6'),"features must begin with 6 spins");
-assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"Wild reel restriction missing");
+assert(app.includes('hats.length>=6'),"6+ Hard Hat trigger missing");
+assert(app.includes('saws.length>=3'),"3+ Buzz Saw trigger missing");
+assert(app.includes('spinsLeft:6'),"6-spin feature missing");
+assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"wild reel rule missing");
 new Function(app);
 
 assert(pkg.scripts&&pkg.scripts.start==="node server.js","start script invalid");
@@ -52,7 +63,12 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/pineda-huff-v2.css","/pineda-huff-v2.js"]){const r=await fetch("http://127.0.0.1:"+port+p);assert(r.ok,p+" failed");const text=await r.text();assert(text.length>100,p+" unexpectedly empty")}
+  for(const p of ["/","/pineda-huff-v3.css","/pineda-huff-v3.js"]){
+    const r=await fetch("http://127.0.0.1:"+port+p);
+    assert(r.ok,p+" failed");
+    assert((r.headers.get("cache-control")||"").includes("no-store"),p+" must be no-store");
+    const body=await r.text();assert(body.length>100,p+" unexpectedly empty");
+  }
  }finally{child.kill("SIGTERM")}
 }
 verifyServer().then(()=>console.log("Smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
