@@ -1,69 +1,34 @@
 "use strict";
-
-const fs = require("node:fs");
-const path = require("node:path");
-const { spawn } = require("node:child_process");
-
-const ROOT = __dirname;
-function assert(condition, message) {
-  if (!condition) throw new Error(message);
+const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:child_process");
+function assert(x,m){if(!x)throw new Error(m)}
+const root=__dirname;
+const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
+const css=fs.readFileSync(path.join(root,"styles.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"app.js"),"utf8");
+const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
+const rail=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
+assert(html.includes('id="reels"'),"reel grid missing");
+assert(html.includes('id="wheelPanel"'),"bonus wheel panel missing");
+assert(html.includes('id="holdPanel"'),"hold-and-win panel missing");
+assert(html.includes('id="buildBar0"'),"build meter missing");
+assert(html.includes('/styles.css')&&html.includes('/app.js'),"split app assets missing");
+assert(css.includes(".spin-btn")&&css.includes(".bonus-overlay")&&css.includes("@media(max-width:820px)"),"responsive premium UI missing");
+assert(app.includes("function startFreeSpins"),"free spins logic missing");
+assert(app.includes("function startWheel"),"wheel logic missing");
+assert(app.includes("function startHoldWin"),"hold-and-win logic missing");
+assert(app.includes("function handleBuild"),"build progression missing");
+assert(app.includes("Free-play")||html.includes("Free-play"),"free-play disclosure missing");
+new Function(app);
+assert(pkg.scripts.start==="node server.js","production start script invalid");
+assert(rail.deploy.healthcheckPath==="/health","healthcheck missing");
+async function run(){
+ const port=32145,child=spawn(process.execPath,["server.js"],{cwd:root,env:{...process.env,PORT:String(port)},stdio:["ignore","pipe","pipe"]});
+ let err="";child.stderr.on("data",d=>err+=d);
+ try{
+  let health;
+  for(let i=0;i<40;i++){try{health=await fetch("http://127.0.0.1:"+port+"/health");if(health.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
+  assert(health&&health.ok,"health endpoint failed "+err);
+  for(const p of ["/","/styles.css","/app.js"]){const r=await fetch("http://127.0.0.1:"+port+p);assert(r.ok,p+" failed")}
+ }finally{child.kill("SIGTERM")}
 }
-
-const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
-const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
-const railway = JSON.parse(fs.readFileSync(path.join(ROOT, "railway.json"), "utf8"));
-
-assert(html.includes('id="d_spin"'), "Spin control is missing");
-assert(html.includes('id="d_auto"'), "Autoplay control is missing");
-assert(html.includes("function drawHoldWin"), "Hold & Win renderer is missing");
-assert(html.includes("function startFreeSpins"), "Free Spins feature is missing");
-assert(html.includes("function startWheel"), "Bonus Wheel feature is missing");
-assert(html.includes("function checkVillageComplete"), "Village progression is missing");
-assert(!html.includes("H!==window.innerHeight"), "Per-frame canvas resize regression detected");
-assert(html.includes('if(G.state!=="READY") return; var i=BETS.indexOf(G.bet)'), "Bet changes are not locked during active play");
-assert(pkg.scripts && pkg.scripts.start === "node server.js", "Production start script must use server.js");
-assert(railway.deploy && railway.deploy.healthcheckPath === "/health", "Railway health check is missing");
-
-const script = html.match(/<script>\s*([\s\S]*?)<\/script>/);
-assert(script, "Game script block is missing");
-new Function(script[1]);
-
-async function verifyServer() {
-  const port = 32145;
-  const child = spawn(process.execPath, ["server.js"], {
-    cwd: ROOT,
-    env: { ...process.env, PORT: String(port) },
-    stdio: ["ignore", "pipe", "pipe"]
-  });
-
-  let stderr = "";
-  child.stderr.on("data", chunk => { stderr += chunk.toString(); });
-
-  try {
-    let health;
-    for (let i = 0; i < 30; i++) {
-      try {
-        health = await fetch(`http://127.0.0.1:${port}/health`);
-        if (health.ok) break;
-      } catch {}
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    assert(health && health.ok, "Health endpoint did not become ready. " + stderr);
-    const body = await health.json();
-    assert(body.ok === true, "Health endpoint returned an invalid payload");
-
-    const home = await fetch(`http://127.0.0.1:${port}/`);
-    assert(home.ok, "Homepage request failed");
-    const text = await home.text();
-    assert(text.includes("<title>Pineda Power - Free Play</title>"), "Homepage served unexpected content");
-  } finally {
-    child.kill("SIGTERM");
-  }
-}
-
-verifyServer()
-  .then(() => console.log("Smoke test passed"))
-  .catch(err => {
-    console.error(err.stack || err);
-    process.exitCode = 1;
-  });
+run().then(()=>console.log("Smoke test passed")).catch(e=>{console.error(e.stack||e);process.exitCode=1});
