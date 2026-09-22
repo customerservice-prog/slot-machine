@@ -3,8 +3,9 @@ const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:chil
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"pineda-huff-v6.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"pineda-huff-v6.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"pineda-huff-v7.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"pineda-huff-v7.js"),"utf8");
+const core=require(path.join(root,"game-core-v7.js"));
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
 
@@ -21,16 +22,30 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["runtime error",'id="runtimeError"']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(html.includes('/pineda-huff-v6.css'),"v3 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v6.js'),"v3 engine not pinned");
+assert(html.includes('/pineda-huff-v7.css'),"v3 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v7.js'),"v3 engine not pinned");
 assert(css.includes(".game-cabinet"),"cabinet CSS missing");
-assert(css.includes("V6 SCREENSHOT-MATCH GEOMETRY"),"v5 reference-proportion CSS missing");
+assert(css.includes("V7 DETAILED ART PASS"),"v5 reference-proportion CSS missing");
 assert(css.includes("aspect-ratio:433/461"),"exact 433:461 reference cabinet ratio missing");
-assert(css.includes("width:930px"),"reference-scale wheel missing");
-assert(css.includes("height:930px"),"wheel must be a true circle, not an ellipse");
+assert(css.includes('background:url("/assets/wheel-v7.svg")'),"detailed wheel art missing");
+assert(css.includes("930px 493px"),"v7 wheel display sizing missing");
 assert(css.includes("height:255px"),"clipped wheel viewport height missing");
 assert(css.includes("grid-template-columns:47px minmax(0,1fr) 57px"),"compact side rails missing");
 assert(css.includes("aspect-ratio:5/3"),"5x3 reel proportion missing");
+assert(html.includes('/game-core-v7.js'),"v7 core script missing");
+assert(html.includes('/assets/wheel-v7.svg'),"v7 wheel art not referenced");
+assert(css.includes('/assets/forest-v7.svg'),"v7 forest art not referenced");
+assert(core.selfTest()===true,"v7 core self-test failed");
+
+const triggerGrid=[
+ ["HAT","HAT","SAW"],["HAT","HAT","SAW"],["HAT","HAT","SAW"],["A","K","Q"],["J","T","A"]
+];
+const trig=core.classifyTriggers(triggerGrid);
+assert(trig.free&&trig.wheel,"simultaneous free-spin/wheel trigger failed");
+for(const type of ["free","buzz","mega","mansion"]){
+ const frames=core.createFeatureFrames(type,[0,3,6],()=>.2);
+ assert(Array.isArray(frames)&&frames.length===15,type+" feature frame creation failed");
+}
 assert(html.includes('class="utility-strip"'),"utility controls were not moved into bottom HUD");
 assert(!html.includes('class="top-utility"'),"old floating utility controls still present");
 assert(html.includes("/assets/pineda-v4-logo.svg"),"v4 logo art missing");
@@ -79,7 +94,7 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/pineda-huff-v6.css","/pineda-huff-v6.js"]){
+  for(const p of ["/","/pineda-huff-v7.css","/pineda-huff-v7.js"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
     assert((r.headers.get("cache-control")||"").includes("no-store"),p+" must be no-store");
