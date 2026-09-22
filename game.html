@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#10220d">
   <meta name="description" content="Pineda Power — a free-play cartoon construction slot-style game with hard hats, buzz saws, free spins and a power wheel.">
   <title>Pineda Power — Free Play</title>
-  <link rel="stylesheet" href="/pineda-huff-v11.css">
+  <link rel="stylesheet" href="/pineda-huff-v12.css">
 <link rel="stylesheet" href="/casino.css">
 <link rel="stylesheet" href="/game-shell.css">
 </head>
@@ -30,6 +30,9 @@
   <a class="side-link active" href="/game/pineda-power"><span class="ico">▶</span><span>PLAYING</span></a>
   <a class="side-link" href="/#originals"><span class="ico">✦</span><span>ORIGINALS</span></a>
   <a class="side-link" href="/#coming"><span class="ico">★</span><span>NEW</span></a>
+  <a class="side-link" href="/#coming"><span class="ico">🎁</span><span>PROMOTIONS</span></a>
+  <a class="side-link" href="/#coming"><span class="ico">♛</span><span>LEADERBOARD</span></a>
+  <a class="side-link" href="/#coming"><span class="ico">⚙</span><span>SETTINGS</span></a>
   <div class="side-spacer"></div>
   <div class="side-badge">FREE PLAY<br>NO CASH VALUE</div>
 </aside>
@@ -74,7 +77,13 @@
     </div>
 
     <div class="wheel-zone" aria-label="Feature wheel">
-      <img class="wheel-art-v9" src="/assets/wheel-v10.svg" alt="" draggable="false">
+      <img class="wheel-art-v12" src="/assets/wheel-v12.svg" alt="" draggable="false">
+      <div class="wheel-feature-glow" aria-hidden="true"></div>
+    </div>
+
+    <div id="featureModeBanner" class="feature-mode-banner" hidden>
+      <img id="featureBannerIcon" src="/assets/hardhat-v4.svg" alt="">
+      <div><small>FEATURE ACTIVE</small><strong id="featureBannerText">FREE SPINS</strong></div>
     </div>
 
     <div class="machine-core">
@@ -112,6 +121,15 @@
       </aside>
     </div>
 
+    <div class="scene-builder" aria-hidden="true">
+      <img src="/assets/pig-blue-v10.svg" alt="">
+      <div class="builder-sign">BUILD<br>BIGGER<br>WINS!</div>
+    </div>
+    <div class="scene-tools" aria-hidden="true">
+      <img src="/assets/toolbox-v10.svg" alt="">
+      <img class="scene-hat" src="/assets/hardhat-v4.svg" alt="">
+    </div>
+
     <footer class="cabinet-meter">
       <div class="utility-strip">
         <button id="rulesBtn" type="button" title="Rules">i</button>
@@ -122,8 +140,12 @@
       <div class="meter-group">
         <small>BALANCE</small><strong id="balance">2,500</strong>
       </div>
-      <div class="meter-group center">
+      <div class="meter-group center" id="normalWinMeter">
         <small>WIN</small><strong id="winValue">0</strong>
+      </div>
+      <div id="bonusWinPanel" class="bonus-win-panel" hidden>
+        <small>TOTAL BONUS WIN</small>
+        <strong id="bonusWinValue">0</strong>
       </div>
       <div class="status-copy" id="statusCopy">6+ HARD HATS = FREE SPINS • 3+ BUZZ SAWS = POWER WHEEL</div>
       <div class="meter-group right">
@@ -173,7 +195,7 @@
 <section id="wheelOverlay" class="feature-overlay" hidden>
   <div class="feature-stage wheel-stage">
     <div class="feature-kicker">POWER WHEEL</div>
-    <h2>POWER WHEEL</h2><p class="wheel-subtitle">Jackpots • 20 Free Spins • Buzz Saw • Mega Hat • Mansion</p>
+    <h2>POWER WHEEL</h2><p class="wheel-subtitle">Land a jackpot or trigger a premium feature</p>
     <div class="big-wheel-wrap">
       <div class="big-wheel-pointer"></div>
       <div id="bigWheel" class="big-wheel"></div>
@@ -211,7 +233,7 @@
 </div>
 
 <script src="/game-core-v7.js"></script>
-<script src="/pineda-huff-v11.js" defer></script>
+<script src="/pineda-huff-v12.js" defer></script>
 <script>setTimeout(function(){if(location.hash==="#rules")document.getElementById("rulesBtn")?.click()},450);
     setInterval(function(){
       var a=document.getElementById("balance"),b=document.getElementById("shellBalance");
