@@ -3,8 +3,8 @@ const fs=require("node:fs"),path=require("node:path"),{spawn}=require("node:chil
 function assert(x,m){if(!x)throw new Error(m)}
 const root=__dirname;
 const html=fs.readFileSync(path.join(root,"index.html"),"utf8");
-const css=fs.readFileSync(path.join(root,"pineda-huff-v9.css"),"utf8");
-const app=fs.readFileSync(path.join(root,"pineda-huff-v9.js"),"utf8");
+const css=fs.readFileSync(path.join(root,"pineda-huff-v10.css"),"utf8");
+const app=fs.readFileSync(path.join(root,"pineda-huff-v10.js"),"utf8");
 const core=require(path.join(root,"game-core-v7.js"));
 const pkg=JSON.parse(fs.readFileSync(path.join(root,"package.json"),"utf8"));
 const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"));
@@ -24,15 +24,22 @@ const railway=JSON.parse(fs.readFileSync(path.join(root,"railway.json"),"utf8"))
  ["feature wolf",'/assets/wolf-v4.svg']
 ].forEach(([name,needle])=>assert(html.includes(needle),name+" missing"));
 
-assert(html.includes('/pineda-huff-v9.css'),"v9 stylesheet not pinned");
-assert(html.includes('/pineda-huff-v9.js'),"v9 engine not pinned");
+assert(html.includes('/pineda-huff-v10.css'),"v9 stylesheet not pinned");
+assert(html.includes('/pineda-huff-v10.js'),"v9 engine not pinned");
 assert(html.includes('/game-core-v7.js'),"shared feature core missing");
-assert(html.includes('/assets/wheel-v9.svg'),"v9 wheel art not referenced");
+assert(html.includes('/assets/wheel-v10.svg'),"v9 wheel art not referenced");
 assert(html.includes('/assets/pineda-v4-logo.svg'),"logo art missing");
+["pig-green-v10.svg","pig-blue-v10.svg","tape-v10.svg","toolbox-v10.svg","wolf-v10.svg"].forEach(name=>{
+  assert(app.includes(name),"v10 art "+name+" missing");
+});
+assert(css.includes("V10 VISUAL DENSITY + SIGNAGE PASS"),"v10 detail CSS missing");
+assert(css.includes(".jackpot.grand small")&&css.includes(".jackpot.major small"),"layered jackpot badges missing");
+assert(css.includes('/assets/forest-v10.svg'),"v10 forest art missing");
+assert(app.includes('["PG","PB","TOOL"]'),"curated first-view reel mix missing");
 assert(!html.includes('class="top-utility"'),"old floating utility controls still present");
 
 [
- "V9 VIEWPORT-LOCKED MACHINE GEOMETRY",
+ "V10 VISUAL DENSITY + SIGNAGE PASS",
  "grid-template-rows:21.5% 24.5% 47.5% 6.5%",
  "aspect-ratio:433/461",
  "aspect-ratio:auto!important",
@@ -95,7 +102,7 @@ async function verifyServer(){
   let h;
   for(let i=0;i<40;i++){try{h=await fetch("http://127.0.0.1:"+port+"/health");if(h.ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
   assert(h&&h.ok,"health endpoint failed "+err);
-  for(const p of ["/","/game-core-v7.js","/pineda-huff-v9.css","/pineda-huff-v9.js","/assets/wheel-v9.svg","/assets/forest-v7.svg"]){
+  for(const p of ["/","/game-core-v7.js","/pineda-huff-v10.css","/pineda-huff-v10.js","/assets/wheel-v10.svg","/assets/forest-v10.svg","/assets/pig-green-v10.svg","/assets/pig-blue-v10.svg"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
     const cache=r.headers.get("cache-control")||"";
