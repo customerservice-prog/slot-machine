@@ -77,8 +77,8 @@ assert(css.includes("@media(max-width:760px)"),"mobile layout missing");
  "window.__qa"
 ].forEach(name=>assert(app.includes(name),name+" missing"));
 
-assert(app.includes('hats.length>=6'),"6+ Hard Hat trigger missing");
-assert(app.includes('saws.length>=3'),"3+ Buzz Saw trigger missing");
+assert(core.classifyTriggers(triggerGrid).hats.length===6&&core.classifyTriggers(triggerGrid).free,"6+ Hard Hat trigger missing");
+assert(core.classifyTriggers(triggerGrid).saws.length===3&&core.classifyTriggers(triggerGrid).wheel,"3+ Buzz Saw trigger missing");
 assert(app.includes('spinsLeft:6'),"6-spin feature missing");
 assert(app.includes('id==="WILD"&&(reel===0||reel===4)'),"wild reel rule missing");
 new Function(app);
