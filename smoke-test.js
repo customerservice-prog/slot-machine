@@ -33,7 +33,7 @@ assert(css.includes("height:255px"),"clipped wheel viewport height missing");
 assert(css.includes("grid-template-columns:47px minmax(0,1fr) 57px"),"compact side rails missing");
 assert(css.includes("aspect-ratio:5/3"),"5x3 reel proportion missing");
 assert(html.includes('/game-core-v7.js'),"v7 core script missing");
-assert(html.includes('/assets/wheel-v7.svg'),"v7 wheel art not referenced");
+assert(css.includes('/assets/wheel-v7.svg'),"v7 wheel art not referenced");
 assert(css.includes('/assets/forest-v7.svg'),"v7 forest art not referenced");
 assert(core.selfTest()===true,"v7 core self-test failed");
 
