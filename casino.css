@@ -28,3 +28,18 @@ a{text-decoration:none;color:inherit}button,input{font:inherit}button{cursor:poi
 .fav-btn{position:absolute;z-index:7;left:8px;top:8px;width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(7,18,25,.78);color:#9eb2bf;font-size:16px;display:grid;place-items:center}
 .fav-btn.active{color:#ffe067;border-color:#6d5b24;background:rgba(39,34,14,.88)}
 .game-card[hidden]{display:none!important}
+
+/* v12 casino chrome polish */
+.brand-crown{font-style:normal;color:#ffd74f;text-shadow:0 0 12px rgba(255,214,65,.35)}
+.header-tab.active{
+  background:#143225!important;color:#fff!important;border:1px solid #20c944!important;
+  box-shadow:0 0 0 1px rgba(39,255,73,.18),0 0 16px rgba(0,231,1,.18),inset 0 0 14px rgba(0,231,1,.05)
+}
+.header-balance{padding-right:5px!important;min-width:180px}
+.credit-plus{
+  margin-left:8px;width:30px;height:30px;border-radius:50%;
+  border:1px solid #2f7340;background:linear-gradient(#1a5b2c,#123b21);
+  color:#8cff9a;font-size:20px;font-weight:900;line-height:1;display:grid;place-items:center
+}
+.credit-plus:hover{filter:brightness(1.16);box-shadow:0 0 14px rgba(0,231,1,.18)}
+.side-link.active{box-shadow:inset 3px 0 #00e701,0 0 16px rgba(0,231,1,.05)!important}
