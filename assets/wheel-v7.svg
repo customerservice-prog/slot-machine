@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 530">
+<defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff49a"/><stop offset=".32" stop-color="#ffc73d"/><stop offset=".72" stop-color="#e58a18"/><stop offset="1" stop-color="#8a4308"/></linearGradient>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1198d5"/><stop offset="1" stop-color="#064474"/></linearGradient>
+  <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd75b"/><stop offset="1" stop-color="#cf7411"/></linearGradient>
+  <linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ef543c"/><stop offset="1" stop-color="#8f1e18"/></linearGradient>
+  <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#59b94e"/><stop offset="1" stop-color="#176123"/></linearGradient>
+  <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bd64dc"/><stop offset="1" stop-color="#642782"/></linearGradient>
+  <pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" fill="#fff" opacity=".14"/></pattern>
+  <filter id="shadow"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-opacity=".55"/></filter>
+  <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+
+<g filter="url(#shadow)">
+  <path d="M500 500L20 500A480 480 0 0 1 111.67 217.86Z" fill="url(#red)"/>
+  <path d="M500 500L111.67 217.86A480 480 0 0 1 351.67 43.49Z" fill="url(#blue)"/>
+  <path d="M500 500L351.67 43.49A480 480 0 0 1 648.33 43.49Z" fill="url(#yellow)"/>
+  <path d="M500 500L648.33 43.49A480 480 0 0 1 888.33 217.86Z" fill="url(#green)"/>
+  <path d="M500 500L888.33 217.86A480 480 0 0 1 980 500Z" fill="url(#purple)"/>
+  <path d="M500 500L20 500A480 480 0 0 1 980 500Z" fill="url(#dots)" opacity=".65"/>
+
+  <circle cx="500" cy="500" r="486" fill="none" stroke="#6e3506" stroke-width="30"/>
+  <circle cx="500" cy="500" r="476" fill="none" stroke="url(#gold)" stroke-width="18"/>
+  <circle cx="500" cy="500" r="444" fill="none" stroke="#ffe88f" stroke-width="6" opacity=".8"/>
+
+  <path d="M500 500 111.67 217.86M500 500 351.67 43.49M500 500 648.33 43.49M500 500 888.33 217.86" stroke="#6c3108" stroke-width="7"/>
+  <path d="M500 500 111.67 217.86M500 500 351.67 43.49M500 500 648.33 43.49M500 500 888.33 217.86" stroke="#ffe282" stroke-width="2" opacity=".8"/>
+
+  <image href="hardhat-v4.svg" x="65" y="285" width="155" height="125"/>
+  <image href="saw-v4.svg" x="190" y="105" width="185" height="185"/>
+  <image href="hardhat-v4.svg" x="418" y="70" width="165" height="135"/>
+  <image href="pig-blue-v4.svg" x="638" y="105" width="175" height="175"/>
+  <image href="wolf-v4.svg" x="820" y="280" width="145" height="145"/>
+
+  <g font-family="Arial Black,Arial" text-anchor="middle" fill="#fff" stroke="#15324e" stroke-width="5" paint-order="stroke" filter="url(#glow)">
+    <text x="286" y="300" font-size="34" transform="rotate(-26 286 300)">BUZZ SAW</text>
+    <text x="286" y="332" font-size="20" transform="rotate(-26 286 332)">FREE SPINS</text>
+  </g>
+  <g font-family="Arial Black,Arial" text-anchor="middle" fill="#ffe96f" stroke="#7b320a" stroke-width="5" paint-order="stroke">
+    <text x="500" y="235" font-size="35">MEGA HAT</text>
+    <text x="500" y="270" font-size="21">FEATURE</text>
+  </g>
+  <g font-family="Arial Black,Arial" text-anchor="middle" fill="#fff" stroke="#245020" stroke-width="5" paint-order="stroke">
+    <text x="724" y="304" font-size="31" transform="rotate(25 724 304)">MANSION</text>
+    <text x="724" y="334" font-size="18" transform="rotate(25 724 334)">FEATURE</text>
+  </g>
+  <g font-family="Arial Black,Arial" text-anchor="middle" fill="#e8faff" stroke="#2d2057" stroke-width="5" paint-order="stroke">
+    <text x="900" y="414" font-size="24" transform="rotate(37 900 414)">WOLF WILD</text>
+  </g>
+
+  <circle cx="500" cy="500" r="42" fill="url(#gold)" stroke="#6d3607" stroke-width="8"/>
+  <circle cx="500" cy="500" r="18" fill="#fff0a7" stroke="#b66d13" stroke-width="4"/>
+</g>
+</svg>
