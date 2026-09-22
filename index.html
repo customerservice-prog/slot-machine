@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#10220d">
   <meta name="description" content="Pineda Power — a free-play cartoon construction slot-style game with hard hats, buzz saws, free spins and a power wheel.">
   <title>Pineda Power — Free Play</title>
-  <link rel="stylesheet" href="/pineda-huff-v5.css">
+  <link rel="stylesheet" href="/pineda-huff-v6.css">
 </head>
 <body>
 <div class="casino-stage">
@@ -36,26 +36,15 @@
         </div>
       </div>
 
-      <div class="top-utility">
-        <div class="credit-meter">
-          <small>PLAY CREDITS</small>
-          <strong id="walletBalance">2,500</strong>
-        </div>
-        <div class="utility-buttons">
-          <button id="rulesBtn" type="button" title="Rules">?</button>
-          <button id="statsBtn" type="button" title="Stats">▥</button>
-          <button id="soundBtn" type="button" title="Sound">◖</button>
-          <button id="fullBtn" type="button" title="Fullscreen">⛶</button>
-        </div>
-      </div>
+      <span id="walletBalance" hidden>2,500</span>
     </div>
 
     <div class="wheel-zone">
       <div class="wheel-half">
-        <div class="wheel-band wb1"><b>BUZZ SAW</b><span>FEATURE</span></div>
+        <div class="wheel-band wb1"><b>BUZZ SAW</b><span>FREE SPINS</span></div>
         <div class="wheel-band wb2"><b>MEGA HAT</b><span>FEATURE</span></div>
-        <div class="wheel-band wb3"><b>MANSION</b><span>FEATURE</span></div>
-        <div class="wheel-band wb4"><b>GRAND</b><span>JACKPOT</span></div>
+        <div class="wheel-band wb3"><b>WOLF WILD</b><span>FEATURE</span></div>
+        <div class="wheel-band wb4"><b>MANSION</b><span>FEATURE</span></div>
         <div class="wheel-band wb5"><b>MAJOR</b><span>JACKPOT</span></div>
         <div class="wheel-band wb6"><b>MINOR</b><span>BONUS</span></div>
       </div>
@@ -102,6 +91,12 @@
     </div>
 
     <footer class="cabinet-meter">
+      <div class="utility-strip">
+        <button id="rulesBtn" type="button" title="Rules">i</button>
+        <button id="statsBtn" type="button" title="Stats">▥</button>
+        <button id="soundBtn" type="button" title="Sound">◖</button>
+        <button id="fullBtn" type="button" title="Fullscreen">⛶</button>
+      </div>
       <div class="meter-group">
         <small>BALANCE</small><strong id="balance">2,500</strong>
       </div>
@@ -180,6 +175,6 @@
   <button type="button" id="reloadBtn">Reload</button>
 </div>
 
-<script src="/pineda-huff-v5.js" defer></script>
+<script src="/pineda-huff-v6.js" defer></script>
 </body>
 </html>
