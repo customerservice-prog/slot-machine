@@ -3,167 +3,128 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#10220d">
-  <meta name="description" content="Pineda Power — a free-play cartoon construction slot-style game with hard hats, buzz saws, free spins and a power wheel.">
-  <title>Pineda Power — Free Play</title>
-  <link rel="stylesheet" href="/pineda-huff-v10.css">
+  <meta name="theme-color" content="#0b1822">
+  <meta name="description" content="Pineda Casino — a free-play social casino lobby with Pineda Power and upcoming original games.">
+  <title>Pineda Casino — Free Play</title>
+  <link rel="stylesheet" href="/casino.css">
 </head>
-<body>
-<div class="casino-stage">
-  <section class="game-cabinet" aria-label="Pineda Power free-play slot game">
-    <div class="forest-scene" aria-hidden="true">
-      <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
-      <div class="tree-layer back"></div><div class="tree-layer front"></div>
+<body class="casino-app">
+<header class="casino-header">
+  <a class="platform-brand" href="/">
+    <span class="platform-mark">PP</span>
+    <span class="platform-copy"><b>Pineda Casino</b><small>FREE-PLAY SOCIAL CASINO</small></span>
+  </a>
+  <nav class="header-tabs">
+    <a class="header-tab active" href="/">Casino</a>
+    <a class="header-tab" data-scroll="#originals" href="#originals">Originals</a>
+    <a class="header-tab" data-scroll="#coming" href="#coming">Coming Soon</a>
+  </nav>
+  <label class="search-wrap">⌕ <input id="gameSearch" type="search" placeholder="Search games"></label>
+  <div class="header-balance"><i>C</i><span><small>PLAY CREDITS</small><b>2,500</b></span></div>
+  <button class="profile-btn" type="button" aria-label="Profile">●</button>
+</header>
+
+<aside class="casino-sidebar">
+  <a class="side-link active" href="/"><span class="ico">◆</span><span>LOBBY</span></a>
+  <a class="side-link" data-scroll="#featured" href="#featured"><span class="ico">▦</span><span>SLOTS</span></a>
+  <a class="side-link" data-scroll="#originals" href="#originals"><span class="ico">✦</span><span>ORIGINALS</span></a>
+  <a class="side-link" data-scroll="#recentSection" href="#recentSection"><span class="ico">↻</span><span>RECENT</span></a>
+  <a class="side-link" data-scroll="#coming" href="#coming"><span class="ico">★</span><span>NEW</span></a>
+  <div class="side-spacer"></div>
+  <div class="side-badge">FREE PLAY<br>NO CASH VALUE</div>
+</aside>
+
+<main class="casino-main">
+  <div class="category-strip">
+    <button class="cat-chip active" type="button">All Games</button>
+    <button class="cat-chip" type="button">Originals</button>
+    <button class="cat-chip" type="button">Slots</button>
+    <button class="cat-chip" type="button">Features</button>
+    <button class="cat-chip" type="button">New</button>
+  </div>
+
+  <section class="hero" id="featured">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span class="pill green">PLAYABLE NOW</span><span class="pill dark">PINEDA ORIGINAL</span></div>
+      <img class="hero-logo" src="/assets/pineda-v4-logo.svg" alt="Pineda Power">
+      <h1>Build bigger. Trigger the wheel. Upgrade the houses.</h1>
+      <p>243 ways, Hard Hat Free Spins, Buzz Saw Power Wheel, Mega Hat, Mansion upgrades and jackpot reveals — all in free-play credits.</p>
+      <div class="hero-actions">
+        <a class="primary-btn" href="/game/pineda-power">PLAY NOW</a>
+        <a class="secondary-btn" href="/game/pineda-power#rules">HOW TO PLAY</a>
+      </div>
+      <div class="hero-stats">
+        <span class="hero-stat"><b>243</b><small>WAYS</small></span>
+        <span class="hero-stat"><b>6+</b><small>HATS = FREE SPINS</small></span>
+        <span class="hero-stat"><b>3+</b><small>SAWS = WHEEL</small></span>
+      </div>
     </div>
-
-    <div class="cabinet-top">
-      <button class="game-logo" id="brandHome" type="button" aria-label="Pineda Power">
-        <img src="/assets/pineda-v4-logo.svg" alt="Pineda Power Free Play" draggable="false">
-      </button>
-
-      <div class="jackpots" aria-label="Jackpot meters">
-        <div class="jackpot minor">
-          <small>MINOR</small><strong id="jpMinor">500</strong>
-        </div>
-        <div class="jackpot grand">
-          <small>GRAND</small><strong id="jpGrand">50,000</strong>
-        </div>
-        <div class="jackpot major">
-          <small>MAJOR</small><strong id="jpMajor">10,000</strong>
-        </div>
-        <div class="jackpot mini">
-          <small>MINI</small><strong id="jpMini">100</strong>
-        </div>
-      </div>
-
-      <span id="walletBalance" hidden>2,500</span>
-    </div>
-
-    <div class="wheel-zone" aria-label="Feature wheel">
-      <img class="wheel-art-v9" src="/assets/wheel-v10.svg" alt="" draggable="false">
-    </div>
-
-    <div class="machine-core">
-      <aside class="left-feature-panel">
-        <div class="ways-card">
-          <strong>243</strong><span>WAYS</span>
-        </div>
-        <div class="feature-card">
-          <img class="mini-symbol" src="/assets/hardhat-v4.svg" alt="">
-          <div><strong>6+</strong><span>FREE SPINS</span></div>
-        </div>
-        <div class="feature-card">
-          <img class="mini-symbol saw" src="/assets/saw-v4.svg" alt="">
-          <div><strong>3+</strong><span>POWER WHEEL</span></div>
-        </div>
-        <button class="howto" id="featureInfo" type="button"><b>?</b><span>HOW TO PLAY</span></button>
-      </aside>
-
-      <section class="reel-cabinet" aria-label="Five reels by three rows">
-        <div class="reel-top-glow"></div>
-        <div id="reels" class="reels"></div>
-        <div class="reel-grass"></div>
-        <div id="anticipationGlow" class="anticipation-glow"></div>
-        <div id="featureLabel" class="feature-label" hidden></div>
-      </section>
-
-      <aside class="spin-console">
-        <button class="step-control" id="betPlus" type="button" aria-label="Increase bet">+</button>
-        <button class="spin-control" id="spinBtn" type="button" aria-label="Spin">
-          <span class="spin-arrow">↻</span><b id="spinLabel">SPIN</b>
-        </button>
-        <button class="step-control" id="betMinus" type="button" aria-label="Decrease bet">−</button>
-        <button class="mode-control" id="autoBtn" type="button">AUTO</button>
-        <button class="mode-control" id="turboBtn" type="button">TURBO</button>
-      </aside>
-    </div>
-
-    <footer class="cabinet-meter">
-      <div class="utility-strip">
-        <button id="rulesBtn" type="button" title="Rules">i</button>
-        <button id="statsBtn" type="button" title="Stats">▥</button>
-        <button id="soundBtn" type="button" title="Sound">◖</button>
-        <button id="fullBtn" type="button" title="Fullscreen">⛶</button>
-      </div>
-      <div class="meter-group">
-        <small>BALANCE</small><strong id="balance">2,500</strong>
-      </div>
-      <div class="meter-group center">
-        <small>WIN</small><strong id="winValue">0</strong>
-      </div>
-      <div class="status-copy" id="statusCopy">6+ HARD HATS = FREE SPINS • 3+ BUZZ SAWS = POWER WHEEL</div>
-      <div class="meter-group right">
-        <small>BET</small><strong id="betValue">10</strong>
-      </div>
-    </footer>
   </section>
-</div>
 
-<div id="modalBackdrop" class="backdrop" hidden></div>
-
-<section id="rulesModal" class="modal" hidden aria-modal="true" role="dialog">
-  <button class="modal-close" data-close type="button">×</button>
-  <div class="modal-kicker">HOW TO PLAY</div>
-  <h2>Build the Houses. Beat the Wolf.</h2>
-  <div class="rules-list">
-    <article><div class="rule-icon hat"></div><b>6+ Hard Hats</b><p>Start 6 free spins. Triggering Hat positions begin as Straw Frames and can upgrade.</p></article>
-    <article><div class="rule-icon saw">✹</div><b>3+ Buzz Saws</b><p>Start the Power Wheel for jackpots, 20 Free Spins, Buzz Saw, Mega Hat, or Mansion features.</p></article>
-    <article><div class="rule-icon frame"></div><b>Frame Upgrades</b><p>Hard Hats upgrade reel positions from Straw → Wood → Brick. Three or more Hats in a feature add a spin.</p></article>
-    <article><div class="rule-icon house"></div><b>House Reveal</b><p>At feature end, framed positions reveal multipliers and Mini, Minor, Major or Grand awards.</p></article>
-  </div>
-  <div class="paytable" id="paytable"></div>
-  <p class="legal-note">Free-play entertainment only. Credits have no cash value and cannot be purchased, deposited, withdrawn, or redeemed for prizes.</p>
-</section>
-
-<section id="statsModal" class="modal small" hidden aria-modal="true" role="dialog">
-  <button class="modal-close" data-close type="button">×</button>
-  <div class="modal-kicker">SESSION</div>
-  <h2>Statistics</h2>
-  <div class="stats-grid" id="statsGrid"></div>
-  <p class="legal-note">Session statistics describe only this device's current free-play history.</p>
-</section>
-
-<section id="wheelOverlay" class="feature-overlay" hidden>
-  <div class="feature-stage wheel-stage">
-    <div class="feature-kicker">POWER WHEEL</div>
-    <h2>SPIN FOR A FEATURE</h2>
-    <div class="big-wheel-wrap">
-      <div class="big-wheel-pointer"></div>
-      <div id="bigWheel" class="big-wheel"></div>
-      <div id="wheelLabels" class="wheel-labels"></div>
-      <div class="big-wheel-hub">PP</div>
+  <section class="section hidden" id="recentSection">
+    <div class="section-head"><div><div class="section-title">Continue Playing</div><div class="section-sub">Jump back into your most recent game</div></div></div>
+    <div class="game-grid">
+      <article class="game-card playable" data-game="pineda-power" data-game-card data-title="Pineda Power" data-tags="original slot construction pigs wolf">
+        <div class="game-thumb">
+          <img class="thumb-bg" src="/assets/forest-v10.svg" alt="">
+          <img class="thumb-logo" src="/assets/pineda-v4-logo.svg" alt="">
+          <img class="thumb-symbol" src="/assets/pig-blue-v10.svg" alt="">
+          <span class="play-hover">▶</span>
+        </div>
+        <div class="game-card-body"><div class="game-card-title">Pineda Power</div><div class="game-card-meta"><span class="original-tag">Pineda Originals</span><span>PLAY</span></div></div>
+      </article>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="freeOverlay" class="feature-overlay" hidden>
-  <div class="feature-stage intro-stage">
-    <div class="feature-kicker" id="featureKicker">FREE SPINS</div>
-    <div class="feature-wolf">
-      <img src="/assets/wolf-v4.svg" alt="" draggable="false">
+  <section class="section" id="originals">
+    <div class="section-head">
+      <div><div class="section-title">Pineda Originals</div><div class="section-sub">Built for this free-play casino</div></div>
+      <span class="see-all">1 live • more coming</span>
     </div>
-    <h2 id="featureTitle">BUILD IT BIGGER</h2>
-    <p id="featureSub">6 Free Spins</p>
-  </div>
-</section>
+    <div class="game-grid">
+      <article class="game-card playable" data-game="pineda-power" data-game-card data-title="Pineda Power" data-tags="original slot construction pigs wolf">
+        <div class="game-thumb">
+          <img class="thumb-bg" src="/assets/forest-v10.svg" alt="">
+          <img class="thumb-logo" src="/assets/pineda-v4-logo.svg" alt="">
+          <img class="thumb-symbol" src="/assets/pig-blue-v10.svg" alt="">
+          <img class="thumb-symbol left" src="/assets/saw-v4.svg" alt="">
+          <span class="play-hover">▶</span>
+        </div>
+        <div class="game-card-body"><div class="game-card-title">Pineda Power</div><div class="game-card-meta"><span class="original-tag">Pineda Originals</span><span>243 Ways</span></div></div>
+      </article>
 
-<section id="revealOverlay" class="feature-overlay" hidden>
-  <div class="feature-stage reveal-stage">
-    <div class="feature-kicker">HOUSE REVEAL</div>
-    <h2>HUFF… PUFF… REVEAL!</h2>
-    <div id="revealGrid" class="reveal-grid"></div>
-    <div class="reveal-total">FEATURE WIN <strong id="revealTotal">0</strong></div>
-  </div>
-</section>
+      <article class="game-card placeholder" data-game="brick-city" data-game-card data-title="Brick City Riches" data-tags="coming construction brick">
+        <div class="game-thumb theme-gold"><img class="thumb-symbol" src="/assets/toolbox-v10.svg" alt=""><img class="thumb-symbol left" src="/assets/hardhat-v4.svg" alt=""><span class="coming-chip">COMING SOON</span></div>
+        <div class="game-card-body"><div class="game-card-title">Brick City Riches</div><div class="game-card-meta"><span>Original</span><span>Soon</span></div></div>
+      </article>
+      <article class="game-card placeholder" data-game="midnight-wolf" data-game-card data-title="Midnight Wolf" data-tags="coming wolf feature">
+        <div class="game-thumb theme-purple"><img class="thumb-symbol" src="/assets/wolf-v10.svg" alt=""><span class="coming-chip">COMING SOON</span></div>
+        <div class="game-card-body"><div class="game-card-title">Midnight Wolf</div><div class="game-card-meta"><span>Original</span><span>Soon</span></div></div>
+      </article>
+      <article class="game-card placeholder" data-game="power-tools" data-game-card data-title="Power Tools" data-tags="coming tools saw">
+        <div class="game-thumb theme-blue"><img class="thumb-symbol" src="/assets/saw-v4.svg" alt=""><img class="thumb-symbol left" src="/assets/tape-v10.svg" alt=""><span class="coming-chip">COMING SOON</span></div>
+        <div class="game-card-body"><div class="game-card-title">Power Tools</div><div class="game-card-meta"><span>Original</span><span>Soon</span></div></div>
+      </article>
+      <article class="game-card placeholder" data-game="piggy-project" data-game-card data-title="Piggy Project" data-tags="coming pigs builder">
+        <div class="game-thumb theme-red"><img class="thumb-symbol" src="/assets/pig-green-v10.svg" alt=""><img class="thumb-symbol left" src="/assets/pig-blue-v10.svg" alt=""><span class="coming-chip">COMING SOON</span></div>
+        <div class="game-card-body"><div class="game-card-title">Piggy Project</div><div class="game-card-meta"><span>Original</span><span>Soon</span></div></div>
+      </article>
+    </div>
+  </section>
 
-<div id="toast" class="toast" aria-live="polite"></div>
-<div id="runtimeError" class="runtime-error" hidden>
-  <strong>Game error</strong>
-  <span id="runtimeErrorText">The game could not start.</span>
-  <button type="button" id="reloadBtn">Reload</button>
-</div>
+  <section class="section" id="coming">
+    <div class="section-head"><div><div class="section-title">Coming Soon</div><div class="section-sub">The platform is ready for more games as they launch</div></div></div>
+    <div class="game-grid">
+      <article class="game-card placeholder" data-game="forest-fortune" data-game-card data-title="Forest Fortune" data-tags="coming forest"><div class="game-thumb theme-cyan"><img class="thumb-symbol" src="/assets/pig-green-v10.svg" alt=""><span class="coming-chip">COMING SOON</span></div><div class="game-card-body"><div class="game-card-title">Forest Fortune</div><div class="game-card-meta"><span>Slots</span><span>Soon</span></div></div></article>
+      <article class="game-card placeholder" data-game="golden-builder" data-game-card data-title="Golden Builder" data-tags="coming hard hat"><div class="game-thumb theme-gold"><img class="thumb-symbol" src="/assets/hardhat-v4.svg" alt=""><span class="coming-chip">COMING SOON</span></div><div class="game-card-body"><div class="game-card-title">Golden Builder</div><div class="game-card-meta"><span>Slots</span><span>Soon</span></div></div></article>
+      <article class="game-card placeholder" data-game="saw-strike" data-game-card data-title="Saw Strike" data-tags="coming saw feature"><div class="game-thumb theme-blue"><img class="thumb-symbol" src="/assets/saw-v4.svg" alt=""><span class="coming-chip">COMING SOON</span></div><div class="game-card-body"><div class="game-card-title">Saw Strike</div><div class="game-card-meta"><span>Slots</span><span>Soon</span></div></div></article>
+      <article class="game-card placeholder" data-game="estate-upgrade" data-game-card data-title="Estate Upgrade" data-tags="coming mansion"><div class="game-thumb theme-red"><img class="thumb-symbol" src="/assets/toolbox-v10.svg" alt=""><span class="coming-chip">COMING SOON</span></div><div class="game-card-body"><div class="game-card-title">Estate Upgrade</div><div class="game-card-meta"><span>Feature</span><span>Soon</span></div></div></article>
+      <article class="game-card placeholder" data-game="wolf-run" data-game-card data-title="Wolf Run" data-tags="coming wolf"><div class="game-thumb theme-purple"><img class="thumb-symbol" src="/assets/wolf-v10.svg" alt=""><span class="coming-chip">COMING SOON</span></div><div class="game-card-body"><div class="game-card-title">Wolf Run</div><div class="game-card-meta"><span>Original</span><span>Soon</span></div></div></article>
+    </div>
+  </section>
+</main>
 
-<script src="/game-core-v7.js"></script>
-<script src="/pineda-huff-v10.js" defer></script>
+<div class="lobby-toast" id="lobbyToast"></div>
+<script src="/casino.js" defer></script>
 </body>
 </html>
