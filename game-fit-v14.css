@@ -1,0 +1,272 @@
+/* V14 TARGET ART + PROPORTION PASS — loaded last */
+@media (min-width:901px){
+  body.game-page{
+    --header:52px!important;
+    --sidebar:84px!important;
+  }
+  body.game-page .casino-header{
+    height:var(--header)!important;
+    padding:0 14px!important;
+  }
+  body.game-page .casino-sidebar{
+    top:var(--header)!important;
+    width:var(--sidebar)!important;
+  }
+  body.game-page .game-page-main{
+    left:var(--sidebar)!important;
+    top:var(--header)!important;
+  }
+  body.game-page .game-viewport,
+  body.game-page .forest-scene{
+    background:url("/assets/forest-v14.svg") center/cover no-repeat!important;
+  }
+
+  /* target visual hierarchy */
+  body.game-page .cabinet-top{
+    left:11%!important;
+    right:11%!important;
+    top:0!important;
+    height:21.5%!important;
+  }
+  body.game-page .game-logo{
+    width:300px!important;
+    top:0!important;
+  }
+  body.game-page .game-logo img{
+    width:300px!important;
+    filter:drop-shadow(0 8px 5px rgba(73,35,4,.55)) drop-shadow(0 0 12px rgba(255,218,82,.16))!important;
+  }
+
+  body.game-page .jackpot{
+    border-width:5px!important;
+    border-color:#5a2904!important;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.09),transparent 24%),
+      radial-gradient(ellipse at 50% 32%,#171717,#020202 72%)!important;
+    box-shadow:
+      inset 0 0 0 3px #ffd45d,
+      inset 0 0 18px rgba(255,206,78,.15),
+      0 0 0 2px #2d1301,
+      0 8px 15px rgba(0,0,0,.42),
+      0 0 22px rgba(255,187,41,.16)!important;
+  }
+  body.game-page .jackpot.grand{left:4%!important;top:5%!important;width:28%!important;height:43%!important}
+  body.game-page .jackpot.major{right:4%!important;top:5%!important;width:28%!important;height:43%!important}
+  body.game-page .jackpot.minor{left:2.5%!important;top:59%!important;width:16%!important;height:34%!important}
+  body.game-page .jackpot.mini{right:2.5%!important;top:59%!important;width:16%!important;height:34%!important}
+  body.game-page .jackpot strong{
+    font-size:clamp(27px,3vw,48px)!important;
+    text-shadow:0 3px 2px #000,0 0 12px currentColor!important;
+  }
+  body.game-page .jackpot.grand small,
+  body.game-page .jackpot.major small{
+    min-width:118px!important;
+    font-size:14px!important;
+    padding:6px 15px 5px!important;
+  }
+
+  /* wheel: wider, ornate, target-like */
+  body.game-page .wheel-zone{
+    left:14.2%!important;
+    top:19.2%!important;
+    width:71.6%!important;
+    height:34.4%!important;
+    filter:drop-shadow(0 12px 10px rgba(0,0,0,.36)) drop-shadow(0 0 10px rgba(255,186,39,.10))!important;
+  }
+  body.game-page .wheel-art-v12{
+    content:url("/assets/wheel-v14.svg")!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:fill!important;
+  }
+
+  /* feature banner sits like a real top glass feature placard */
+  body.game-page .feature-mode-banner{
+    top:16.8%!important;
+    min-width:390px!important;
+    height:68px!important;
+    border-width:5px!important;
+    background:
+      linear-gradient(180deg,#ff9d31,#d94a14 52%,#8e2608)!important;
+    box-shadow:
+      inset 0 0 0 3px #ffe27c,
+      0 10px 21px rgba(0,0,0,.40),
+      0 0 45px rgba(255,187,43,.36)!important;
+  }
+  body.game-page .feature-mode-banner strong{
+    font-size:25px!important;
+    letter-spacing:.3px!important;
+  }
+
+  /* wheel / reel glow by active feature */
+  body.game-page .game-cabinet[data-feature] .wheel-zone{
+    filter:drop-shadow(0 12px 10px rgba(0,0,0,.34)) drop-shadow(0 0 24px rgba(255,204,62,.34))!important;
+  }
+  body.game-page .game-cabinet[data-feature="buzz"] .wheel-zone{filter:drop-shadow(0 12px 10px rgba(0,0,0,.34)) drop-shadow(0 0 26px rgba(55,183,255,.42))!important}
+  body.game-page .game-cabinet[data-feature="mega"] .wheel-zone{filter:drop-shadow(0 12px 10px rgba(0,0,0,.34)) drop-shadow(0 0 32px rgba(255,211,65,.58))!important}
+  body.game-page .game-cabinet[data-feature="mansion"] .wheel-zone{filter:drop-shadow(0 12px 10px rgba(0,0,0,.34)) drop-shadow(0 0 28px rgba(246,102,62,.44))!important}
+
+  /* machine: slightly wider and lower like approved target */
+  body.game-page .machine-core{
+    left:15.4%!important;
+    top:49.5%!important;
+    width:69.2%!important;
+    height:41.3%!important;
+    grid-template-columns:70px minmax(0,1fr) 80px!important;
+  }
+  body.game-page .reel-cabinet{
+    border-width:8px!important;
+    border-color:#4c2507!important;
+    border-radius:8px!important;
+    background:
+      radial-gradient(circle at 50% 43%,rgba(88,164,78,.20),transparent 60%),
+      linear-gradient(#0d4a1a,#042d0c 78%)!important;
+    box-shadow:
+      0 0 0 4px #e0a832,
+      0 0 0 8px #623008,
+      0 0 0 11px #2f1704,
+      inset 0 0 48px rgba(0,0,0,.58),
+      0 14px 24px rgba(0,0,0,.34),
+      0 0 28px rgba(255,192,41,.10)!important;
+  }
+  body.game-page .reels{
+    gap:2px!important;
+    background:
+      linear-gradient(90deg,rgba(255,255,255,.025),transparent 12%,transparent 88%,rgba(0,0,0,.14)),
+      #05340f!important;
+  }
+  body.game-page .reel{
+    border-right:2px solid rgba(104,183,72,.62)!important;
+  }
+  body.game-page .cell{
+    border-bottom:2px solid rgba(94,164,64,.56)!important;
+    background:
+      radial-gradient(ellipse at 50% 44%,rgba(79,156,70,.25),transparent 61%),
+      linear-gradient(180deg,rgba(12,73,23,.76),rgba(3,41,10,.88))!important;
+  }
+  body.game-page .symbol-art{
+    transform:scale(1.12)!important;
+    filter:drop-shadow(0 8px 5px rgba(0,0,0,.50)) drop-shadow(0 0 3px rgba(255,255,255,.10))!important;
+  }
+  body.game-page .rank{
+    font-size:clamp(35px,4.6vw,68px)!important;
+    -webkit-text-stroke:2px #e0f2e8!important;
+  }
+
+  /* physical side rails */
+  body.game-page .ways-card,
+  body.game-page .feature-card,
+  body.game-page .howto,
+  body.game-page .step-control,
+  body.game-page .mode-control{
+    border-color:#315b20!important;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.08),transparent 25%),
+      linear-gradient(#3d8633,#184c1a)!important;
+    box-shadow:
+      inset 0 0 0 2px #8ccc71,
+      0 0 0 2px #203e14,
+      0 5px 8px rgba(0,0,0,.33)!important;
+  }
+  body.game-page .spin-control{
+    width:74px!important;height:74px!important;
+    background:radial-gradient(circle at 33% 25%,#d7ffa3 0 9%,#77db54 22%,#3c9e34 56%,#175d1e 80%)!important;
+    box-shadow:
+      inset 0 0 0 4px #b5ed91,
+      inset 0 -12px 18px rgba(16,71,17,.31),
+      0 0 0 4px #204213,
+      0 7px 12px rgba(0,0,0,.38),
+      0 0 20px rgba(92,230,74,.18)!important;
+  }
+
+  /* target bottom HUD */
+  body.game-page .cabinet-meter{
+    left:15.4%!important;
+    width:69.2%!important;
+    top:91.4%!important;
+    height:7.8%!important;
+    border-width:5px!important;
+    border-color:#5b2a06!important;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.035),transparent 24%),
+      linear-gradient(#123a17,#061e0b)!important;
+    box-shadow:
+      inset 0 0 0 2px #d6a031,
+      0 6px 14px rgba(0,0,0,.40)!important;
+  }
+  body.game-page .bonus-win-panel{
+    min-width:285px!important;
+    height:72px!important;
+    background:
+      radial-gradient(ellipse at 50% 25%,rgba(255,198,55,.10),transparent 42%),
+      linear-gradient(#4e2609,#211004)!important;
+    box-shadow:
+      inset 0 0 0 3px #efa833,
+      0 0 0 2px #5e2a05,
+      0 0 32px rgba(255,187,42,.30)!important;
+  }
+
+  /* props stay secondary */
+  body.game-page .scene-builder{
+    right:2%!important;
+    bottom:1.6%!important;
+    width:9.8%!important;
+    max-width:150px!important;
+  }
+  body.game-page .builder-sign{
+    right:-4%!important;
+    bottom:-1%!important;
+    padding:7px 9px!important;
+    font-size:clamp(9px,.82vw,13px)!important;
+  }
+  body.game-page .scene-tools{
+    left:2.5%!important;
+    bottom:2.7%!important;
+    width:7.7%!important;
+    max-width:112px!important;
+  }
+
+  /* feature round quality */
+  body.game-page #wheelOverlay .feature-stage{
+    width:min(760px,91vw)!important;
+    min-height:640px!important;
+    background:
+      radial-gradient(circle at 50% 40%,rgba(255,221,93,.12),transparent 25%),
+      linear-gradient(rgba(6,30,12,.05),rgba(4,20,8,.18)),
+      url("/assets/forest-v14.svg") center/cover no-repeat!important;
+  }
+  body.game-page #wheelOverlay .big-wheel{
+    background:url("/assets/wheel-spin-v12.svg") center/contain no-repeat!important;
+    filter:drop-shadow(0 18px 14px rgba(0,0,0,.42)) drop-shadow(0 0 20px rgba(255,197,50,.18))!important;
+  }
+  body.game-page #freeOverlay .feature-stage{
+    background:
+      radial-gradient(circle at 50% 42%,rgba(255,221,92,.18),transparent 30%),
+      linear-gradient(rgba(6,34,14,.08),rgba(2,18,7,.16)),
+      url("/assets/forest-v14.svg") center/cover no-repeat!important;
+  }
+}
+
+@media (min-width:901px) and (max-height:760px){
+  body.game-page .game-logo,
+  body.game-page .game-logo img{width:250px!important}
+  body.game-page .machine-core{
+    top:49%!important;
+    height:42%!important;
+  }
+  body.game-page .cabinet-meter{
+    top:91.4%!important;
+    height:7.4%!important;
+  }
+  body.game-page .wheel-zone{
+    top:19.5%!important;
+    height:34%!important;
+  }
+  body.game-page .scene-builder{width:8.5%!important}
+  body.game-page .scene-tools{width:6.8%!important}
+}
+
+@media(max-width:900px){
+  body.game-page .game-viewport,
+  body.game-page .forest-scene{background:url("/assets/forest-v14.svg") center/cover no-repeat!important}
+}
