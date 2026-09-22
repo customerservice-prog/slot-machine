@@ -20,8 +20,8 @@
     <a class="header-tab" data-scroll="#coming" href="#coming">Coming Soon</a>
   </nav>
   <label class="search-wrap">⌕ <input id="gameSearch" type="search" placeholder="Search games"></label>
-  <div class="header-balance"><i>C</i><span><small>PLAY CREDITS</small><b>2,500</b></span></div>
-  <button class="profile-btn" type="button" aria-label="Profile">●</button>
+  <div class="header-balance"><i>C</i><span><small>PLAY CREDITS</small><b id="lobbyBalance">2,500</b></span></div>
+  <button class="profile-btn" id="guestProfile" type="button" aria-label="Guest profile">●</button>
 </header>
 
 <aside class="casino-sidebar">
@@ -36,11 +36,11 @@
 
 <main class="casino-main">
   <div class="category-strip">
-    <button class="cat-chip active" type="button">All Games</button>
-    <button class="cat-chip" type="button">Originals</button>
-    <button class="cat-chip" type="button">Slots</button>
-    <button class="cat-chip" type="button">Features</button>
-    <button class="cat-chip" type="button">New</button>
+    <button class="cat-chip active" type="button" data-filter="all">All Games</button>
+    <button class="cat-chip" type="button" data-filter="original">Originals</button>
+    <button class="cat-chip" type="button" data-filter="slot">Slots</button>
+    <button class="cat-chip" type="button" data-filter="feature">Features</button>
+    <button class="cat-chip" type="button" data-filter="coming">New</button>
   </div>
 
   <section class="hero" id="featured">
