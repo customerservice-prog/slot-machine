@@ -98,7 +98,9 @@ async function verifyServer(){
   for(const p of ["/","/game-core-v7.js","/pineda-huff-v7.css","/pineda-huff-v7.js","/assets/wheel-v7.svg","/assets/forest-v7.svg"]){
     const r=await fetch("http://127.0.0.1:"+port+p);
     assert(r.ok,p+" failed");
-    assert((r.headers.get("cache-control")||"").includes("no-store"),p+" must be no-store");
+    const cache=(r.headers.get("cache-control")||"");
+    if(p.endsWith(".svg")) assert(cache.includes("immutable"),p+" should be immutable/versioned");
+    else assert(cache.includes("no-store"),p+" must be no-store");
     const body=await r.text();assert(body.length>100,p+" unexpectedly empty");
   }
  }finally{child.kill("SIGTERM")}
